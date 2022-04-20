@@ -24,20 +24,19 @@ object QuotesActor {
 
 class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val quotesRepository: QuotesRepository.type = QuotesRepository
-  val numberOfDaysOfQuotesToFetch = 1
   implicit val timeout: Timeout = 30.seconds
+
+  val numberOfDaysOfQuotesToFetch = 7
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case FetchQuotes(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
-        var quotesFromDb: List[Quote] = quotesRepository.getQuotes(symbol, fromTimestamp)
-        context.log.info(s"length of quotes in db for symbol:$symbol : ${quotesFromDb.length}")
+      case CacheQuotes(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
 
-        if quotesFromDb.length < 100 then
+        if !quotesRepository.areQuotesCached(symbol, fromTimestamp) then
           context.log.info(s"Fetching quotes for symbol:$symbol")
           val fetcherRef: ActorRef[Message] = context.spawn(QuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
 
-          var startTimestamp: Long = fromTimestamp
+          var startTimestamp: Long = fromTimestamp - 8640
           val endTimestamp: Long = fromTimestamp + numberOfDaysOfQuotesToFetch * 86400
           val startTimestamps: ListBuffer[Long] = ListBuffer()
 
@@ -54,12 +53,11 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
             .map(message => quotesRepository.insertQuotes(message.quotes))
             .runWith(Sink.last)
             .onComplete {
-              case Success(done) =>
-                if quotesFromDb.length < 100 then
-                  quotesFromDb = quotesRepository.getQuotes(symbol, fromTimestamp)
-                actorRef ! QuotesReady(quotesFromDb)
+              case Success(done) => actorRef ! QuotesCached()
               case Failure(e) => println("failure:" + e)
             }
-          
+        else
+          actorRef ! QuotesCached()
+
     this
 }

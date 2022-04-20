@@ -2,7 +2,8 @@ package ch.xavier
 
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import ch.xavier.Quote.{Quote, QuotesActor}
+import ch.xavier.Quote.QuotesActor
+import ch.xavier.signals.{Signal, SignalsRepository}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -19,16 +20,27 @@ object Main {
 
 
 class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  context.log.info("Starting backtester for the trading bot")
+  val signalsRepository: SignalsRepository.type = SignalsRepository
+  val backtesterRef: ActorRef[Message] = context.spawn(BacktesterActor(), "backtester-actor")
+  val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
 
-  val testRef: ActorRef[Message] = context.spawn(QuotesActor(), "testActor")
-  testRef ! FetchQuotes("BTC", 1648521540, context.self)
-  testRef ! FetchQuotes("ETH", 1648521540, context.self)
+  context.log.info("Starting backtester for the trading bot, now caching the quotes of to backtest each signal")
 
+  val backtestedStrategy: String = "SimpleStrategy"
+
+  val signals: List[Signal] = signalsRepository.getSignals
+  signals.foreach(signal => quotesActorRef ! CacheQuotes(signal.symbol, signal.timestamp, context.self))
+  var quotesCachedCounter: Int = 0
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case QuotesReady(quotes: List[Quote]) =>
-        context.log.info(s"Received ${quotes.length} quotes!")
+      case QuotesCached() =>
+        quotesCachedCounter += 1
+
+        if quotesCachedCounter == signals.length then
+          context.log.info("-----------------------------------------------------------------------------------------")
+          context.log.info("Quotes cached for each signal, now starting the backtesting")
+          backtesterRef ! BacktestStrategyMessage(backtestedStrategy)
+
         this
 }

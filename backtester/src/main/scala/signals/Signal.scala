@@ -3,10 +3,12 @@ package signals
 
 import akka.http.scaladsl.model.DateTime
 
+import java.time.LocalDateTime
+
 final case class Signal(
-                         emissionDate: DateTime,
                          entryPrice: Double,
+                         firstTargetPrice: Double,
                          stopLoss: Double,
                          symbol: String,
-                         targetPrice: Double
+                         timestamp: Long
                        )

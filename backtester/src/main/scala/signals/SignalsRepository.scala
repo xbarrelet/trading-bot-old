@@ -12,6 +12,7 @@ import org.postgresql.util.PSQLException
 
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import ch.xavier.signals.Signal
 
 object SignalsRepository {
   private val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
@@ -21,10 +22,17 @@ object SignalsRepository {
     "toor"
   )
 
-  def getSignals(symbol: String, startTimestampInSeconds: Long): List[Signal] =
-    val timestampTwoWeeksAfterStartTimestamp: Long = startTimestampInSeconds + 1209600
+  private var cachedSignals: List[Signal] = List()
 
-    sql"select emission_date, entry_price, stop_loss, symbol, target_price from signals"
+
+  def getSignals: List[Signal] =
+    if cachedSignals.isEmpty then
+      cachedSignals = cacheSignals
+
+    cachedSignals
+
+  private def cacheSignals: List[Signal] =
+    sql"select entry_price, first_target_price, stop_loss, symbol, timestamp from signals"
       .query[Signal]
       .to[List]
       .transact(transactor)

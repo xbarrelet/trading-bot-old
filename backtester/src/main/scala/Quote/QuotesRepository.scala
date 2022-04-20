@@ -7,8 +7,10 @@ import cats.effect.unsafe.implicits.global
 import doobie.syntax.string.toSqlInterpolator
 import doobie.syntax.connectionio.toConnectionIOOps
 import org.postgresql.util.PSQLException
+import org.slf4j.{Logger, LoggerFactory}
 
 object QuotesRepository {
+  val logger: Logger = LoggerFactory.getLogger("QuotesRepository")
   private val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
     "jdbc:postgresql://localhost:5430/data",
@@ -16,10 +18,35 @@ object QuotesRepository {
     "toor"
   )
 
+  private var cachedQuotes: Map[String, Map[Long, List[Quote]]] = Map()
+
+
   def getQuotes(symbol: String, startTimestampInSeconds: Long): List[Quote] =
+    cachedQuotes(symbol)(startTimestampInSeconds)
+
+  def areQuotesCached(symbol: String, startTimestampInSeconds: Long): Boolean =
+    if cachedQuotes.contains(symbol) then
+      if cachedQuotes(symbol).contains(startTimestampInSeconds) then
+        return true
+
+    val quotes: List[Quote] = getQuotesFromRepository(symbol, startTimestampInSeconds)
+    if quotes.length > 1000 then
+      val quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds))
+      cachedQuotes = cachedQuotes + (symbol -> quotesPerTimestamp)
+      logger.info(s"Quotes already present for symbol:$symbol and timestamp:$startTimestampInSeconds, they're now in the cache")
+      true
+    else
+      false
+
+  private def cacheQuotes(symbol: String, startTimestampInSeconds: Long): Unit =
+    val quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds))
+    cachedQuotes = cachedQuotes + (symbol -> quotesPerTimestamp)
+
+  private def getQuotesFromRepository(symbol: String, startTimestampInSeconds: Long): List[Quote] =
+    val timestampOneDayBeforeStartTimestamp: Long = startTimestampInSeconds - 86400
     val timestampTwoWeeksAfterStartTimestamp: Long = startTimestampInSeconds + 1209600
 
-    sql"select close, high, low, open, start_timestamp, symbol from quotes where symbol = $symbol and start_timestamp > $startTimestampInSeconds and start_timestamp < $timestampTwoWeeksAfterStartTimestamp order by start_timestamp asc"
+    sql"select close, high, low, open, start_timestamp, symbol from quotes where symbol = $symbol and start_timestamp > $timestampOneDayBeforeStartTimestamp and start_timestamp < $timestampTwoWeeksAfterStartTimestamp order by start_timestamp asc"
       .query[Quote]
       .to[List]
       .transact(transactor)
