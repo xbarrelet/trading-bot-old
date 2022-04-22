@@ -26,7 +26,7 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
 
   override def onMessage(message: Message): Behavior[Message] =
     message match {
-      case FetchQuotes(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
+      case FetchQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
         val quotes: ListBuffer[Quote] = ListBuffer()
 
         val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri =
@@ -34,7 +34,7 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
 
         response.map {
           case response@HttpResponse(StatusCodes.OK, _, _, _) =>
-            response.entity.toStrict(3.seconds)
+            response.entity.toStrict(30.seconds)
               .map(entity => entity.getData().utf8String)
               .map(body => body.parseJson.convertTo[JsValue].asJsObject)
               .map(jsonBody => jsonBody.getFields("result").head)
@@ -51,7 +51,7 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
                       symbol
                     )
 
-                  actorRef ! QuotesReady(quotes.toList)
+                  actorRef ! QuotesReadyMessage(quotes.toList)
               }
           case _ => println(s"Problem encountered when fetching the quotes for $symbol and timestamp $fromTimestamp")
         }

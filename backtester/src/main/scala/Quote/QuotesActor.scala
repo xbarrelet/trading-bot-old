@@ -26,14 +26,14 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
   val quotesRepository: QuotesRepository.type = QuotesRepository
   implicit val timeout: Timeout = 30.seconds
 
-  val numberOfDaysOfQuotesToFetch = 7
+  val numberOfDaysOfQuotesToFetch = 2
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case CacheQuotes(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
+      case CacheQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
 
         if !quotesRepository.areQuotesCached(symbol, fromTimestamp) then
-          context.log.info(s"Fetching quotes for symbol:$symbol")
+          context.log.info(s"Fetching quotes for symbol:$symbol and timestamp:$fromTimestamp")
           val fetcherRef: ActorRef[Message] = context.spawn(QuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
 
           var startTimestamp: Long = fromTimestamp - 8640
@@ -47,17 +47,19 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
 
           Source(startTimestamps.toList)
             .mapAsync(1)(startTimestamp => {
-              val response: Future[Message] = fetcherRef ? (replyTo => FetchQuotes(symbol, startTimestamp, replyTo))
-              response.asInstanceOf[Future[QuotesReady]]
+              val response: Future[Message] = fetcherRef ? (replyTo => FetchQuotesMessage(symbol, startTimestamp, replyTo))
+              response.asInstanceOf[Future[QuotesReadyMessage]]
             })
             .map(message => quotesRepository.insertQuotes(message.quotes))
             .runWith(Sink.last)
             .onComplete {
-              case Success(done) => actorRef ! QuotesCached()
+              case Success(done) => actorRef ! QuotesCachedMessage()
               case Failure(e) => println("failure:" + e)
             }
         else
-          actorRef ! QuotesCached()
+          actorRef ! QuotesCachedMessage()
+        this
 
-    this
+      case ShutdownMessage() =>
+        Behaviors.stopped
 }

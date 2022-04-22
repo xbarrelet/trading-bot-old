@@ -1,11 +1,18 @@
 package ch.xavier
 
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import ch.xavier.Quote.QuotesActor
-import ch.xavier.signals.{Signal, SignalsRepository}
+import Application.{executionContext, system}
+import Quote.QuotesActor
+import signals.{Signal, SignalsRepository}
 
-import scala.concurrent.ExecutionContextExecutor
+import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
+import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.stream.scaladsl.{Sink, Source}
+import akka.util.Timeout
+
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.util.{Failure, Success}
 
 object Application extends App {
   implicit val system: ActorSystem[Message] = ActorSystem(Main(), "System")
@@ -18,29 +25,28 @@ object Main {
     Behaviors.setup(context => new Main(context))
 }
 
-
 class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val signalsRepository: SignalsRepository.type = SignalsRepository
-  val backtesterRef: ActorRef[Message] = context.spawn(BacktesterActor(), "backtester-actor")
+  val backtesterRef: ActorRef[Message] = context.spawn(StrategiesMainActor(), "backtester-actor")
   val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
+  implicit val timeout: Timeout = 300.seconds
 
   context.log.info("Starting backtester for the trading bot, now caching the quotes of to backtest each signal")
+  context.log.info("-----------------------------------------------------------------------------------------")
 
   val backtestedStrategy: String = "SimpleStrategy"
 
-  val signals: List[Signal] = signalsRepository.getSignals
-  signals.foreach(signal => quotesActorRef ! CacheQuotes(signal.symbol, signal.timestamp, context.self))
-  var quotesCachedCounter: Int = 0
+  Source(signalsRepository.getSignals)
+    .mapAsync(8)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
+    .runWith(Sink.last)
+    .onComplete {
+      case Success(done) =>
+        quotesActorRef ! ShutdownMessage()
+        backtesterRef ! StartBacktestingMessage(backtestedStrategy)
+
+      case Failure(e) => println("failure:" + e)
+    }
 
   override def onMessage(message: Message): Behavior[Message] =
-    message match
-      case QuotesCached() =>
-        quotesCachedCounter += 1
-
-        if quotesCachedCounter == signals.length then
-          context.log.info("-----------------------------------------------------------------------------------------")
-          context.log.info("Quotes cached for each signal, now starting the backtesting")
-          backtesterRef ! BacktestStrategyMessage(backtestedStrategy)
-
-        this
+    this
 }
