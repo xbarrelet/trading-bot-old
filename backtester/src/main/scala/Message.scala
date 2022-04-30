@@ -20,7 +20,7 @@ final case class QuotesReadyMessage(quotes: List[Quote]) extends Message
 final case class StartBacktestingMessage(strategyName: String) extends Message
 
 final case class BacktestStrategyMessage(strategyName: String, replyTo: ActorRef[Message]) extends Message
-final case class ResultOfBacktestingStrategyMessage(averageProfitsInPercent: Double) extends Message
+final case class ResultOfBacktestingStrategyMessage(strategyName: String, averageProfitsInPercent: Double) extends Message
 
 final case class BacktestStrategyWithSignalMessage(strategyName: String, signal: Signal, replyTo: ActorRef[Message]) extends Message
 final case class ResultOfBacktestingStrategyWithSignalMessage(profitsInPercent: Double) extends Message

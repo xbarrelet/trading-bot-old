@@ -34,7 +34,7 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   context.log.info("Starting backtester for the trading bot, now caching the quotes of to backtest each signal")
   context.log.info("-----------------------------------------------------------------------------------------")
 
-  val backtestedStrategy: String = "SimpleStrategy"
+  val backtestedStrategy: String = "LeveragedSimpleStrategy"
 
   Source(signalsRepository.getSignals)
     .mapAsync(1)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))

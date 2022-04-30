@@ -1,16 +1,16 @@
 package ch.xavier
-package strategy
+package strategy.strats
 
 import Quote.Quote
+import signals.Signal
+import strategy.Strategy
 
-import ch.xavier.signals.Signal
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class SimpleStrategy(override val series: BarSeries, val signal: Signal) extends Strategy {
-
+class SimpleStrategy(val signal: Signal) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -23,10 +23,9 @@ class SimpleStrategy(override val series: BarSeries, val signal: Signal) extends
   else CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
 
 
-  def shouldEnter(index: Int): Boolean =
-    entryPriceReachedRule.isSatisfied(index)
+  def shouldEnter: Boolean =
+    entryPriceReachedRule.isSatisfied(series.getEndIndex)
 
-  def shouldExit(index: Int): Boolean =
-    firstTargetReachedRule.isSatisfied(index) || stopLossReachedRule.isSatisfied(index)
-
+  def shouldExit: Boolean =
+    firstTargetReachedRule.isSatisfied(series.getEndIndex) || stopLossReachedRule.isSatisfied(series.getEndIndex)
 }

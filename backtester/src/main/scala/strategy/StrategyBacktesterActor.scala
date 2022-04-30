@@ -1,20 +1,20 @@
 package ch.xavier
 package strategy
 
+import Application.{executionContext, system}
 import Quote.{Quote, QuotesRepository}
+import signals.{Signal, SignalsRepository}
 
-import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.scaladsl.{Sink, Source}
-import ch.xavier.signals.{Signal, SignalsRepository}
+import org.slf4j.{Logger, LoggerFactory}
 import org.ta4j.core.num.DoubleNum
 import org.ta4j.core.{BarSeries, BaseBar, BaseBarSeriesBuilder}
 
-import java.time.{Duration, Instant, ZoneId, ZonedDateTime}
+import java.time.*
+import java.util.Date
 import scala.concurrent.Future
-import ch.xavier.Application.{executionContext, system}
-import org.slf4j.{Logger, LoggerFactory}
-
 import scala.util.control.Breaks.{break, breakable}
 import scala.util.{Failure, Success}
 
@@ -32,44 +32,45 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
   override def onMessage(message: Message): Behavior[Message] =
     message match
       case BacktestStrategyMessage(strategyName: String, replyTo: ActorRef[Message]) =>
-        context.log.info("-----------------------------------------------------------------------------------------")
-        context.log.info("")
         val signals: List[Signal] = signalsRepository.getSignals
         var tradesNotEnteredCounter = 0
 
         Source(signals)
           .map(signal => {
-            val series: BarSeries = createSeriesForSignal(signal)
-            val strategy: Strategy = strategiesFactory.getStrategyFromName(strategyName, series, signal)
+            val strategy: Strategy = strategiesFactory.getStrategyFromName(strategyName, signal)
+            val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
 
             var hasEntered = false
             var entryPrice = 0.0
             var exitPrice = 0.0
-            logger.info(s"Now testing signal with symbol:${signal.symbol}, entryPrice:${signal.entryPrice}, " +
+            logger.debug(s"Now testing strategy:$strategyName with signal with symbol:${signal.symbol}, entryPrice:${signal.entryPrice}, " +
               s"stopLoss:${signal.stopLoss} and firstTargetPrice:${signal.firstTargetPrice}")
 
             breakable {
-              for index <- List.range(0, series.getBarCount) do
+              for quote: Quote <- quotes do
+                strategy.addQuote(quote)
                 if !hasEntered then
-                  if strategy.shouldEnter(index) then
-                    entryPrice = series.getBar(index).getClosePrice.doubleValue()
+                  if strategy.shouldEnter then
                     hasEntered = true
-                    logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} has entered with price:$entryPrice at end_timestamp:${series.getBar(index).getEndTime.toLocalDateTime}")
+                    entryPrice = quote.close
+                    logger.debug(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
+                      s"has entered with price:$entryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                 else
-                  if strategy.shouldExit(index) then
-                    exitPrice = series.getBar(index).getClosePrice.doubleValue()
-                    logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} has exited with price:$exitPrice at end_timestamp:${series.getBar(index).getEndTime.toLocalDateTime}")
+                  if strategy.shouldExit then
+                    exitPrice = quote.close
+                    logger.debug(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
+                      s"has exited with price:$exitPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                     break
             }
 
             var percentageGain = 0.0
             if entryPrice == 0.0 then
               tradesNotEnteredCounter += 1
-              logger.info("The trade was never entered")
+              logger.debug("The trade was never entered")
             else
               if exitPrice == 0.0 then
-                exitPrice = series.getLastBar.getClosePrice.doubleValue()
-                logger.info(s"The strategy is still active, exiting now the trade with price:$exitPrice")
+                exitPrice = quotes.last.close
+                logger.debug(s"The strategy is still active, exiting now the trade with price:$exitPrice")
 
               var profits = 0.0
               if signal.isLong then
@@ -78,36 +79,22 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
                 profits = entryPrice - exitPrice
 
               percentageGain = profits * 100 / entryPrice
-              logger.info(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} : " +
-                s"${BigDecimal(percentageGain).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}")
+              logger.debug(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} : " +
+                s"${BigDecimal(percentageGain).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
 
-            logger.info("------------------------------------------------------------------------------------------------------------------------------------------")
-            percentageGain
+            logger.debug("------------------------------------------------------------------------------------------------------------------------------------------")
+            strategy.applyLeverageToPercentageGain(percentageGain)
           })
           .reduce((acc, element) => acc + element)
           .runWith(Sink.last)
           .onComplete {
-            case Success(sum) => replyTo ! ResultOfBacktestingStrategyMessage(sum / (signals.length - tradesNotEnteredCounter))
+            case Success(sum) => replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter))
             case Failure(e) => logger.error("Exception received in BacktesterActor:" + e)
           }
 
 
         this
 
-  def createSeriesForSignal(signal: Signal): BarSeries =
-    val series: BarSeries = BaseBarSeriesBuilder().withNumTypeOf(DoubleNum.valueOf(_)).build
-    val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
-
-    quotes.foreach(quote => {
-      series.addBar(BaseBar.builder()
-        .closePrice(DoubleNum.valueOf(quote.close))
-        .highPrice(DoubleNum.valueOf(quote.high))
-        .openPrice(DoubleNum.valueOf(quote.open))
-        .lowPrice(DoubleNum.valueOf(quote.low))
-        .timePeriod(Duration.ofMinutes(1))
-        .endTime(ZonedDateTime.ofInstant(Instant.ofEpochSecond(quote.start_timestamp + 60), ZoneId.of("UTC")))
-        .build())
-    })
-
-    series
+  private def formatTimestamp(timestamp: Long): LocalDateTime =
+    LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.ofHours(8))
 }

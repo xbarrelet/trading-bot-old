@@ -20,27 +20,37 @@ object StrategiesMainActor {
 }
 
 class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+  val logger: Logger = LoggerFactory.getLogger("StrategiesMainActor")
+  implicit val timeout: Timeout = 300.seconds
+
   val strategiesFactory: StrategiesFactory.type = StrategiesFactory
   val backtestersSpawnerRef: ActorRef[Message] = context.spawn(BacktestersSpawnerActor(), "backtesters-spawner-actor")
-  implicit val timeout: Timeout = 300.seconds
-  val logger: Logger = LoggerFactory.getLogger("StrategiesMainActor")
+  var results: List[ResultOfBacktestingStrategyMessage] = List()
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
       case StartBacktestingMessage(strategyName: String) =>
         context.log.info("-----------------------------------------------------------------------------------------")
         context.log.info(s"Quotes cached for all signals, now starting to backtest the strategy:$strategyName")
+        context.log.info("-----------------------------------------------------------------------------------------")
+        context.log.info("")
 
         strategiesFactory.getStrategieVariantsName(strategyName)
           .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
+          .map(result => result.asInstanceOf[ResultOfBacktestingStrategyMessage])
+          .map(result => results = result :: results)
           .runWith(Sink.last)
           .onComplete {
             case Success(result) =>
-              val averagePercentageGains = result.asInstanceOf[ResultOfBacktestingStrategyMessage].averageProfitsInPercent
-              logger.info("")
-              logger.info(s"Strategy:$strategyName has an overall result of ${BigDecimal(averagePercentageGains).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}")
+              logger.info("The 5 best results are:")
 
-            case Failure(e) => println("Exception received in StrategiesMainActor:" + e)
+              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent).take(5)
+              for result <- results do
+                logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
+
+              logger.info("")
+              logger.info("Backtesting done, have a great day!")
+            case Failure(e) => logger.error("Exception received in StrategiesMainActor:" + e)
           }
 
         this

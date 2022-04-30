@@ -1,14 +1,15 @@
 package ch.xavier
 package strategy
 
+import signals.Signal
+
 import akka.NotUsed
 import akka.stream.scaladsl.Source
-import ch.xavier.signals.Signal
 import org.ta4j.core.BarSeries
 
 import scala.::
 import scala.collection.mutable.ListBuffer
-
+import ch.xavier.strategy.strats.{LeveragedSimpleStrategy, SimpleStrategy}
 
 object StrategiesFactory {
 
@@ -18,18 +19,21 @@ object StrategiesFactory {
     strategyName match {
       case "SimpleStrategy" =>
         strategiesList += "SimpleStrategy"
-//        for(barCount: Int <- 1 to 5; rsiThreshold: Int <- 20 until 40) {
-//          strategiesList += "RSIStrategy_with_barCount_" + barCount + "_and_rsiThreshold_" + rsiThreshold
-//        }
+      case "LeveragedSimpleStrategy" =>
+        for(leverage: Int <- 1 to 50) {
+          strategiesList += "LeveragedSimpleStrategy_with_leverage_" + leverage
+        }
     }
     Source(strategiesList.toList)
 
-  def getStrategyFromName(strategyName: String, series: BarSeries, signal: Signal): Strategy =
+  def getStrategyFromName(strategyName: String, signal: Signal): Strategy =
     val parameters: Array[String] = strategyName.split("_")
 
     if strategyName.equals("SimpleStrategy") then
-      SimpleStrategy(series, signal)
+      SimpleStrategy(signal)
+    else if strategyName.startsWith("LeveragedSimpleStrategy") then
+      LeveragedSimpleStrategy(signal, parameters(3).toInt)
     else
-      println("Strategy name not recognized")
-      SimpleStrategy(series, signal)
+      println("Strategy name not recognized, returning Simple Strategy")
+      SimpleStrategy(signal)
 }
