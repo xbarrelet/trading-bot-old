@@ -31,14 +31,19 @@ object QuotesRepository {
 
     val quotes: List[Quote] = getQuotesFromRepository(symbol, startTimestampInSeconds)
     if quotes.length > 1000 then
-      val quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds))
+      var quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds))
+
+      if cachedQuotes.contains(symbol) then
+        val currentQuotes = cachedQuotes(symbol)
+        quotesPerTimestamp = quotesPerTimestamp.++(currentQuotes)
+
       cachedQuotes = cachedQuotes + (symbol -> quotesPerTimestamp)
-      logger.info(s"Quotes already present for symbol:$symbol and timestamp:$startTimestampInSeconds, they're now in the cache")
+      logger.info(s"Quotes already present for symbol:$symbol and timestamp:$startTimestampInSeconds and are now cached")
       true
     else
       false
 
-  private def cacheQuotes(symbol: String, startTimestampInSeconds: Long): Unit =
+  def cacheQuotes(symbol: String, startTimestampInSeconds: Long): Unit =
     val quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds))
     cachedQuotes = cachedQuotes + (symbol -> quotesPerTimestamp)
 

@@ -23,8 +23,8 @@ object SignalsRepository {
   )
 
   private var cachedSignals: List[Signal] = List()
-
-
+  
+  //Executed the first time in Application
   def getSignals: List[Signal] =
     if cachedSignals.isEmpty then
       cachedSignals = cacheSignals
@@ -32,7 +32,7 @@ object SignalsRepository {
     cachedSignals
 
   private def cacheSignals: List[Signal] =
-    sql"select entry_price, first_target_price, stop_loss, symbol, timestamp from signals"
+    sql"select entry_price, first_target_price, is_long, stop_loss, symbol, timestamp from signals"
       .query[Signal]
       .to[List]
       .transact(transactor)

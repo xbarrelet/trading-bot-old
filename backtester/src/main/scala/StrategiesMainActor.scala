@@ -28,14 +28,17 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
     message match
       case StartBacktestingMessage(strategyName: String) =>
         context.log.info("-----------------------------------------------------------------------------------------")
-        context.log.info(s"Quotes cached for each signal, now starting to backtest the strategy:$strategyName")
+        context.log.info(s"Quotes cached for all signals, now starting to backtest the strategy:$strategyName")
 
         strategiesFactory.getStrategieVariantsName(strategyName)
           .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
           .runWith(Sink.last)
           .onComplete {
-            case Success(done) => println("All strategies have been backtested, log from StrategiesMainActor")
-            case Failure(e) => println("failure:" + e)
+            case Success(result) =>
+              val averagePercentageGains = result.asInstanceOf[ResultOfBacktestingStrategyMessage].averageProfitsInPercent
+              println(s"Strategy:$strategyName has an overall result of ${BigDecimal(averagePercentageGains).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}")
+
+            case Failure(e) => println("Exception received in StrategiesMainActor:" + e)
           }
 
         this

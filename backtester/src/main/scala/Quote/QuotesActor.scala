@@ -26,7 +26,7 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
   val quotesRepository: QuotesRepository.type = QuotesRepository
   implicit val timeout: Timeout = 30.seconds
 
-  val numberOfDaysOfQuotesToFetch = 2
+  val numberOfDaysOfQuotesToFetch = 14 
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
@@ -53,8 +53,10 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
             .map(message => quotesRepository.insertQuotes(message.quotes))
             .runWith(Sink.last)
             .onComplete {
-              case Success(done) => actorRef ! QuotesCachedMessage()
-              case Failure(e) => println("failure:" + e)
+              case Success(done) =>
+                quotesRepository.cacheQuotes(symbol, fromTimestamp)
+                actorRef ! QuotesCachedMessage()
+              case Failure(e) => println("Exception received in QuotesActor:" + e)
             }
         else
           actorRef ! QuotesCachedMessage()

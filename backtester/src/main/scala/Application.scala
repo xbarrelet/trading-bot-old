@@ -37,14 +37,14 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   val backtestedStrategy: String = "SimpleStrategy"
 
   Source(signalsRepository.getSignals)
-    .mapAsync(8)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
+    .mapAsync(1)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
     .runWith(Sink.last)
     .onComplete {
       case Success(done) =>
         quotesActorRef ! ShutdownMessage()
         backtesterRef ! StartBacktestingMessage(backtestedStrategy)
 
-      case Failure(e) => println("failure:" + e)
+      case Failure(e) => println("Exception received in Application:" + e)
     }
 
   override def onMessage(message: Message): Behavior[Message] =

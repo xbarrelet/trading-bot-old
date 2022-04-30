@@ -34,19 +34,6 @@ class BacktestersSpawnerActor(context: ActorContext[Message]) extends AbstractBe
           case Success(result: Message) => replyTo ! result
           case Failure(ex) => println(s"Problem encountered when backtesting strategy:$strategyName : ${ex.getMessage}")
         }
-
-//        Source(signals)
-//          .mapAsync(1)(signal => {
-//            val response: Future[Message] = ref ? (replyTo => BacktestStrategyWithSignalMessage(strategyName, signal, replyTo))
-//            response.asInstanceOf[Future[ResultOfBacktestingStrategyWithSignalMessage]]
-//          })
-//          .map(result => result.profitsInPercent)
-//          .reduce((acc, element) => acc + element)
-//          .runWith(Sink.last)
-//          .onComplete {
-//            case Success(sum) => replyTo ! ResultOfBacktestingStrategyMessage(sum / signals.length)
-//            case Failure(e) => println("failure:" + e)
-//          }
-
+        
         this
 }
