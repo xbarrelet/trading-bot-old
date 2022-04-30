@@ -2,7 +2,7 @@ package ch.xavier
 package strategy
 
 import Application.{executionContext, system}
-import Quote.{Quote, QuotesRepository}
+import quote.{Quote, QuotesRepository}
 import signals.{Signal, SignalsRepository}
 
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}

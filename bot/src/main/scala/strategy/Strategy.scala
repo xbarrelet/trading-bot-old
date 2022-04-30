@@ -14,14 +14,19 @@ trait Strategy() {
   
   val series: BarSeries = BaseBarSeriesBuilder().withNumTypeOf(DoubleNum.valueOf(_)).build
   def addQuote(quote: Quote): Unit =
-    series.addBar(BaseBar.builder()
-      .closePrice(DoubleNum.valueOf(quote.close))
-      .highPrice(DoubleNum.valueOf(quote.high))
-      .openPrice(DoubleNum.valueOf(quote.open))
-      .lowPrice(DoubleNum.valueOf(quote.low))
-      .timePeriod(Duration.ofMinutes(1))
-      .endTime(ZonedDateTime.ofInstant(Instant.ofEpochSecond(quote.start_timestamp + 60), ZoneId.of("UTC")))
-      .build())
+    try {
+      series.addBar(BaseBar.builder()
+        .closePrice(DoubleNum.valueOf(quote.close))
+        .highPrice(DoubleNum.valueOf(quote.high))
+        .openPrice(DoubleNum.valueOf(quote.open))
+        .lowPrice(DoubleNum.valueOf(quote.low))
+        .timePeriod(Duration.ofMinutes(1))
+        .endTime(ZonedDateTime.ofInstant(Instant.ofEpochSecond(quote.start_timestamp + 60), ZoneId.of("UTC")))
+        .build())
+    }
+    catch
+      case e: IllegalArgumentException => //In case we add the same quote twice
+
 
   val leverage: Int = 1
   def applyLeverageToPercentageGain(percentageGain: Double): Double = percentageGain * leverage

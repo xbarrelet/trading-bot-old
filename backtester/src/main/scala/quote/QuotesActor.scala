@@ -1,5 +1,5 @@
 package ch.xavier
-package Quote
+package quote
 
 import Application.{executionContext, system}
 

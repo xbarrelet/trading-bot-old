@@ -1,5 +1,5 @@
 package ch.xavier
-package Quote
+package quote
 
 import cats.effect.IO
 import doobie.Transactor

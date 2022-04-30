@@ -10,7 +10,8 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class SimpleStrategy(val signal: Signal) extends Strategy {
+class SimpleStrategyWithThreeTargets(val signal: Signal) extends Strategy {
+  //TODO: What if number 2 or 3 is empty?
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)

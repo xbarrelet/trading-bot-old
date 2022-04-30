@@ -1,8 +1,7 @@
 package ch.xavier
 
 import Application.{executionContext, system}
-import quote.QuotesActor
-import signals.{Signal, SignalsRepository}
+import signals.{Signal, SignalFollowerActor}
 
 import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
@@ -26,26 +25,11 @@ object Main {
 }
 
 class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  val signalsRepository: SignalsRepository.type = SignalsRepository
-  val backtesterRef: ActorRef[Message] = context.spawn(StrategiesMainActor(), "backtester-actor")
-  val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
-  implicit val timeout: Timeout = 300.seconds
-
-  context.log.info("Starting backtester for the trading bot, now caching the quotes of to backtest each signal")
+  context.log.info("Starting trading bot, waiting for signals to profit from")
   context.log.info("-----------------------------------------------------------------------------------------")
 
-  val backtestedStrategy: String = "TrailingLossSimpleStrategy"
+  val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
 
-  Source(signalsRepository.getSignals)
-    .mapAsync(1)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
-    .runWith(Sink.last)
-    .onComplete {
-      case Success(done) =>
-        quotesActorRef ! ShutdownMessage()
-        backtesterRef ! StartBacktestingMessage(backtestedStrategy)
-
-      case Failure(e) => println("Exception received in Application:" + e)
-    }
 
   override def onMessage(message: Message): Behavior[Message] =
     this

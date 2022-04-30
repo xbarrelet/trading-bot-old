@@ -1,7 +1,7 @@
 package ch.xavier
 
 import akka.actor.typed.ActorRef
-import ch.xavier.Quote.Quote
+import ch.xavier.quote.Quote
 import ch.xavier.signals.Signal
 
 
