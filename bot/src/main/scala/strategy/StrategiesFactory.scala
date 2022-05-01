@@ -22,5 +22,5 @@ object StrategiesFactory {
       SimpleStrategy(signal)
       
   def getCurrentStrategy(signal: Signal): Strategy =
-    SimpleStrategy(signal)
+    LeveragedSimpleStrategy(signal, 10)
 }

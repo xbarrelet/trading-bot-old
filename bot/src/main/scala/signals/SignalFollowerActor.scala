@@ -22,7 +22,6 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
   var quotesFetcherRef: ActorRef[Message] = null
   var tradingActorRef: ActorRef[Message] = null
   var strategy: Strategy = null
-  var symbol: String = ""
   var signal: Signal = null
 
   var hasStartedFollowingPrice = false
@@ -37,7 +36,6 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
         strategy = strategiesFactory.getCurrentStrategy(receivedSignal)
         quotesFetcherRef = fetcherRef
         tradingActorRef = tradingRef
-        symbol = receivedSignal.symbol
         signal = receivedSignal
 
         quotesFetcherRef ! FetchLastQuoteMessage(receivedSignal.symbol, context.self)
@@ -54,20 +52,21 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
 
           context.system.scheduler.scheduleWithFixedDelay(Duration.ofSeconds(secondsUntilNextQuote), Duration.ofMinutes(1),
             () => {
-              quotesFetcherRef ! FetchLastQuoteMessage(symbol, context.self)
+              quotesFetcherRef ! FetchLastQuoteMessage(signal.symbol, context.self)
             }, context.system.executionContext)
 
         else
           if !hasOpenedPosition then
             if strategy.shouldEnter then
-              context.log.info(s"Signal tells us we should open position for symbol:$symbol")
-              tradingActorRef ! OpenPositionMessage(symbol, signal.isLong, strategy.leverage)
+              context.log.info(s"Signal tells us we should open position for symbol:$signal.symbol")
+              tradingActorRef ! OpenPositionMessage(signal.symbol, signal.isLong, strategy.leverage)
               hasOpenedPosition = true
+              //TODO: Add expiration date
 
           else
             if strategy.shouldExit then
-              context.log.info(s"Signal tells us we should close position for symbol:$symbol")
-              tradingActorRef ! ClosePositionMessage(symbol)
+              context.log.info(s"Signal tells us we should close position for symbol:$signal.symbol")
+              tradingActorRef ! ClosePositionMessage(signal.symbol)
               Behaviors.stopped
 
         this
