@@ -4,8 +4,6 @@ import requests
 
 from pyrogram import Client, types
 
-from signals.SignalsClient import SignalsClient
-
 
 def instantiate_logging():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
