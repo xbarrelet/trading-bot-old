@@ -8,6 +8,7 @@ import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
+import ch.xavier.trading.TradingActor
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -28,7 +29,13 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   context.log.info("Starting trading bot, waiting for signals to profit from")
   context.log.info("-----------------------------------------------------------------------------------------")
 
-  val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
+//  val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
+
+  val tradingActorRef: ActorRef[Message] = context.spawn(TradingActor(), "trading-actor")
+  tradingActorRef ! OpenPositionMessage("BNB", true, 10)
+
+  Thread.sleep(5000)
+  tradingActorRef ! ClosePositionMessage("BNB")
 
 
   override def onMessage(message: Message): Behavior[Message] =

@@ -23,6 +23,7 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
   var tradingActorRef: ActorRef[Message] = null
   var strategy: Strategy = null
   var symbol: String = ""
+  var signal: Signal = null
 
   var hasStartedFollowingPrice = false
   var hasOpenedPosition = false
@@ -30,15 +31,16 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case FollowSignalMessage(signal: Signal, fetcherRef: ActorRef[Message], tradingRef: ActorRef[Message]) =>
-        context.log.info(s"Starting to follow signal:$signal")
+      case FollowSignalMessage(receivedSignal: Signal, fetcherRef: ActorRef[Message], tradingRef: ActorRef[Message]) =>
+        context.log.info(s"Starting to follow signal:$receivedSignal")
 
-        strategy = strategiesFactory.getCurrentStrategy(signal)
+        strategy = strategiesFactory.getCurrentStrategy(receivedSignal)
         quotesFetcherRef = fetcherRef
         tradingActorRef = tradingRef
-        symbol = signal.symbol
+        symbol = receivedSignal.symbol
+        signal = receivedSignal
 
-        quotesFetcherRef ! FetchLastQuoteMessage(signal.symbol, context.self)
+        quotesFetcherRef ! FetchLastQuoteMessage(receivedSignal.symbol, context.self)
         this
 
       case QuoteFetchedMessage(quote: Quote) =>
@@ -59,7 +61,7 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
           if !hasOpenedPosition then
             if strategy.shouldEnter then
               context.log.info(s"Signal tells us we should open position for symbol:$symbol")
-              tradingActorRef ! OpenPositionMessage(symbol, strategy.leverage)
+              tradingActorRef ! OpenPositionMessage(symbol, signal.isLong, strategy.leverage)
               hasOpenedPosition = true
 
           else
