@@ -42,7 +42,6 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
         this
 
       case QuoteFetchedMessage(quote: Quote) =>
-        context.log.info(s"Received quote:$quote")
         strategy.addQuote(quote)
 
         if !hasStartedFollowingPrice then

@@ -10,8 +10,7 @@ class SignalsClient:
         async with Client("Mr X", self.api_id, self.api_hash) as async_app:
             filtered_messages: list[str] = []
 
-            async for message in async_app.search_messages(chat_id, query=search_term, limit=2):
-                print(message)
-                filtered_messages.append(message.text)
+            async for message in async_app.search_messages(chat_id, query=search_term, limit=10000):
+                filtered_messages.append(message)
 
             return filtered_messages
