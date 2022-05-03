@@ -17,7 +17,7 @@ final case class FetchQuotesMessage(symbol: String, fromTimestamp: Long, actorRe
 final case class QuotesReadyMessage(quotes: List[Quote]) extends Message
 
 //BACKTESTING
-final case class StartBacktestingMessage(strategyName: String) extends Message
+final case class StartBacktestingMessage(strategyNames: List[String]) extends Message
 
 final case class BacktestStrategyMessage(strategyName: String, replyTo: ActorRef[Message]) extends Message
 final case class ResultOfBacktestingStrategyMessage(strategyName: String, averageProfitsInPercent: Double) extends Message

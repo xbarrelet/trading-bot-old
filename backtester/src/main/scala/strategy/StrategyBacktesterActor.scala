@@ -40,10 +40,13 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
             val strategy: Strategy = strategiesFactory.getStrategyFromName(strategyName, signal)
             val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
 
+            if quotes.isEmpty then
+              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, 0)
+
             var hasEntered = false
             var entryPrice = 0.0
             var exitPrice = 0.0
-            logger.debug(s"Now testing strategy:$strategyName with signal with symbol:${signal.symbol}, entryPrice:${signal.entryPrice}, " +
+            logger.debug(s"Now testing strategy:$strategyName with signal with ${quotes.length} quotes and symbol:${signal.symbol}, entryPrice:${signal.entryPrice}, " +
               s"stopLoss:${signal.stopLoss} and firstTargetPrice:${signal.firstTargetPrice}")
 
             breakable {

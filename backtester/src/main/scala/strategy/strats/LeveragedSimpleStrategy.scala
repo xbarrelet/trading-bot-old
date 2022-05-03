@@ -11,6 +11,7 @@ import org.ta4j.core.{BarSeries, Rule}
 
 
 class LeveragedSimpleStrategy(val signal: Signal, override val leverage: Int) extends Strategy {
+  //TODO: I should limit the loss to 50% max, no?
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   //ENTRY RULE

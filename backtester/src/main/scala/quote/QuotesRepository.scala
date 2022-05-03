@@ -22,6 +22,11 @@ object QuotesRepository {
 
 
   def getQuotes(symbol: String, startTimestampInSeconds: Long): List[Quote] =
+    if !cachedQuotes.contains(symbol) then
+      return List()
+    if !cachedQuotes(symbol).contains(startTimestampInSeconds) then
+      return List()
+
     cachedQuotes(symbol)(startTimestampInSeconds)
 
   def areQuotesCached(symbol: String, startTimestampInSeconds: Long): Boolean =

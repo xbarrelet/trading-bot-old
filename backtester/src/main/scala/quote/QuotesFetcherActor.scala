@@ -7,6 +7,7 @@ import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
 import akka.http.scaladsl.{Http, HttpExt}
+import org.slf4j.{Logger, LoggerFactory}
 import spray.json.*
 import spray.json.DefaultJsonProtocol.*
 
@@ -21,8 +22,9 @@ object QuotesFetcherActor {
 }
 
 class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+  val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
   val http: HttpExt = Http()
-  val urlTemplate: String = "https://api.bybit.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
+  val urlTemplate: String = "https://api.bytick.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
 
   override def onMessage(message: Message): Behavior[Message] =
     message match {
@@ -32,29 +34,32 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
         val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri =
           urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", fromTimestamp.toString)))
 
-        response.map {
-          case response@HttpResponse(StatusCodes.OK, _, _, _) =>
-            response.entity.toStrict(30.seconds)
-              .map(entity => entity.getData().utf8String)
-              .map(body => body.parseJson.convertTo[JsValue].asJsObject)
-              .map(jsonBody => jsonBody.getFields("result").head)
-              .map(_.convertTo[Seq[JsValue]])
-              .onComplete {
-                case Success(list) =>
-                  for quote <- list do
-                    quotes += Quote(
-                      quote.asJsObject.getFields("close").head.toString.toDouble,
-                      quote.asJsObject.getFields("high").head.toString.toDouble,
-                      quote.asJsObject.getFields("low").head.toString.toDouble,
-                      quote.asJsObject.getFields("open").head.toString.toDouble,
-                      quote.asJsObject.getFields("open_time").head.toString.toLong,
-                      symbol
-                    )
+          response.map {
+            case response@HttpResponse(StatusCodes.OK, _, _, _) =>
+              response.entity.toStrict(10.seconds)
+                .map(entity => entity.getData().utf8String)
+                .map(body => body.parseJson.convertTo[JsValue].asJsObject)
+                .map(jsonBody => jsonBody.getFields("result").head)
+                .map(_.convertTo[Seq[JsValue]])
+                .onComplete {
+                  case Success(list) =>
+                    for quote <- list do
+                      quotes += Quote(
+                        quote.asJsObject.getFields("close").head.toString.toDouble,
+                        quote.asJsObject.getFields("high").head.toString.toDouble,
+                        quote.asJsObject.getFields("low").head.toString.toDouble,
+                        quote.asJsObject.getFields("open").head.toString.toDouble,
+                        quote.asJsObject.getFields("open_time").head.toString.toLong,
+                        symbol
+                      )
 
-                  actorRef ! QuotesReadyMessage(quotes.toList)
-              }
-          case _ => println(s"Problem encountered when fetching the quotes for $symbol and timestamp $fromTimestamp")
-        }
+                    actorRef ! QuotesReadyMessage(quotes.toList)
+                  case Failure(exception) =>
+                    logger.error(s"Problem when fetching the quotes for symbol:$symbol and timestamp:$fromTimestamp:" + exception.getMessage)
+                    actorRef ! QuotesReadyMessage(List())
+                }
+            case _ => logger.error(s"Problem encountered when fetching the quotes for $symbol and timestamp $fromTimestamp")
+          }
 
         this
     }

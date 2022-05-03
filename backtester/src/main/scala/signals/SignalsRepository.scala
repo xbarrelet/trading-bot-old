@@ -32,7 +32,7 @@ object SignalsRepository {
     cachedSignals
 
   private def cacheSignals: List[Signal] =
-    sql"select entry_price, first_target_price, entry_price < first_target_price, stop_loss, symbol, timestamp from signals"
+    sql"select entry_price, first_target_price, second_target_price, third_target_price, entry_price < first_target_price, stop_loss, symbol, timestamp from signals_AC order by timestamp desc"
       .query[Signal]
       .to[List]
       .transact(transactor)

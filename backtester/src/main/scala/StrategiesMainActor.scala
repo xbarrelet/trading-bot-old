@@ -6,7 +6,7 @@ import strategy.{BacktestersSpawnerActor, StrategiesFactory}
 import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -29,15 +29,16 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case StartBacktestingMessage(strategyName: String) =>
+      case StartBacktestingMessage(strategyNames: List[String]) =>
         context.log.info("-----------------------------------------------------------------------------------------")
-        context.log.info(s"Quotes cached for all signals, now starting to backtest the strategy:$strategyName")
+        context.log.info(s"Quotes cached for all signals, now starting to backtest the strategies:$strategyNames")
         context.log.info("-----------------------------------------------------------------------------------------")
         context.log.info("")
 
-        strategiesFactory.getStrategieVariantsName(strategyName)
-          .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
+        Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
+          .mapAsync(16)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
           .map(result => result.asInstanceOf[ResultOfBacktestingStrategyMessage])
+          .filter(_.averageProfitsInPercent != 0.0)
           .map(result => results = result :: results)
           .runWith(Sink.last)
           .onComplete {

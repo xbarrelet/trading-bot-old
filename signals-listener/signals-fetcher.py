@@ -36,4 +36,5 @@ if __name__ == '__main__':
                 elif 'target' in line.lower() and does_contain_number(line):
                     signal["firstTargetPrice"] = float(re.findall(r'\d+', line)[0])
 
-            repository.insert_signal(signal)
+            if signal['symbol'] not in ('ETN', 'SHIB', 'QST', 'QSP', 'LBLOCK', 'BTN', 'OXY', 'BNT', 'UMA'):
+                repository.insert_signal(signal)

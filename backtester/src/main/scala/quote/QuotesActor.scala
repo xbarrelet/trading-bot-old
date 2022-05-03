@@ -26,7 +26,9 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
   val quotesRepository: QuotesRepository.type = QuotesRepository
   implicit val timeout: Timeout = 30.seconds
 
-  val numberOfDaysOfQuotesToFetch = 14 
+  val numberOfDaysOfQuotesToFetch = 30
+
+  YOU ONLY GET 43383 quotes per signal which is one day of quotes (43380), check why not 30 days as planned
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
@@ -36,7 +38,7 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
           context.log.info(s"Fetching quotes for symbol:$symbol and timestamp:$fromTimestamp")
           val fetcherRef: ActorRef[Message] = context.spawn(QuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
 
-          var startTimestamp: Long = fromTimestamp - 8640
+          var startTimestamp: Long = fromTimestamp
           val endTimestamp: Long = fromTimestamp + numberOfDaysOfQuotesToFetch * 86400
           val startTimestamps: ListBuffer[Long] = ListBuffer()
 
