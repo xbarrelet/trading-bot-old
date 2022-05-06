@@ -12,9 +12,11 @@ import akka.util.Timeout
 import org.postgresql.util.PSQLException
 
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.Future
+import scala.concurrent.{Future, blocking}
 import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success}
+import java.text.SimpleDateFormat
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 object QuotesActor {
   def apply(): Behavior[Message] =
@@ -28,25 +30,23 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
 
   val numberOfDaysOfQuotesToFetch = 30
 
-  YOU ONLY GET 43383 quotes per signal which is one day of quotes (43380), check why not 30 days as planned
-
   override def onMessage(message: Message): Behavior[Message] =
     message match
       case CacheQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
 
-        if !quotesRepository.areQuotesCached(symbol, fromTimestamp) then
-          context.log.info(s"Fetching quotes for symbol:$symbol and timestamp:$fromTimestamp")
+        var startTimestamp: Long = fromTimestamp
+        val endTimestamp: Long = fromTimestamp + numberOfDaysOfQuotesToFetch * 86400
+        val startTimestamps: ListBuffer[Long] = ListBuffer()
+
+        while (startTimestamp < endTimestamp) {
+          startTimestamps += startTimestamp
+          startTimestamp += 11940L
+        }
+
+        if !quotesRepository.areQuotesAvailable(symbol, startTimestamps.head, startTimestamps.last) then
+          context.log.info(s"Fetching quotes for symbol:$symbol from ${formatTimestamp(fromTimestamp)} to ${formatTimestamp(startTimestamps.last)}")
           val fetcherRef: ActorRef[Message] = context.spawn(QuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
-
-          var startTimestamp: Long = fromTimestamp
-          val endTimestamp: Long = fromTimestamp + numberOfDaysOfQuotesToFetch * 86400
-          val startTimestamps: ListBuffer[Long] = ListBuffer()
-
-          while (startTimestamp < endTimestamp) {
-            startTimestamps += startTimestamp
-            startTimestamp += 11940L
-          }
-
+          
           Source(startTimestamps.toList)
             .mapAsync(1)(startTimestamp => {
               val response: Future[Message] = fetcherRef ? (replyTo => FetchQuotesMessage(symbol, startTimestamp, replyTo))
@@ -56,7 +56,7 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
             .runWith(Sink.last)
             .onComplete {
               case Success(done) =>
-                quotesRepository.cacheQuotes(symbol, fromTimestamp)
+                quotesRepository.cacheQuotes(symbol, fromTimestamp, startTimestamps.last)
                 actorRef ! QuotesCachedMessage()
               case Failure(e) => println("Exception received in QuotesActor:" + e)
             }
@@ -66,4 +66,8 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
 
       case ShutdownMessage() =>
         Behaviors.stopped
+
+
+  private def formatTimestamp(timestamp: Long): LocalDateTime =
+    LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.ofHours(8))
 }

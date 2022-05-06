@@ -9,7 +9,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
-
+//TODO: Do one with a switch of strat after first target?
 class SimpleStrategyWithThreeTargets(val signal: Signal) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
@@ -36,12 +36,11 @@ class SimpleStrategyWithThreeTargets(val signal: Signal) extends Strategy {
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice then
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
-    else
+      else
       if quote.close < signal.thirdTargetPrice then
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
       else if quote.close < signal.secondTargetPrice then
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice then
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
-    
 }

@@ -19,17 +19,33 @@ class LeveragedTrailingLossStrategy(val signal: Signal, percentage: Double, over
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
 
-  val firstTargetReachedRule: Rule = if signal.isLong then CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
-  else CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+  var liquidityPriceReachedRule: Rule = null
 
   var peakPrice: Double = signal.entryPrice
 
 
   def shouldEnter: Boolean =
-    entryPriceReachedRule.isSatisfied(series.getEndIndex)
+    if entryPriceReachedRule.isSatisfied(series.getEndIndex) then
+      val entryPrice: Double = closePriceIndicator.getValue(series.getEndIndex).doubleValue()
+
+      if leverage != 1 then
+        val initialMargin: Double = 1.0 / leverage
+        var liquiditationPrice: Double = 0
+
+        if signal.isLong then
+          liquiditationPrice = signal.stopLoss.max(entryPrice * (1 - initialMargin))
+        else
+          liquiditationPrice = signal.stopLoss.min(entryPrice * (1 + initialMargin))
+
+        liquidityPriceReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
+        else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
+
+      true
+    else
+      false
 
   def shouldExit: Boolean =
-    stopLossReachedRule.isSatisfied(series.getEndIndex)
+    stopLossReachedRule.isSatisfied(series.getEndIndex) || (liquidityPriceReachedRule != null && liquidityPriceReachedRule.isSatisfied(series.getEndIndex))
 
   override def addQuote(quote: Quote): Unit =
     super.addQuote(quote)
@@ -37,9 +53,9 @@ class LeveragedTrailingLossStrategy(val signal: Signal, percentage: Double, over
     if signal.isLong then
       if quote.close > peakPrice then
         peakPrice = quote.close
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (((100.0 - percentage) * leverage) * peakPrice) / 100.0 )
+        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - percentage) * peakPrice) / 100.0)
     else
       if quote.close < peakPrice then
         peakPrice = quote.close
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (((100.0 + percentage) * leverage) * peakPrice) / 100.0 )
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + percentage) * peakPrice) / 100.0)
 }
