@@ -36,7 +36,7 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
         context.log.info("")
 
         Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
-          .mapAsync(16)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
+          .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
           .map(result => result.asInstanceOf[ResultOfBacktestingStrategyMessage])
           .filter(_.averageProfitsInPercent != 0.0)
           .map(result => results = result :: results)
@@ -45,9 +45,9 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
             case Success(result) =>
               logger.info("The 5 best results are:")
 
-              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent).take(5)
+              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
               for result <- results do
-                logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
+                logger.info(s"Strategy:${result.strategyName} with a gain of ${format_result_number(result.averageProfitsInPercent)}%")
 
               logger.info("")
               logger.info("Backtesting done, have a great day!")
@@ -55,4 +55,7 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
           }
 
         this
+
+  def format_result_number(gain: Double): String =
+    BigDecimal(gain).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble.toString
 }

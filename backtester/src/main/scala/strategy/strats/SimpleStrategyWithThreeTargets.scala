@@ -31,14 +31,14 @@ class SimpleStrategyWithThreeTargets(val signal: Signal) extends Strategy {
     
     if signal.isLong then
       if quote.close > signal.thirdTargetPrice then
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 99999999)
       else if quote.close > signal.secondTargetPrice then
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice then
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
-      else
+    else
       if quote.close < signal.thirdTargetPrice then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 99999999)
       else if quote.close < signal.secondTargetPrice then
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice then

@@ -2,7 +2,7 @@ package ch.xavier
 
 import Application.{executionContext, system}
 import quote.QuotesFetcherActor
-import signals.{FollowersSpawnerActor, Signal, SignalFollowerActor, SignalsRepository}
+import signals.{FollowersSpawnerActor, Signal, SignalFollowerActor}
 import trading.TradingActor
 
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
@@ -20,7 +20,6 @@ object RestActor {
 }
 
 class RestActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  val signalsRepository: SignalsRepository.type = SignalsRepository
   val followersSpawnerRef: ActorRef[Message] = context.spawn(FollowersSpawnerActor(), s"followers-spawner-actor")
 
   val route: Route =
@@ -37,12 +36,13 @@ class RestActor(context: ActorContext[Message]) extends AbstractBehavior[Message
             val signal: Signal = Signal(
               jsonSignal.getFields("entryPrice").head.toString.toDouble,
               jsonSignal.getFields("firstTargetPrice").head.toString.toDouble,
+              jsonSignal.getFields("secondTargetPrice").head.toString.toDouble,
+              jsonSignal.getFields("thirdTargetPrice").head.toString.toDouble,
               jsonSignal.getFields("isLong").head.toString.toBoolean,
               jsonSignal.getFields("stopLoss").head.toString.toDouble,
               jsonSignal.getFields("symbol").head.toString.replace("\"", "")
             )
 
-//            signalsRepository.insertSignal(signal)
             followersSpawnerRef ! ProcessSignalMessage(signal)
 
             complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Signal received"))

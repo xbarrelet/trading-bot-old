@@ -10,7 +10,8 @@ import org.ta4j.core.BarSeries
 import scala.::
 import scala.collection.mutable.ListBuffer
 import ch.xavier.strategy.strats.{LeveragedSimpleStrategy, SimpleStrategy, SimpleStrategyWithThreeTargets,
-  TrailingLossSimpleStrategy, LeveragedTrailingLossStrategy}
+  TrailingLossSimpleStrategy, LeveragedTrailingLossStrategy, LeveragedSimpleLimitedLossStrategy,
+  LeveragedSimpleStrategyWithThreeTargets}
 
 object StrategiesFactory {
 
@@ -26,14 +27,21 @@ object StrategiesFactory {
     val strategiesList: ListBuffer[String] = ListBuffer()
 
     strategyName match {
+      case "TEST" =>
+        strategiesList += "LeveragedSimpleStrategy_with_leverage_20"
+        strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_20"
       case "SimpleStrategy" =>
         strategiesList += "SimpleStrategy"
       case "SimpleStrategyWithThreeTargets" =>
         strategiesList += "SimpleStrategyWithThreeTargets"
-        
+
       case "LeveragedSimpleStrategy" =>
         for (leverage: Int <- 1 to 50) {
           strategiesList += "LeveragedSimpleStrategy_with_leverage_" + leverage
+        }
+      case "LeveragedSimpleLimitedLossStrategy" =>
+        for (leverage: Int <- 1 to 50; lossPercentage: Int <- 0 to 75) {
+          strategiesList += "LeveragedSimpleLimitedLossStrategy_with_leverage_" + leverage + "_and_lossPercentage_" + lossPercentage
         }
       case "LeveragedSimpleStrategyWithThreeTargets" =>
         for (leverage: Int <- 1 to 50) {
@@ -41,7 +49,7 @@ object StrategiesFactory {
         }
         
       case "TrailingLossSimpleStrategy" =>
-        for (percentage: Int <- 0 to 30) { //apparently best between 15-20 but with what products?
+        for (percentage: Int <- 0 to 400) { //apparently best between 15-20 but with what products?
           strategiesList += "TrailingLossSimpleStrategy_with_percentage_" + percentage
         }
       case "LeveragedTrailingLossStrategy" =>
@@ -59,10 +67,12 @@ object StrategiesFactory {
     else if strategyName.equals("SimpleStrategyWithThreeTargets") then
       SimpleStrategyWithThreeTargets(signal)
 
-    else if strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets") then
+    else if strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets_") then
+      LeveragedSimpleStrategyWithThreeTargets(signal, parameters(3).toInt)
+    else if strategyName.startsWith("LeveragedSimpleStrategy_") then
       LeveragedSimpleStrategy(signal, parameters(3).toInt)
-    else if strategyName.startsWith("LeveragedSimpleStrategy") then
-      LeveragedSimpleStrategy(signal, parameters(3).toInt)
+    else if strategyName.startsWith("LeveragedSimpleLimitedLossStrategy_") then
+      LeveragedSimpleLimitedLossStrategy(signal, parameters(3).toInt, parameters(6).toInt)
 
     else if strategyName.startsWith("TrailingLossSimpleStrategy") then
       TrailingLossSimpleStrategy(signal, parameters(3).toInt)

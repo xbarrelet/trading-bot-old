@@ -10,8 +10,7 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSimpleStrategy(val signal: Signal, override val leverage: Int) extends Strategy {
-  //TODO: I should limit the loss to 50% max, no?
+class LeveragedSimpleLimitedLossStrategy(val signal: Signal, override val leverage: Int, lossPercentage: Int) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   //ENTRY RULE
@@ -19,7 +18,7 @@ class LeveragedSimpleStrategy(val signal: Signal, override val leverage: Int) ex
   else UnderIndicatorRule(closePriceIndicator, signal.entryPrice)
 
   //EXIT RULES
-  val firstTargetReachedRule: Rule = if signal.isLong then CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+  val firstTargetReachedRule: Rule = if signal.isLong then CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
   else CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
 
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
@@ -36,15 +35,16 @@ class LeveragedSimpleStrategy(val signal: Signal, override val leverage: Int) ex
 
         if signal.isLong then
           liquiditationPrice = signal.stopLoss.max(entryPrice * (1 - initialMargin))
+          val acceptedLossInterval = (entryPrice - liquiditationPrice) * (lossPercentage / 100)
+          stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, entryPrice - acceptedLossInterval)
         else
           liquiditationPrice = signal.stopLoss.min(entryPrice * (1 + initialMargin))
-
-        stopLossReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
-        else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
-
+          val acceptedLossInterval = (liquiditationPrice - entryPrice) * (lossPercentage / 100)
+          stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, entryPrice + acceptedLossInterval)
       true
     else
       false
 
-  def shouldExit: Boolean = firstTargetReachedRule.isSatisfied(series.getEndIndex) || stopLossReachedRule.isSatisfied(series.getEndIndex)
+  def shouldExit: Boolean =
+    firstTargetReachedRule.isSatisfied(series.getEndIndex) || stopLossReachedRule.isSatisfied(series.getEndIndex)
 }

@@ -32,15 +32,18 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   implicit val timeout: Timeout = 300.seconds
 
   context.log.info("Starting backtester for the trading bot, now caching the quotes of to backtest each signal")
-  context.log.info("-----------------------------------------------------------------------------------------")
+  context.log.info("--------------------------------------------------------------------------------------------")
 
 //  val backtestedStrategy: List[String] = List("SimpleStrategy", "SimpleStrategyWithThreeTargets",
 //  "LeveragedSimpleStrategy", "LeveragedSimpleStrategyWithThreeTargets",
 //  "TrailingLossSimpleStrategy", "LeveragedTrailingLossStrategy")
-  val backtestedStrategy: List[String] = List("SimpleStrategy")
+
+  val backtestedStrategy: List[String] = List("LeveragedSimpleStrategy", "LeveragedSimpleStrategyWithThreeTargets")
 
   Source(signalsRepository.getSignals)
-    .mapAsync(1)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
+//    .filter(signal => signal.symbol == "BNB" && signal.timestamp == 1647061200)
+//    .filter(signal => signal.timestamp > 1646109042)
+    .mapAsync(4)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
     .runWith(Sink.last)
     .onComplete {
       case Success(done) =>

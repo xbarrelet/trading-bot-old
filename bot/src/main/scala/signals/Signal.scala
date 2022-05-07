@@ -9,6 +9,8 @@ import java.time.LocalDateTime
 final case class Signal(
                          entryPrice: Double,
                          firstTargetPrice: Double,
+                         secondTargetPrice: Double,
+                         thirdTargetPrice: Double,
                          isLong: Boolean,
                          stopLoss: Double,
                          symbol: String

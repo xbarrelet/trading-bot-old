@@ -11,8 +11,6 @@ import org.ta4j.core.{BarSeries, Rule}
 
 
 class TrailingLossSimpleStrategy(val signal: Signal, percentage: Int) extends Strategy {
-  // at the end you'll get a mix of trailing loss + liquidation price + stoploss
-  //TODO: Make one that starts the trailing loss after hitting the second target
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -39,9 +37,9 @@ class TrailingLossSimpleStrategy(val signal: Signal, percentage: Int) extends St
     if signal.isLong then
       if quote.close > peakPrice then
         peakPrice = quote.close
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - percentage) * peakPrice) / 100.0 )
+        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - (percentage/10)) * peakPrice) / 100.0 )
     else
       if quote.close < peakPrice then
         peakPrice = quote.close
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + percentage) * peakPrice) / 100.0 )
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + (percentage/10)) * peakPrice) / 100.0 )
 }

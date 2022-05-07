@@ -11,7 +11,6 @@ import org.ta4j.core.{BarSeries, Rule}
 
 
 class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val leverage: Int) extends Strategy {
-  //TODO: I should limit the loss to 50% max, no?
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -43,19 +42,20 @@ class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val l
 
   def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex)
 
+
   override def addQuote(quote: Quote): Unit = 
     super.addQuote(quote)
 
     if signal.isLong then
       if quote.close > signal.thirdTargetPrice then
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
       else if quote.close > signal.secondTargetPrice then
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice then
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
     else
       if quote.close < signal.thirdTargetPrice then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
       else if quote.close < signal.secondTargetPrice then
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice then

@@ -36,6 +36,8 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
         var tradesNotEnteredCounter = 0
 
         Source(signals)
+//          .filter(signal => signal.symbol == "BNB" && signal.timestamp == 1647061200)
+//          .filter(signal => signal.timestamp > 1646109042) //March
           .map(signal => {
             val strategy: Strategy = strategiesFactory.getStrategyFromName(strategyName, signal)
             val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
