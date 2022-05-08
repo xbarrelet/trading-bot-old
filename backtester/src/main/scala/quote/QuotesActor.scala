@@ -28,7 +28,7 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
   val quotesRepository: QuotesRepository.type = QuotesRepository
   implicit val timeout: Timeout = 30.seconds
 
-  val numberOfDaysOfQuotesToFetch = 14
+  val numberOfDaysOfQuotesToFetch = 30
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
@@ -45,7 +45,7 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
 
         if !quotesRepository.areQuotesAvailable(symbol, startTimestamps.head, startTimestamps.last) then
           context.log.info(s"Fetching quotes for symbol:$symbol from ${formatTimestamp(fromTimestamp)} to ${formatTimestamp(startTimestamps.last)}")
-          val fetcherRef: ActorRef[Message] = context.spawn(QuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
+          val fetcherRef: ActorRef[Message] = context.spawn(BinanceQuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
           
           Source(startTimestamps.toList)
             .mapAsync(1)(startTimestamp => {
@@ -58,10 +58,14 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
               case Success(done) =>
                 quotesRepository.cacheQuotes(symbol, fromTimestamp, startTimestamps.last)
                 actorRef ! QuotesCachedMessage()
-              case Failure(e) => println("Exception received in QuotesActor:" + e)
+              case Failure(e) =>
+                println("Exception received in QuotesActor:" + e)
+                actorRef ! QuotesCachedMessage()
             }
         else
+          context.log.debug(s"Quotes already present for symbol:$symbol and time:${formatTimestamp(fromTimestamp)}")
           actorRef ! QuotesCachedMessage()
+
         this
 
       case ShutdownMessage() =>

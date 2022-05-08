@@ -32,18 +32,15 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
   override def onMessage(message: Message): Behavior[Message] =
     message match
       case BacktestStrategyMessage(strategyName: String, replyTo: ActorRef[Message]) =>
-        val signals: List[Signal] = signalsRepository.getSignals
         var tradesNotEnteredCounter = 0
 
+        val signals: List[Signal] =
+          signalsRepository.getSignals
+
         Source(signals)
-//          .filter(signal => signal.symbol == "BNB" && signal.timestamp == 1647061200)
-//          .filter(signal => signal.timestamp > 1646109042) //March
           .map(signal => {
             val strategy: Strategy = strategiesFactory.getStrategyFromName(strategyName, signal)
             val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
-
-            if quotes.isEmpty then
-              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, 0)
 
             var hasEntered = false
             var entryPrice = 0.0
@@ -71,11 +68,11 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
             var percentageGain = 0.0
             if entryPrice == 0.0 then
               tradesNotEnteredCounter += 1
-              logger.debug("The trade was never entered")
+              logger.info("The trade was never entered")
             else
               if exitPrice == 0.0 then
                 exitPrice = quotes.last.close
-                logger.debug(s"The strategy is still active, exiting now the trade with price:$exitPrice")
+                logger.info(s"The strategy is still active, exiting now the trade with price:$exitPrice")
 
               var profits = 0.0
               if signal.isLong then
@@ -93,7 +90,8 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
           .reduce((acc, element) => acc + element)
           .runWith(Sink.last)
           .onComplete {
-            case Success(sum) => replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter))
+            case Success(sum) =>
+              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter))
             case Failure(e) => logger.error("Exception received in BacktesterActor:" + e)
           }
 

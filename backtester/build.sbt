@@ -17,6 +17,7 @@ lazy val root = (project in file("."))
       "org.tpolecat" %% "doobie-core"      % doobieVersion,
       "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
       "ch.qos.logback" % "logback-classic" % "1.2.11",
-      "org.ta4j" % "ta4j-core" % "0.14"
+      "org.ta4j" % "ta4j-core" % "0.14",
+      "org.scalatest" %% "scalatest" % "3.2.12" % "test"
     )
   )

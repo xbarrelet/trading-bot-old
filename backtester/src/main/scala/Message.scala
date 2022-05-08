@@ -14,7 +14,7 @@ final case class QuotesCachedMessage() extends Message
 final case class ShutdownMessage() extends Message
 
 final case class FetchQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) extends Message
-final case class QuotesReadyMessage(quotes: List[Quote]) extends Message
+final case class QuotesReadyMessage(quotes: Set[Quote]) extends Message
 
 //BACKTESTING
 final case class StartBacktestingMessage(strategyNames: List[String]) extends Message

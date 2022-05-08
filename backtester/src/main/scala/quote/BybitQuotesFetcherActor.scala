@@ -16,12 +16,12 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success, Try}
 
-object QuotesFetcherActor {
+object BybitQuotesFetcherActor {
   def apply(): Behavior[Message] =
-    Behaviors.setup(context => new QuotesFetcherActor(context))
+    Behaviors.setup(context => new BybitQuotesFetcherActor(context))
 }
 
-class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+class BybitQuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
   val http: HttpExt = Http()
   val urlTemplate: String = "https://api.bytick.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
@@ -29,7 +29,11 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
   override def onMessage(message: Message): Behavior[Message] =
     message match {
       case FetchQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
-        val quotes: ListBuffer[Quote] = ListBuffer()
+
+//        if fromTimestamp > (System.currentTimeMillis / 1000) then
+//          actorRef ! QuotesReadyMessage(List())
+
+        var quotes: Set[Quote] = Set()
 
         val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri =
           urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", fromTimestamp.toString)))
@@ -44,7 +48,7 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
                 .onComplete {
                   case Success(list) =>
                     for quote <- list do
-                      quotes += Quote(
+                      quotes = quotes + Quote(
                         quote.asJsObject.getFields("close").head.toString.toDouble,
                         quote.asJsObject.getFields("high").head.toString.toDouble,
                         quote.asJsObject.getFields("low").head.toString.toDouble,
@@ -53,10 +57,10 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
                         symbol
                       )
 
-                    actorRef ! QuotesReadyMessage(quotes.toList)
+                    actorRef ! QuotesReadyMessage(quotes)
                   case Failure(exception) =>
                     logger.error(s"Problem when fetching the quotes for symbol:$symbol and timestamp:$fromTimestamp:" + exception.getMessage)
-                    actorRef ! QuotesReadyMessage(List())
+                    actorRef ! QuotesReadyMessage(Set())
                 }
             case _ => logger.error(s"Problem encountered when fetching the quotes for $symbol and timestamp $fromTimestamp")
           }

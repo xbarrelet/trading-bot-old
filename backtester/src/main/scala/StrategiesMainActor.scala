@@ -37,7 +37,7 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
 
         Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
           .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
-          .map(result => result.asInstanceOf[ResultOfBacktestingStrategyMessage])
+          .map(_.asInstanceOf[ResultOfBacktestingStrategyMessage])
           .filter(_.averageProfitsInPercent != 0.0)
           .map(result => results = result :: results)
           .runWith(Sink.last)
@@ -47,7 +47,7 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
 
               results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
               for result <- results do
-                logger.info(s"Strategy:${result.strategyName} with a gain of ${format_result_number(result.averageProfitsInPercent)}%")
+                logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
 
               logger.info("")
               logger.info("Backtesting done, have a great day!")

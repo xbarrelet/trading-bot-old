@@ -6,6 +6,7 @@ import doobie.Transactor
 import cats.effect.unsafe.implicits.global
 import doobie.syntax.string.toSqlInterpolator
 import doobie.syntax.connectionio.toConnectionIOOps
+import doobie.util.update.Update
 import org.postgresql.util.PSQLException
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -19,8 +20,6 @@ object QuotesRepository {
     "root",
     "toor"
   )
-  private val tableName: String = "quotes_1_month"
-
   private var cachedQuotes: Map[String, Map[Long, List[Quote]]] = Map()
 
 
@@ -53,13 +52,13 @@ object QuotesRepository {
       false
 
   private def areQuotesPresent(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long): Boolean =
-    val first_timestamp_present: Boolean =  sql"select count(*) from quotes_1_month where start_timestamp > ${startTimestampInSeconds - 1000} and start_timestamp < ${startTimestampInSeconds + 1000}  and symbol = $symbol"
+    val first_timestamp_present: Boolean =  sql"select count(*) from quotes where start_timestamp > ${startTimestampInSeconds - 1000} and start_timestamp < ${startTimestampInSeconds + 1000}  and symbol = $symbol"
       .query[Int]
       .unique
       .transact(transactor)
       .unsafeRunSync() > 0
     
-    val second_timestamp_present: Boolean =  sql"select count(*) from quotes_1_month where start_timestamp > ${endTimestampInSeconds - 1000} and start_timestamp < ${endTimestampInSeconds + 1000}  and symbol = $symbol"
+    val second_timestamp_present: Boolean =  sql"select count(*) from quotes where start_timestamp > ${endTimestampInSeconds - 1000} and start_timestamp < ${endTimestampInSeconds + 1000}  and symbol = $symbol"
       .query[Int]
       .unique
       .transact(transactor)
@@ -72,28 +71,17 @@ object QuotesRepository {
     cachedQuotes = cachedQuotes + (symbol -> quotesPerTimestamp)
 
   private def getQuotesFromRepository(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long): List[Quote] =
-    sql"select close, high, low, open, start_timestamp, symbol from quotes_1_month where symbol = $symbol and start_timestamp > $startTimestampInSeconds and start_timestamp <= $endTimestampInSeconds order by start_timestamp asc"
+    sql"select close, high, low, open, start_timestamp, symbol from quotes where symbol = $symbol and start_timestamp > $startTimestampInSeconds and start_timestamp <= $endTimestampInSeconds order by start_timestamp asc"
       .query[Quote]
       .to[List]
       .transact(transactor)
       .unsafeRunSync()
+  
 
-
-  def insertQuotes(quotes: List[Quote]): Unit =
-    quotes.foreach(quote =>
-      try {
-        insertQuote(quote.symbol, quote.start_timestamp, quote.low, quote.high, quote.open, quote.close)
-      }
-      catch {
-        case e: PSQLException =>
-      }
-    )
-
-  private def insertQuote(symbol: String, startTimestamp: Long, low: Double, high: Double, open: Double,
-                  close: Double): Unit =
-    sql"INSERT INTO quotes_1_month (symbol, start_timestamp, low, high, open, close)  VALUES ($symbol, $startTimestamp, $low, $high, $open, $close)"
-      .update
-      .run
+  def insertQuotes(quotes: Set[Quote]): Unit =
+    val query = "INSERT INTO quotes (close, high, low, open, start_timestamp, symbol)  VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING"
+    Update[Quote](query)
+      .updateMany(quotes.toList)
       .transact(transactor)
       .unsafeRunSync()
 }

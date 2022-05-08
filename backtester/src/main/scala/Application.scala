@@ -31,24 +31,21 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
   implicit val timeout: Timeout = 300.seconds
 
-  context.log.info("Starting backtester for the trading bot, now caching the quotes of to backtest each signal")
-  context.log.info("--------------------------------------------------------------------------------------------")
+  context.log.info("The backtester is starting, now caching or fetching the quotes for each signal")
 
-//  val backtestedStrategy: List[String] = List("SimpleStrategy", "SimpleStrategyWithThreeTargets",
+//  val backtestedStrategies: List[String] = List("SimpleStrategy", "SimpleStrategyWithThreeTargets",
 //  "LeveragedSimpleStrategy", "LeveragedSimpleStrategyWithThreeTargets",
 //  "TrailingLossSimpleStrategy", "LeveragedTrailingLossStrategy")
 
-  val backtestedStrategy: List[String] = List("LeveragedSimpleStrategy", "LeveragedSimpleStrategyWithThreeTargets")
+  val backtestedStrategies: List[String] = List("SimpleStrategy", "SimpleStrategyWithThreeTargets")
 
   Source(signalsRepository.getSignals)
-//    .filter(signal => signal.symbol == "BNB" && signal.timestamp == 1647061200)
-//    .filter(signal => signal.timestamp > 1646109042)
     .mapAsync(4)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
     .runWith(Sink.last)
     .onComplete {
       case Success(done) =>
         quotesActorRef ! ShutdownMessage()
-        backtesterRef ! StartBacktestingMessage(backtestedStrategy)
+        backtesterRef ! StartBacktestingMessage(backtestedStrategies)
 
       case Failure(e) => println("Exception received in Application:" + e)
     }
