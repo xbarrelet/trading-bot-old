@@ -58,7 +58,7 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
           if !hasOpenedPosition then
             if strategy.shouldEnter then
               context.log.info(s"Signal tells us we should open position for symbol:$signal.symbol")
-              tradingActorRef ! OpenPositionMessage(signal.symbol, signal.isLong, strategy.leverage)
+              tradingActorRef ! OpenPositionMessage(signal.symbol, signal.isLong, strategy.leverage, quote.close)
               hasOpenedPosition = true
               //TODO: Add expiration date
 

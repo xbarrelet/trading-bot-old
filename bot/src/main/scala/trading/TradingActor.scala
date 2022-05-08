@@ -29,36 +29,45 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
   val logger: Logger = LoggerFactory.getLogger("TradingActor")
   val http: HttpExt = Http()
 
-  //Get me from env for prod
+  //Get me from secret
   val apiKey: String = "YkdboZ6lsWJZnW7WnB"
   val secret: String = "vMbfySDliyjYnjOalcfCs4wRYzT87YI72pWj"
   val serverUrl = "https://api-testnet.bybit.com/"
+  val usdtForEachTrade: Double = 500.0
 
-  var symbolsWithLeverageSet: Map[String, Int] = Map()
-  var openOrdersWithSide: Map[String, Boolean] = Map()
+  var activePositionsWithInfo: Map[String, (Boolean, Double)] = Map()
 
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case OpenPositionMessage(symbol: String, isLongOrder: Boolean, leverage: Int) =>
+      case OpenPositionMessage(symbol: String, isLongOrder: Boolean, leverage: Int, priceOfToken: Double) =>
+        val quantity: Double = usdtForEachTrade / priceOfToken
 
-        if openOrdersWithSide.contains(symbol) then
+        if activePositionsWithInfo.contains(symbol) then
           context.log.error(s"A position is already opened for symbol:$symbol")
         else
-          context.log.info(s"Opening position for symbol:$symbol with isLong:$isLongOrder and leverage:$leverage")
+          context.log.info(s"Opening position for symbol:$symbol with isLong:$isLongOrder, quantity:$quantity and leverage:$leverage")
 
-          if !symbolsWithLeverageSet.contains(symbol) then
-            val leverageResponse: Future[HttpResponse] = http.singleRequest(
+          val leverageResponse: Future[HttpResponse] = http.singleRequest(
               HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(symbol, leverage)))
-            runLeverageCommand(leverageResponse, symbol, leverage)
-
           val openPositionReponse: Future[HttpResponse] = http.singleRequest(
-            HttpRequest(method = HttpMethods.POST, uri = createOpenPositionUrl(symbol, isLongOrder)))
-          runOpenPositionCommand(openPositionReponse, symbol, isLongOrder)
+            HttpRequest(method = HttpMethods.POST, uri = createOpenPositionUrl(symbol, isLongOrder, quantity)))
 
+          leverageResponse.map {
+            case response@HttpResponse(StatusCodes.OK, _, _, _) =>
+              response.entity.toStrict(30.seconds)
+                .map(entity => entity.getData().utf8String)
+                .onComplete {
+                  case Success(response) =>
+                    logger.info(s"Leverage set to $leverage for symbol:$symbol")
+                    runOpenPositionCommand(openPositionReponse, symbol, isLongOrder, quantity)
+                }
+
+            case error@_ => logger.error(s"Problem encountered when setting leverage for symbol:$symbol: $error")
+          }
 
       case ClosePositionMessage(symbol: String) =>
-        if !openOrdersWithSide.contains(symbol) then
+        if !activePositionsWithInfo.contains(symbol) then
           context.log.error(s"No position is currently active for symbol:$symbol")
         else
           context.log.info(s"Closing position for symbol:$symbol")
@@ -78,14 +87,14 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
             case Success(response) =>
               println(response)
               logger.info(s"Position closed for symbol:$symbol")
-              openOrdersWithSide = openOrdersWithSide - symbol
+              activePositionsWithInfo = activePositionsWithInfo - symbol
 
             case error@_ => println(s"Problem encountered when closing order for symbol:$symbol: $error")
           }
     }
   }
 
-  private def runOpenPositionCommand(openPositionReponse: Future[HttpResponse], symbol: String, isLongOrder: Boolean) = {
+  private def runOpenPositionCommand(openPositionReponse: Future[HttpResponse], symbol: String, isLongOrder: Boolean, quantity: Double) = {
     openPositionReponse.map {
       case response@HttpResponse(StatusCodes.OK, _, _, _) =>
         response.entity.toStrict(30.seconds)
@@ -97,25 +106,11 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
           .map(orderId => orderId.toString.replace("\"", ""))
           .onComplete {
             case Success(orderId) =>
-              openOrdersWithSide = openOrdersWithSide + (symbol -> isLongOrder)
+              activePositionsWithInfo = activePositionsWithInfo + (symbol -> (isLongOrder, quantity))
               logger.info(s"Position created for symbol:$symbol with orderId:$orderId")
 
             case error@_ => logger.error(s"Problem encountered when placing order for symbol:$symbol: $error with response:$response")
           }
-    }
-  }
-
-  private def runLeverageCommand(leverageResponse: Future[HttpResponse], symbol: String, leverage: Int) = {
-    leverageResponse.map {
-      case response@HttpResponse(StatusCodes.OK, _, _, _) =>
-        response.entity.toStrict(30.seconds)
-          .map(entity => entity.getData().utf8String)
-          .onComplete { case Success(response) =>
-            symbolsWithLeverageSet = symbolsWithLeverageSet + (symbol -> leverage)
-            logger.info(s"Leverage set to $leverage for symbol:$symbol")
-          }
-
-      case error@_ => logger.error(s"Problem encountered when setting leverage for symbol:$symbol: $error")
     }
   }
 
@@ -127,21 +122,23 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
     url + addSignToQueryParams(queryParams)
   }
 
-  private def createOpenPositionUrl(symbol: String, isLongOrder: Boolean): String = {
+  private def createOpenPositionUrl(symbol: String, isLongOrder: Boolean, quantity: Double): String = {
     val side: String = if isLongOrder then "Buy" else "Sell"
     val url = serverUrl + "private/linear/order/create?"
+    val formattedQuantity = String.format("%.2f", quantity)
 
-    val queryParams = s"api_key=$apiKey&close_on_trigger=False&order_type=Market&qty=1&" +
+    val queryParams = s"api_key=$apiKey&close_on_trigger=False&order_type=Market&qty=$formattedQuantity&" +
       s"reduce_only=False&side=$side&symbol=${symbol}USDT&time_in_force=GoodTillCancel&timestamp=${System.currentTimeMillis()}"
 
     url + addSignToQueryParams(queryParams)
   }
 
   private def createClosePositionUrl(symbol: String): String = {
-    val side: String = if openOrdersWithSide(symbol) then "Sell" else "Buy"
+    val side: String = if activePositionsWithInfo(symbol)(0) then "Sell" else "Buy"
+    val formattedQuantity = String.format("%.2f", activePositionsWithInfo(symbol)(1))
     val url = serverUrl + "private/linear/order/create?"
 
-    val queryParams = s"api_key=$apiKey&close_on_trigger=False&order_type=Market&qty=1&" +
+    val queryParams = s"api_key=$apiKey&close_on_trigger=False&order_type=Market&qty=$formattedQuantity&" +
       s"reduce_only=True&side=$side&symbol=${symbol}USDT&time_in_force=GoodTillCancel&timestamp=${System.currentTimeMillis()}"
 
     url + addSignToQueryParams(queryParams)

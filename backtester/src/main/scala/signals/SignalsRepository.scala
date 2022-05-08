@@ -27,12 +27,12 @@ object SignalsRepository {
   //Executed the first time in Application
   def getSignals: List[Signal] =
     if cachedSignals.isEmpty then
-      cachedSignals = cacheSignalsOlderThan2Weeks
+      cachedSignals = cacheSignalsOlderThanOneMonth
 
     cachedSignals
 
-  private def cacheSignalsOlderThan2Weeks: List[Signal] =
-    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where timestamp < ${(System.currentTimeMillis / 1000) - 1209600} order by timestamp desc"
+  private def cacheSignalsOlderThanOneMonth: List[Signal] =
+    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where timestamp < ${(System.currentTimeMillis / 1000) - 2419200} order by timestamp desc"
       .query[Signal]
       .to[List]
       .transact(transactor)

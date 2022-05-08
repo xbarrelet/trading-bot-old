@@ -1,5 +1,5 @@
 package ch.xavier
-package strategy.strats
+package strategy.concrete
 
 import quote.Quote
 import signals.Signal
@@ -10,18 +10,19 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedTrailingLossStrategy(val signal: Signal, percentage: Double, override val leverage: Int) extends Strategy {
+class LeveragedSimpleLimitedLossStrategy(val signal: Signal, override val leverage: Int, lossPercentage: Int) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
+  //ENTRY RULE
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
   else UnderIndicatorRule(closePriceIndicator, signal.entryPrice)
 
+  //EXIT RULES
+  val firstTargetReachedRule: Rule = if signal.isLong then CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
+  else CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
-
-  var liquidityPriceReachedRule: Rule = null
-
-  var peakPrice: Double = signal.entryPrice
 
 
   def shouldEnter: Boolean =
@@ -34,28 +35,16 @@ class LeveragedTrailingLossStrategy(val signal: Signal, percentage: Double, over
 
         if signal.isLong then
           liquiditationPrice = signal.stopLoss.max(entryPrice * (1 - initialMargin))
+          val acceptedLossInterval = (entryPrice - liquiditationPrice) * (lossPercentage / 100)
+          stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, entryPrice - acceptedLossInterval)
         else
           liquiditationPrice = signal.stopLoss.min(entryPrice * (1 + initialMargin))
-
-        liquidityPriceReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
-        else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
-
+          val acceptedLossInterval = (liquiditationPrice - entryPrice) * (lossPercentage / 100)
+          stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, entryPrice + acceptedLossInterval)
       true
     else
       false
 
   def shouldExit: Boolean =
-    stopLossReachedRule.isSatisfied(series.getEndIndex) || (liquidityPriceReachedRule != null && liquidityPriceReachedRule.isSatisfied(series.getEndIndex))
-
-  override def addQuote(quote: Quote): Unit =
-    super.addQuote(quote)
-
-    if signal.isLong then
-      if quote.close > peakPrice then
-        peakPrice = quote.close
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - percentage) * peakPrice) / 100.0)
-    else
-      if quote.close < peakPrice then
-        peakPrice = quote.close
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + percentage) * peakPrice) / 100.0)
+    firstTargetReachedRule.isSatisfied(series.getEndIndex) || stopLossReachedRule.isSatisfied(series.getEndIndex)
 }

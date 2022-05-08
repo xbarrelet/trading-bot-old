@@ -33,7 +33,6 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
         context.log.info("-----------------------------------------------------------------------------------------")
         context.log.info(s"Quotes cached for all signals, now starting to backtest the strategies:$strategyNames")
         context.log.info("-----------------------------------------------------------------------------------------")
-        context.log.info("")
 
         Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
           .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
@@ -43,9 +42,9 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
           .runWith(Sink.last)
           .onComplete {
             case Success(result) =>
-              logger.info("The 5 best results are:")
+              logger.info("The 15 best results are:")
 
-              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
+              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent).take(15)
               for result <- results do
                 logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
 

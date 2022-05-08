@@ -19,5 +19,5 @@ final case class QuoteFetchedMessage(quote: Quote) extends Message
 
 
 //TRADING
-final case class OpenPositionMessage(symbol: String, isLongOrder: Boolean, leverage: Int) extends Message
+final case class OpenPositionMessage(symbol: String, isLongOrder: Boolean, leverage: Int, priceOfToken: Double) extends Message
 final case class ClosePositionMessage(symbol: String) extends Message

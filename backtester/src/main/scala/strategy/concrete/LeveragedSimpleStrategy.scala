@@ -1,5 +1,5 @@
 package ch.xavier
-package strategy.strats
+package strategy.concrete
 
 import quote.Quote
 import signals.Signal
@@ -10,11 +10,17 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val leverage: Int) extends Strategy {
+class LeveragedSimpleStrategy(val signal: Signal, override val leverage: Int) extends Strategy {
+  //TODO: I should limit the loss to 50% max, no?
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
+  //ENTRY RULE
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
   else UnderIndicatorRule(closePriceIndicator, signal.entryPrice)
+
+  //EXIT RULES
+  val firstTargetReachedRule: Rule = if signal.isLong then CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+  else CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
 
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
@@ -40,24 +46,5 @@ class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val l
     else
       false
 
-  def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex)
-
-
-  override def addQuote(quote: Quote): Unit = 
-    super.addQuote(quote)
-
-    if signal.isLong then
-      if quote.close > signal.thirdTargetPrice then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
-      else if quote.close > signal.secondTargetPrice then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
-      else if quote.close > signal.firstTargetPrice then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
-    else
-      if quote.close < signal.thirdTargetPrice then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
-      else if quote.close < signal.secondTargetPrice then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
-      else if quote.close < signal.firstTargetPrice then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+  def shouldExit: Boolean = firstTargetReachedRule.isSatisfied(series.getEndIndex) || stopLossReachedRule.isSatisfied(series.getEndIndex)
 }

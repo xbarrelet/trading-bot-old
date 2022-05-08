@@ -37,7 +37,7 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
 //  "LeveragedSimpleStrategy", "LeveragedSimpleStrategyWithThreeTargets",
 //  "TrailingLossSimpleStrategy", "LeveragedTrailingLossStrategy")
 
-  val backtestedStrategies: List[String] = List("SimpleStrategy", "SimpleStrategyWithThreeTargets")
+  val backtestedStrategies: List[String] = List("LeveragedSimpleStrategy", "LeveragedSimpleStrategyWithThreeTargets")
 
   Source(signalsRepository.getSignals)
     .mapAsync(4)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))

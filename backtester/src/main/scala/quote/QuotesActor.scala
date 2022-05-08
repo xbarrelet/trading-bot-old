@@ -44,7 +44,8 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
         }
 
         if !quotesRepository.areQuotesAvailable(symbol, startTimestamps.head, startTimestamps.last) then
-          context.log.info(s"Fetching quotes for symbol:$symbol from ${formatTimestamp(fromTimestamp)} to ${formatTimestamp(startTimestamps.last)}")
+//          context.log.info(s"Fetching quotes for symbol:$symbol from ${formatTimestamp(fromTimestamp)} to ${formatTimestamp(startTimestamps.last)}")
+          context.log.info(s"Fetching quotes for symbol:$symbol from ${fromTimestamp} to ${startTimestamps.last}")
           val fetcherRef: ActorRef[Message] = context.spawn(BinanceQuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
           
           Source(startTimestamps.toList)

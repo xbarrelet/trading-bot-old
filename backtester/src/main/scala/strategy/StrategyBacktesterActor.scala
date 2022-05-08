@@ -68,11 +68,11 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
             var percentageGain = 0.0
             if entryPrice == 0.0 then
               tradesNotEnteredCounter += 1
-              logger.info("The trade was never entered")
+              logger.debug("The trade was never entered")
             else
               if exitPrice == 0.0 then
                 exitPrice = quotes.last.close
-                logger.info(s"The strategy is still active, exiting now the trade with price:$exitPrice")
+                logger.debug(s"The strategy is still active, exiting now the trade with price:$exitPrice")
 
               var profits = 0.0
               if signal.isLong then
