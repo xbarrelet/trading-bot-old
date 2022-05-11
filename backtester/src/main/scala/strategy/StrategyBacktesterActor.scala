@@ -35,7 +35,7 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
         var tradesNotEnteredCounter = 0
 
         val signals: List[Signal] =
-          signalsRepository.getSignals
+          signalsRepository.getSignals()
 
         Source(signals)
           .map(signal => {
@@ -81,8 +81,8 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
                 profits = entryPrice - exitPrice
 
               percentageGain = profits * 100 / entryPrice
-              logger.debug(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} : " +
-                s"${BigDecimal(percentageGain).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
+              logger.debug(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${formatTimestamp(signal.timestamp)} : " +
+                s"${BigDecimal(strategy.applyLeverageToPercentageGain(percentageGain)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
 
             logger.debug("------------------------------------------------------------------------------------------------------------------------------------------")
             strategy.applyLeverageToPercentageGain(percentageGain)

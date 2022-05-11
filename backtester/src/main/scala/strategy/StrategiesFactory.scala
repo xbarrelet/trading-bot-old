@@ -9,8 +9,10 @@ import org.ta4j.core.BarSeries
 
 import scala.::
 import scala.collection.mutable.ListBuffer
-import ch.xavier.strategy.concrete.{LeveragedSimpleStrategy, LeveragedTrailingLossStrategy, LeveragedSimpleLimitedLossStrategy,
-  LeveragedSimpleStrategyWithThreeTargets}
+import ch.xavier.strategy.concrete.{
+  LeveragedSS, LeveragedTL, LeveragedSSLL,
+  LeveragedSS3T, LeveragedSS3TTL, LeveragedSS3TTL2
+}
 
 object StrategiesFactory {
 
@@ -43,7 +45,15 @@ object StrategiesFactory {
         for (leverage: Int <- 1 to 50) {
           strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
         }
-        
+      case "LeveragedSS3TTL" =>
+        for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 20) {
+          strategiesList += "LeveragedSS3TTL_with_leverage_" + leverage + "_and_percentage_" + percentage
+        }
+      case "LeveragedSS3TTL2" =>
+        for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 20; percentage2: Int <- 0 to 20) {
+          strategiesList += "LeveragedSS3TTL2_with_leverage_" + leverage + "_and_percentage_" + percentage + "_and_percentage2_" + percentage2
+        }
+
       case "TrailingLossSimpleStrategy" =>
         for (percentage: Int <- 0 to 400) { //apparently best between 15-20 but with what products?
           strategiesList += "TrailingLossSimpleStrategy_with_percentage_" + percentage + "_and_leverage_1"
@@ -52,6 +62,8 @@ object StrategiesFactory {
         for (percentage: Int <- 0 to 30; leverage: Int <- 1 to 50) {
           strategiesList += "LeveragedTrailingLossStrategy_with_percentage_" + (percentage / 10.0).toString + "_and_leverage_" + leverage
         }
+      case "test" =>
+        strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_10"
     }
     strategiesList.toList
 
@@ -59,15 +71,19 @@ object StrategiesFactory {
     val parameters: Array[String] = strategyName.split("_")
 
     if strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets_") then
-      LeveragedSimpleStrategyWithThreeTargets(signal, parameters(3).toInt)
+      LeveragedSS3T(signal, parameters(3).toInt)
+    else if strategyName.startsWith("LeveragedSS3TTL2") then
+      LeveragedSS3TTL2(signal, parameters(3).toInt, parameters(6).toInt, parameters(9).toInt)
+    else if strategyName.startsWith("LeveragedSS3TTL") then
+      LeveragedSS3TTL(signal, parameters(3).toInt, parameters(6).toInt)
     else if strategyName.startsWith("LeveragedSimpleStrategy_") then
-      LeveragedSimpleStrategy(signal, parameters(3).toInt)
+      LeveragedSS(signal, parameters(3).toInt)
     else if strategyName.startsWith("LeveragedSimpleLimitedLossStrategy_") then
-      LeveragedSimpleLimitedLossStrategy(signal, parameters(3).toInt, parameters(6).toInt)
+      LeveragedSSLL(signal, parameters(3).toInt, parameters(6).toInt)
 
     else if strategyName.startsWith("LeveragedTrailingLossStrategy_with_percentage_") then
-      LeveragedTrailingLossStrategy(signal, parameters(3).toDouble, parameters(6).toInt)
+      LeveragedTL(signal, parameters(3).toDouble, parameters(6).toInt)
     else
       println("Strategy name not recognized, returning Simple Strategy")
-      LeveragedSimpleStrategy(signal, 1)
+      LeveragedSS(signal, 1)
 }

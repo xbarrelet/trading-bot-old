@@ -4,10 +4,10 @@ import ch.xavier.quote.Quote
 import ch.xavier.signals.Signal
 import ch.xavier.strategy.Strategy
 import org.scalatest.flatspec.AnyFlatSpec
-import ch.xavier.strategy.concrete.LeveragedTrailingLossStrategy
+import ch.xavier.strategy.concrete.LeveragedTL
 import strategy.StrategySpec
 
-class LeveragedTrailingLossStrategySpec extends StrategySpec {
+class LeveragedTLSpec extends StrategySpec {
   val testLongSignal: Signal = Signal(
     100, // entry
     150, 200, 250, //3 targets
@@ -28,7 +28,7 @@ class LeveragedTrailingLossStrategySpec extends StrategySpec {
 
   it should "LONG: strategy exits if price immediately goes under 3% of entry price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedTrailingLossStrategy(testLongSignal, 3, 1)
+    val testedStrategy: Strategy = LeveragedTL(testLongSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val stayAboveThreshold = createQuoteWithPrice(98)
@@ -49,7 +49,7 @@ class LeveragedTrailingLossStrategySpec extends StrategySpec {
 
   it should "SHORT: strategy exits if price immediately goes above 3% of entry price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedTrailingLossStrategy(testShortSignal, 3, 1)
+    val testedStrategy: Strategy = LeveragedTL(testShortSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val stayUnderThreshold = createQuoteWithPrice(204)
@@ -70,7 +70,7 @@ class LeveragedTrailingLossStrategySpec extends StrategySpec {
 
   it should "LONG: strategy exits if price rises up then goes under 3% of peak price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedTrailingLossStrategy(testLongSignal, 3, 1)
+    val testedStrategy: Strategy = LeveragedTL(testLongSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val peakPriceQuote: Quote = createQuoteWithPrice(150)
@@ -93,7 +93,7 @@ class LeveragedTrailingLossStrategySpec extends StrategySpec {
 
   it should "SHORT: strategy exits if price rises up then goes above 3% of peak price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedTrailingLossStrategy(testShortSignal, 3, 1)
+    val testedStrategy: Strategy = LeveragedTL(testShortSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val peakPriceQuote: Quote = createQuoteWithPrice(150)
@@ -122,7 +122,7 @@ class LeveragedTrailingLossStrategySpec extends StrategySpec {
       true, //Long
       99, // SL
       "TEST_SYMBOL", 1640995200)
-    val testedStrategy: Strategy = LeveragedTrailingLossStrategy(testSignal, 3, 1)
+    val testedStrategy: Strategy = LeveragedTL(testSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val goesUnderStoplossQuote = createQuoteWithPrice(98)
@@ -143,7 +143,7 @@ class LeveragedTrailingLossStrategySpec extends StrategySpec {
       false, //Long
       201, // SL
       "TEST_SYMBOL", 1640995200)
-    val testedStrategy: Strategy = LeveragedTrailingLossStrategy(testSignal, 3, 1)
+    val testedStrategy: Strategy = LeveragedTL(testSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val goesAboveStoplossQuote = createQuoteWithPrice(202)

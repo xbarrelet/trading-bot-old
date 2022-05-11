@@ -33,9 +33,22 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
   val apiKey: String = "YkdboZ6lsWJZnW7WnB"
   val secret: String = "vMbfySDliyjYnjOalcfCs4wRYzT87YI72pWj"
   val serverUrl = "https://api-testnet.bybit.com/"
-  val usdtForEachTrade: Double = 500.0
+  val usdtForEachTrade: Double = 1000.0
 
   var activePositionsWithInfo: Map[String, (Boolean, Double)] = Map()
+
+  val tradableSymbolsWithBybit: List[String] = List("BTC", "ETH", "EOS", "XRP", "BCH", "LTC", "XTZ", "LINK", "ADA",
+    "DOT", "UNI", "XEM", "SUSHI", "AAVE", "DOGE", "MATIC", "ETC", "BNB", "FIL", "SOL", "XLM", "TRX", "VET", "THETA",
+    "COMP", "AXS", "LUNA", "SAND", "MANA", "KSM", "ATOM", "AVAX", "CHZ", "CRV", "ENJ", "GRT", "SHIB1000", "YFI", "BSV",
+    "ICP", "FTM", "ALGO", "DYDX", "NEAR", "SRM", "OMG", "IOST", "DASH", "FTT", "BIT", "GALA", "CELR", "HBAR", "ONE",
+    "C98", "AGLD", "MKR", "COTI", "ALICE", "EGLD", "REN", "TLM", "RUNE", "ILV", "FLOW", "WOO", "LRC", "ENS", "IOTX",
+    "CHR", "BAT", "STORJ", "SNX", "SLP", "ANKR", "LPT", "QTUM", "CRO", "SXP", "YGG", "ZEC", "IMX", "SFP", "AUDIO",
+    "ZEN", "SKL", "GTC", "LIT", "CVC", "RNDR", "SC", "RSR", "STX", "MASK", "CTK", "BICO", "REQ", "1INCH", "KLAY",
+    "SPELL", "ANT", "DUSK", "AR", "REEF", "XMR", "PEOPLE", "IOTA", "ICX", "CELO", "WAVES", "RVN", "KNC", "KAVA", "ROSE",
+    "DENT", "CREAM", "LOOKS", "JASMY", "10000NFT", "HNT", "ZIL", "NEO", "RAY", "CKB", "SUN", "JST", "BAND", "RSS3",
+    "OCEAN", "1000BTT", "API3", "PAXG", "ANC", "KDA", "APE", "GMT", "OGN", "BSW", "CTSI", "HOT", "ARPA", "ALPHA",
+    "STMX", "DGB", "ZRX", "GLMR", "SCRT", "BAKE", "LINA", "ASTR", "FXS", "MINA", "BNX", "BOBA", "1000XEC", "ACH", "BAL",
+    "MTL", "CVX", "DODO", "TOMO", "XCN", "GST", "DAR", "FLM", "GAL")
 
 
   override def onMessage(message: Message): Behavior[Message] =
@@ -46,25 +59,28 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
         if activePositionsWithInfo.contains(symbol) then
           context.log.error(s"A position is already opened for symbol:$symbol")
         else
-          context.log.info(s"Opening position for symbol:$symbol with isLong:$isLongOrder, quantity:$quantity and leverage:$leverage")
+          if !tradableSymbolsWithBybit.contains(symbol) then
+            context.log.warn(s"Symbol:$symbol not tradable on Bybit")
+          else
+            context.log.info(s"Opening position for symbol:$symbol with isLong:$isLongOrder, quantity:$quantity and leverage:$leverage")
 
-          val leverageResponse: Future[HttpResponse] = http.singleRequest(
-              HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(symbol, leverage)))
-          val openPositionReponse: Future[HttpResponse] = http.singleRequest(
-            HttpRequest(method = HttpMethods.POST, uri = createOpenPositionUrl(symbol, isLongOrder, quantity)))
+            val leverageResponse: Future[HttpResponse] = http.singleRequest(
+                HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(symbol, leverage)))
+            val openPositionReponse: Future[HttpResponse] = http.singleRequest(
+              HttpRequest(method = HttpMethods.POST, uri = createOpenPositionUrl(symbol, isLongOrder, quantity)))
 
-          leverageResponse.map {
-            case response@HttpResponse(StatusCodes.OK, _, _, _) =>
-              response.entity.toStrict(30.seconds)
-                .map(entity => entity.getData().utf8String)
-                .onComplete {
-                  case Success(response) =>
-                    logger.info(s"Leverage set to $leverage for symbol:$symbol")
-                    runOpenPositionCommand(openPositionReponse, symbol, isLongOrder, quantity)
-                }
+            leverageResponse.map {
+              case response@HttpResponse(StatusCodes.OK, _, _, _) =>
+                response.entity.toStrict(30.seconds)
+                  .map(entity => entity.getData().utf8String)
+                  .onComplete {
+                    case Success(response) =>
+                      logger.info(s"Leverage set to $leverage for symbol:$symbol")
+                      runOpenPositionCommand(openPositionReponse, symbol, isLongOrder, quantity)
+                  }
 
-            case error@_ => logger.error(s"Problem encountered when setting leverage for symbol:$symbol: $error")
-          }
+              case error@_ => logger.error(s"Problem encountered when setting leverage for symbol:$symbol: $error")
+            }
 
       case ClosePositionMessage(symbol: String) =>
         if !activePositionsWithInfo.contains(symbol) then

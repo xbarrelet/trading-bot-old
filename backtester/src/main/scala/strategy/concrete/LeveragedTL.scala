@@ -10,7 +10,7 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedTrailingLossStrategy(val signal: Signal, percentage: Double, override val leverage: Int) extends Strategy {
+class LeveragedTL(val signal: Signal, percentage: Double, override val leverage: Int) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)

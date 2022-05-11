@@ -1,0 +1,1 @@
+ssh -i ~/.ssh/trading-bot-prod-ec2.pem ubuntu@ec2-54-151-150-241.ap-southeast-1.compute.amazonaws.com

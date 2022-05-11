@@ -35,16 +35,16 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
         context.log.info("-----------------------------------------------------------------------------------------")
 
         Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
-          .mapAsync(1)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
+          .mapAsync(16)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
           .map(_.asInstanceOf[ResultOfBacktestingStrategyMessage])
           .filter(_.averageProfitsInPercent != 0.0)
           .map(result => results = result :: results)
           .runWith(Sink.last)
           .onComplete {
             case Success(result) =>
-              logger.info("The 15 best results are:")
+              logger.info("The 30 best results are:")
 
-              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent).take(15)
+              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent).take(200)
               for result <- results do
                 logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
 

@@ -10,7 +10,8 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val leverage: Int) extends Strategy {
+// After testing this this added feature doesn't provide any benefit
+class LeveragedSS3TTL2(val signal: Signal, override val leverage: Int, val tradingLossPercentage: Int, marginBelowThresholds: Int) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -19,8 +20,12 @@ class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val l
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
 
+  var trailingLossAfterThirdTargetReachedRule: Rule = OverIndicatorRule(closePriceIndicator, 999999999)
+
   var secondTargetReached = false
   var thirdTargetReached = false
+
+  var peakPrice: Double = signal.entryPrice
 
 
   def shouldEnter: Boolean =
@@ -43,28 +48,36 @@ class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val l
     else
       false
 
-  def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex)
+  def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex) || trailingLossAfterThirdTargetReachedRule.isSatisfied(series.getEndIndex)
 
 
   override def addQuote(quote: Quote): Unit = 
     super.addQuote(quote)
 
     if signal.isLong then
+      if quote.close > peakPrice then
+        peakPrice = quote.close
+
       if quote.close > signal.thirdTargetPrice then
         thirdTargetReached = true
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
+        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (1 - (marginBelowThresholds / 100)) * signal.thirdTargetPrice)
+        trailingLossAfterThirdTargetReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - tradingLossPercentage) * peakPrice) / 100.0)
       else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
+        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (1 - (marginBelowThresholds / 100)) * signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (1 - (marginBelowThresholds / 100)) * signal.firstTargetPrice)
     else
+      if quote.close < peakPrice then
+        peakPrice = quote.close
+
       if quote.close < signal.thirdTargetPrice then
         thirdTargetReached = true
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (1 + (marginBelowThresholds / 100)) * signal.thirdTargetPrice)
+        trailingLossAfterThirdTargetReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + tradingLossPercentage) * peakPrice) / 100.0)
       else if quote.close < signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (1 + (marginBelowThresholds / 100)) * signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (1 + (marginBelowThresholds / 100)) * signal.firstTargetPrice)
 }
