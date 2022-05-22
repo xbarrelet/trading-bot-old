@@ -11,6 +11,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{Directives, Route}
+import org.slf4j.{Logger, LoggerFactory}
 import spray.json.*
 import spray.json.DefaultJsonProtocol.*
 
@@ -20,13 +21,14 @@ object RestActor {
 }
 
 class RestActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+  val logger: Logger = LoggerFactory.getLogger("RestActor")
   val followersSpawnerRef: ActorRef[Message] = context.spawn(FollowersSpawnerActor(), s"followers-spawner-actor")
 
   val route: Route =
     concat(
       get {
         pathSingleSlash {
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Trading bot is up!"))
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Trading bot is up!\n"))
         }
       },
       post {
@@ -45,13 +47,27 @@ class RestActor(context: ActorContext[Message]) extends AbstractBehavior[Message
 
             followersSpawnerRef ! ProcessSignalMessage(signal)
 
-            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Signal received"))
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Signal received\n"))
           }
+        }
+      },
+      put {
+        path("leverage" / IntNumber) { leverage =>
+          logger.info(s"Now using new leverage of $leverage")
+          DynamicConfig.leverage = leverage
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"Leverage changed to $leverage\n"))
+        }
+      },
+      put {
+        path("amount-per-trade" / IntNumber) { amountPerTrade =>
+          logger.info(s"Now using new amount per trade of $amountPerTrade")
+          DynamicConfig.amountPerTrade = amountPerTrade
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"Amount per trade changed to $amountPerTrade\n"))
         }
       }
     )
 
-  Http().newServerAt("localhost", 8080).bind(route)
+  Http().newServerAt("0.0.0.0", 80).bind(route)
 
   override def onMessage(message: Message): Behavior[Message] =
     this

@@ -5,12 +5,15 @@ import quote.Quote
 import signals.Signal
 import strategy.Strategy
 
+import org.slf4j.{Logger, LoggerFactory}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
 class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradingLossPercentage: Int) extends Strategy {
+  val logger: Logger = LoggerFactory.getLogger("LeveragedSS3TTL")
+  
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -42,7 +45,8 @@ class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradin
 
         stopLossReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
         else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
-
+        
+      logger.info(s"Entering trade for symbol:${signal.symbol}")
       true
     else
       false
@@ -59,12 +63,15 @@ class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradin
 
       if quote.close > signal.thirdTargetPrice then
         thirdTargetReached = true
+        logger.info(s"Third target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
         trailingLossAfterThirdTargetReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - tradingLossPercentage) * peakPrice) / 100.0)
       else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
+        logger.info(s"Second target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
+        logger.info(s"First target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
     else
       if quote.close < peakPrice then
@@ -72,11 +79,14 @@ class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradin
 
       if quote.close < signal.thirdTargetPrice then
         thirdTargetReached = true
+        logger.info(s"Third target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
         trailingLossAfterThirdTargetReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + tradingLossPercentage) * peakPrice) / 100.0)
       else if quote.close < signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
+        logger.info(s"Second target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
+        logger.info(s"First target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
 }
