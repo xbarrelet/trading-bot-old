@@ -42,31 +42,32 @@ class SignalFollowerActor(context: ActorContext[Message]) extends AbstractBehavi
         this
 
       case QuoteFetchedMessage(quote: Quote) =>
-        strategy.addQuote(quote)
+        if quote.symbol != "EMPTY" then
+          strategy.addQuote(quote)
 
-        if !hasStartedFollowingPrice then
-          val secondsUntilNextQuote: Long = 60L - (Instant.now.getEpochSecond - quote.start_timestamp)
-          context.log.info(s"Schedule starts in $secondsUntilNextQuote seconds")
-          hasStartedFollowingPrice = true
+          if !hasStartedFollowingPrice then
+            val secondsUntilNextQuote: Long = 60L - (Instant.now.getEpochSecond - quote.start_timestamp)
+            context.log.info(s"Schedule starts in $secondsUntilNextQuote seconds")
+            hasStartedFollowingPrice = true
 
-          context.system.scheduler.scheduleWithFixedDelay(Duration.ofSeconds(secondsUntilNextQuote), Duration.ofMinutes(1),
-            () => {
-              quotesFetcherRef ! FetchLastQuoteMessage(signal.symbol, context.self)
-            }, context.system.executionContext)
-
-        else
-          if !hasOpenedPosition then
-            if strategy.shouldEnter then
-              context.log.info(s"Signal tells us we should open position for symbol:$signal.symbol")
-              tradingActorRef ! OpenPositionMessage(signal.symbol, signal.isLong, strategy.leverage, quote.close)
-              hasOpenedPosition = true
-              //TODO: Add expiration date
+            context.system.scheduler.scheduleWithFixedDelay(Duration.ofSeconds(secondsUntilNextQuote), Duration.ofMinutes(1),
+              () => {
+                quotesFetcherRef ! FetchLastQuoteMessage(signal.symbol, context.self)
+              }, context.system.executionContext)
 
           else
-            if strategy.shouldExit then
-              context.log.info(s"Signal tells us we should close position for symbol:$signal.symbol")
-              tradingActorRef ! ClosePositionMessage(signal.symbol)
-              Behaviors.stopped
+            if !hasOpenedPosition then
+              if strategy.shouldEnter then
+                context.log.info(s"Signal tells us we should open position for symbol:$signal.symbol")
+                tradingActorRef ! OpenPositionMessage(signal.symbol, signal.isLong, strategy.leverage, quote.close)
+                hasOpenedPosition = true
+                //TODO: Add expiration date
+
+            else
+              if strategy.shouldExit then
+                context.log.info(s"Signal tells us we should close position for symbol:$signal.symbol")
+                tradingActorRef ! ClosePositionMessage(signal.symbol, quote.close)
+                Behaviors.stopped
 
         this
 }

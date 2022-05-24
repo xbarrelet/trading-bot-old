@@ -7,6 +7,7 @@ import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
 import akka.http.scaladsl.{Http, HttpExt}
+import org.slf4j.{Logger, LoggerFactory}
 import spray.json.*
 import spray.json.DefaultJsonProtocol.*
 
@@ -22,6 +23,7 @@ object QuotesFetcherActor {
 }
 
 class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+  val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
   val http: HttpExt = Http()
   val urlTemplate: String = "https://api.bybit.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
 
@@ -51,8 +53,11 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
                       list.last.asJsObject.getFields("open_time").head.toString.toLong,
                       symbol
                     ))
+                case Failure(failure) =>
+                  logger.error(s"Couldn't fetch quote for symbol:$symbol, let's wait 1 more minute for the next one")
+                  replyTo ! QuoteFetchedMessage(Quote(0, 0, 0, 0, 0, "EMPTY"))
               }
-          case _ => println(s"Problem encountered when fetching the quotes for $symbol and timestamp $lastMinuteTimestampInSecond")
+          case _ => logger.error(s"Problem encountered when fetching the quotes for $symbol and timestamp $lastMinuteTimestampInSecond")
         }
 
         this

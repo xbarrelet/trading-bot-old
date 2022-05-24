@@ -38,11 +38,11 @@ object BybitAPI extends TradingApi {
           .map(entity => entity.getData().utf8String)
           .onComplete {
             case Success(response) =>
-              logger.info(s"Leverage set to $order.leverage for symbol:$order.symbol")
-              runOpenPositionCommand(openPositionReponse, order.symbol, order.isLongOrder, order.quantity)
+              logger.info(s"Leverage set to ${order.leverage} for symbol:${order.symbol}")
+              runOpenPositionCommand(openPositionReponse, order.symbol)
           }
 
-      case error@_ => logger.error(s"Problem encountered when setting leverage for symbol:$order.symbol: $error")
+      case error@_ => logger.error(s"Problem encountered when setting leverage for symbol:${order.symbol}: $error")
     }
 
 
@@ -66,7 +66,7 @@ object BybitAPI extends TradingApi {
     }
   }
 
-  private def runOpenPositionCommand(openPositionReponse: Future[HttpResponse], symbol: String, isLongOrder: Boolean, quantity: Double) = {
+  private def runOpenPositionCommand(openPositionReponse: Future[HttpResponse], symbol: String) = {
     openPositionReponse.map {
       case response@HttpResponse(StatusCodes.OK, _, _, _) =>
         response.entity.toStrict(30.seconds)

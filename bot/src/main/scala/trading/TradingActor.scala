@@ -8,6 +8,7 @@ import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest, HttpResponse, StatusCodes}
 import akka.http.scaladsl.{Http, HttpExt}
+import ch.xavier.notifications.NotificationsService
 import ch.xavier.trading.interfaces.BybitAPI
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.{Logger, LoggerFactory}
@@ -27,8 +28,9 @@ object TradingActor {
 
 class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val logger: Logger = LoggerFactory.getLogger("TradingActor")
+  val notificationsService: NotificationsService.type = NotificationsService
 
-  val amountInUsdtForEachTrade: Double = ConfigFactory.load().getInt("trade.amount-per-trade")
+  val amountInUsdtForEachTrade: Double = ConfigFactory.load().getDouble("trade.amount-per-trade")
   var activePositions: Map[String, Order] = Map()
 
   val bybitApi: BybitAPI.type = BybitAPI
@@ -50,7 +52,7 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
   override def onMessage(message: Message): Behavior[Message] =
     message match
       case OpenPositionMessage(symbol: String, isLongOrder: Boolean, leverage: Int, priceOfToken: Double) =>
-        val quantity: Double = amountInUsdtForEachTrade / priceOfToken
+        val quantity: Double = (amountInUsdtForEachTrade / priceOfToken) * leverage
         val order: Order = Order(symbol, isLongOrder, leverage, quantity)
 
         if activePositions.contains(symbol) then
@@ -60,10 +62,10 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
             context.log.warn(s"Symbol:$symbol not tradable on Bybit")
           else
             context.log.info(s"Opening position for symbol:$symbol with isLong:$isLongOrder, quantity:$quantity and leverage:$leverage")
-            bybitApi.openPosition(order)
+//            bybitApi.openPosition(order)
             activePositions = activePositions + (symbol -> order)
 
-      case ClosePositionMessage(symbol: String) =>
+      case ClosePositionMessage(symbol: String, stopPrice: Double) =>
         if !activePositions.contains(symbol) then
           context.log.error(s"No position is currently active for symbol:$symbol")
         else
@@ -71,8 +73,11 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
             context.log.warn(s"Symbol:$symbol not tradable on Bybit")
           else
             context.log.info(s"Closing position for symbol:$symbol on Bybit")
-            bybitApi.openPosition(activePositions(symbol))
+            bybitApi.closePosition(activePositions(symbol))
             activePositions = activePositions - symbol
+            notificationsService.pushMessage(s"Position closed for order:${activePositions(symbol).toString}", s"Position $symbol closed")
+
+            //TODO: Get results of trade and send email
 
     this
 

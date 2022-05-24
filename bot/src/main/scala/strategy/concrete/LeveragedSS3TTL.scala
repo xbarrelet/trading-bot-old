@@ -5,6 +5,7 @@ import quote.Quote
 import signals.Signal
 import strategy.Strategy
 
+import ch.xavier.notifications.NotificationsService
 import org.slf4j.{Logger, LoggerFactory}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
@@ -13,6 +14,7 @@ import org.ta4j.core.{BarSeries, Rule}
 
 class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradingLossPercentage: Int) extends Strategy {
   val logger: Logger = LoggerFactory.getLogger("LeveragedSS3TTL")
+  val notificationService: NotificationsService.type = NotificationsService
   
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
@@ -66,13 +68,16 @@ class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradin
         logger.info(s"Third target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.thirdTargetPrice)
         trailingLossAfterThirdTargetReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - tradingLossPercentage) * peakPrice) / 100.0)
+        notificationService.pushMessage("Third target price reached for symbol:${signal.symbol}", s"Third target ${signal.symbol}")
       else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
         logger.info(s"Second target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
+        notificationService.pushMessage("Second target price reached for symbol:${signal.symbol}", s"Second target ${signal.symbol}")
       else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
         logger.info(s"First target price reached for symbol:${signal.symbol}")
         stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+        notificationService.pushMessage("First target price reached for symbol:${signal.symbol}", s"First target ${signal.symbol}")
     else
       if quote.close < peakPrice then
         peakPrice = quote.close

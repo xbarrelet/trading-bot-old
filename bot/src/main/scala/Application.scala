@@ -2,13 +2,15 @@ package ch.xavier
 
 import Application.{executionContext, system}
 import signals.{Signal, SignalFollowerActor, SignalListener}
-import trading.TradingActor
+import trading.interfaces.BinanceAPI
+import trading.{Order, TradingActor}
 
 import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
+import ch.xavier.notifications.NotificationsService
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -30,7 +32,6 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   context.log.info("-----------------------------------------------------------------------------------------")
 
   val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
-  
 
   override def onMessage(message: Message): Behavior[Message] =
     this
