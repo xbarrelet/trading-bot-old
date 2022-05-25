@@ -47,8 +47,7 @@ class LeveragedSS3TTL(val signal: Signal, override val leverage: Int, val tradin
 
         stopLossReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
         else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
-        
-      logger.info(s"Entering trade for symbol:${signal.symbol}")
+
       true
     else
       false

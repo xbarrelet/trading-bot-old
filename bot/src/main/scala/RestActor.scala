@@ -42,12 +42,34 @@ class RestActor(context: ActorContext[Message]) extends AbstractBehavior[Message
               jsonSignal.getFields("thirdTargetPrice").head.toString.toDouble,
               jsonSignal.getFields("isLong").head.toString.toBoolean,
               jsonSignal.getFields("stopLoss").head.toString.toDouble,
-              jsonSignal.getFields("symbol").head.toString.replace("\"", "")
+              jsonSignal.getFields("symbol").head.toString.replace("\"", ""),
+              false
             )
 
             followersSpawnerRef ! ProcessSignalMessage(signal)
 
             complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Signal received\n"))
+          }
+        }
+      },
+      post {
+        path("signals" / "follow") {
+          entity(as[String]) { receivedSignals =>
+            val jsonSignals = receivedSignals.parseJson.convertTo[Seq[JsValue]]
+            for jsonSignal <- jsonSignals do
+              val signal: Signal = Signal(
+                jsonSignal.asJsObject.getFields("entryPrice").head.toString.toDouble,
+                jsonSignal.asJsObject.getFields("firstTargetPrice").head.toString.toDouble,
+                jsonSignal.asJsObject.getFields("secondTargetPrice").head.toString.toDouble,
+                jsonSignal.asJsObject.getFields("thirdTargetPrice").head.toString.toDouble,
+                jsonSignal.asJsObject.getFields("isLong").head.toString.toBoolean,
+                jsonSignal.asJsObject.getFields("stopLoss").head.toString.toDouble,
+                jsonSignal.asJsObject.getFields("symbol").head.toString.replace("\"", ""),
+                true
+              )
+              followersSpawnerRef ! ProcessSignalMessage(signal)
+
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Signals followed\n"))
           }
         }
       },

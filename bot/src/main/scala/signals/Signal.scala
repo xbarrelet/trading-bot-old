@@ -13,5 +13,6 @@ final case class Signal(
                          thirdTargetPrice: Double,
                          isLong: Boolean,
                          stopLoss: Double,
-                         symbol: String
+                         symbol: String,
+                         followOnly: Boolean
                        )
