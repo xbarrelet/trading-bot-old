@@ -44,7 +44,7 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
             case Success(result) =>
               logger.info("The 30 best results are:")
 
-              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent).take(200)
+              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
               for result <- results do
                 logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
 

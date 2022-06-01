@@ -55,16 +55,16 @@ class LeveragedSS3T(val signal: Signal, override val leverage: Int) extends Stra
         stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
       else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 0.97 * signal.secondTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 0.97 * signal.firstTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
     else
       if quote.close < signal.thirdTargetPrice then
         thirdTargetReached = true
         stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
       else if quote.close < signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, 1.03 * signal.secondTargetPrice)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, 1.03 * signal.firstTargetPrice)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
 }

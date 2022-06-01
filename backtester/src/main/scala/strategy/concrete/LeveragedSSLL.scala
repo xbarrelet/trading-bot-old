@@ -10,7 +10,7 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSSLL(val signal: Signal, override val leverage: Int, lossPercentage: Int) extends Strategy {
+class LeveragedSSLL(val signal: Signal, override val leverage: Int, acceptedLossPercentage: Int) extends Strategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   //ENTRY RULE
@@ -35,11 +35,11 @@ class LeveragedSSLL(val signal: Signal, override val leverage: Int, lossPercenta
 
         if signal.isLong then
           liquiditationPrice = signal.stopLoss.max(entryPrice * (1 - initialMargin))
-          val acceptedLossInterval = (entryPrice - liquiditationPrice) * (lossPercentage / 100)
+          val acceptedLossInterval = (entryPrice - liquiditationPrice) * (acceptedLossPercentage / 100)
           stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, entryPrice - acceptedLossInterval)
         else
           liquiditationPrice = signal.stopLoss.min(entryPrice * (1 + initialMargin))
-          val acceptedLossInterval = (liquiditationPrice - entryPrice) * (lossPercentage / 100)
+          val acceptedLossInterval = (liquiditationPrice - entryPrice) * (acceptedLossPercentage / 100)
           stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, entryPrice + acceptedLossInterval)
       true
     else

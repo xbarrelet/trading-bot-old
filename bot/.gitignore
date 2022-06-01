@@ -44,3 +44,5 @@ bin/
 #general
 *.class
 
+/src/main/resources/application.pre
+/src/main/resources/application.prod

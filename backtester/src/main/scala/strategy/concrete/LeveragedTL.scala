@@ -58,9 +58,9 @@ class LeveragedTL(val signal: Signal, percentage: Double, override val leverage:
     if signal.isLong then
       if quote.close > peakPrice then
         peakPrice = quote.close
-        thresholdCrossedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - percentage) * peakPrice) / 100.0)
+        thresholdCrossedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - percentage / 10) * peakPrice) / 100.0)
     else
       if quote.close < peakPrice then
         peakPrice = quote.close
-        thresholdCrossedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + percentage) * peakPrice) / 100.0)
+        thresholdCrossedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + percentage / 10) * peakPrice) / 100.0)
 }

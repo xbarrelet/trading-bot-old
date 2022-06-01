@@ -29,6 +29,8 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
   val strategiesFactory: StrategiesFactory.type = StrategiesFactory
   val logger: Logger = LoggerFactory.getLogger("StrategyBacktesterActor")
 
+  val WITH_EXTENSIVE_LOGGING = false
+
   override def onMessage(message: Message): Behavior[Message] =
     message match
       case BacktestStrategyMessage(strategyName: String, replyTo: ActorRef[Message]) =>
@@ -45,34 +47,42 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
             var hasEntered = false
             var entryPrice = 0.0
             var exitPrice = 0.0
-            logger.debug(s"Now testing strategy:$strategyName with signal with ${quotes.length} quotes and symbol:${signal.symbol}, entryPrice:${signal.entryPrice}, " +
-              s"stopLoss:${signal.stopLoss} and firstTargetPrice:${signal.firstTargetPrice}")
+            if WITH_EXTENSIVE_LOGGING then
+              logger.info(s"Now testing strategy:$strategyName with signal with ${quotes.length} quotes and symbol:${signal.symbol}, isLong:${signal.isLong}, entryPrice:${signal.entryPrice}, " +
+                s"stopLoss:${signal.stopLoss}, firstTargetPrice:${signal.firstTargetPrice}, secondTargetPrice:${signal.secondTargetPrice}, thirdTargetPrice:${signal.thirdTargetPrice}")
 
             breakable {
               for quote: Quote <- quotes do
+                if WITH_EXTENSIVE_LOGGING then
+                  logger.info(s"Adding close price:${quote.close} at ${formatTimestamp(quote.start_timestamp)}")
                 strategy.addQuote(quote)
+
                 if !hasEntered then
                   if strategy.shouldEnter then
                     hasEntered = true
                     entryPrice = quote.close
-                    logger.debug(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
-                      s"has entered with price:$entryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
+                    if WITH_EXTENSIVE_LOGGING then
+                      logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
+                        s"has entered with price:$entryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                 else
                   if strategy.shouldExit then
                     exitPrice = quote.close
-                    logger.debug(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
-                      s"has exited with price:$exitPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
+                    if WITH_EXTENSIVE_LOGGING then
+                      logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
+                        s"has exited with price:$exitPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                     break
             }
 
             var percentageGain = 0.0
             if entryPrice == 0.0 then
               tradesNotEnteredCounter += 1
-              logger.debug("The trade was never entered")
+              if WITH_EXTENSIVE_LOGGING then
+               logger.info("The trade was never entered")
             else
               if exitPrice == 0.0 then
                 exitPrice = quotes.last.close
-                logger.debug(s"The strategy is still active, exiting now the trade with price:$exitPrice")
+                if WITH_EXTENSIVE_LOGGING then
+                  logger.info(s"The strategy is still active, exiting now the trade with price:$exitPrice")
 
               var profits = 0.0
               if signal.isLong then
@@ -81,8 +91,9 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
                 profits = entryPrice - exitPrice
 
               percentageGain = profits * 100 / entryPrice
-              logger.debug(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${formatTimestamp(signal.timestamp)} : " +
-                s"${BigDecimal(strategy.applyLeverageToPercentageGain(percentageGain)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
+              if WITH_EXTENSIVE_LOGGING then
+                logger.debug(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${formatTimestamp(signal.timestamp)} : " +
+                  s"${BigDecimal(strategy.applyLeverageToPercentageGain(percentageGain)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
 
             logger.debug("------------------------------------------------------------------------------------------------------------------------------------------")
             strategy.applyLeverageToPercentageGain(percentageGain)

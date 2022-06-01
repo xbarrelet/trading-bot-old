@@ -150,7 +150,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "LONG: The trailing loss works after the third target is reached" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testLongSignal, 1, 10)
+    val testedStrategy: Strategy = LeveragedSS3TTL(testLongSignal, 1, 100)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val pastFirstTargetQuote = createQuoteWithPrice(151)
@@ -179,7 +179,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "SHORT: The trailing loss works after the third target is reached" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testShortSignal, 1, 10)
+    val testedStrategy: Strategy = LeveragedSS3TTL(testShortSignal, 1, 100)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val pastFirstTargetQuote = createQuoteWithPrice(149)

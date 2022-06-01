@@ -89,7 +89,7 @@ class RestActor(context: ActorContext[Message]) extends AbstractBehavior[Message
       }
     )
 
-  Http().newServerAt("0.0.0.0", 80).bind(route)
+  Http().newServerAt("0.0.0.0", 8090).bind(route)
 
   override def onMessage(message: Message): Behavior[Message] =
     this

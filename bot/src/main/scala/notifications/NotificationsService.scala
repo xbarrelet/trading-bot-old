@@ -1,16 +1,16 @@
 package ch.xavier
 package notifications
 
-import ch.xavier.Application.{executionContext, system}
+import Application.{executionContext, system}
 
 import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.*
 import akka.http.scaladsl.{Http, HttpExt}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.concurrent.Future
-import scala.util.Success
-import concurrent.duration.DurationInt
+import scala.concurrent.duration.DurationInt
+import scala.util.{Failure, Success}
 
 object NotificationsService {
   private val logger: Logger = LoggerFactory.getLogger("NotificationsService")
@@ -38,6 +38,8 @@ object NotificationsService {
           .onComplete {
             case Success(response) =>
               logger.info(s"Notification pushed with title:$title")
+            case Failure(exception) =>
+              logger.error(s"Failed to send notification with title:$title because of ${exception.getMessage}")
           }
 
       case error@_ => logger.error(s"Problem encountered when pushing title:$title with message: $message")

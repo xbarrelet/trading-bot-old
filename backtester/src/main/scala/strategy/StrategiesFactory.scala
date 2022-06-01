@@ -10,7 +10,7 @@ import org.ta4j.core.BarSeries
 import scala.::
 import scala.collection.mutable.ListBuffer
 import ch.xavier.strategy.concrete.{
-  LeveragedSS, LeveragedTL, LeveragedSSLL,
+  LeveragedSS, LeveragedTL, LeveragedSSLL, LeveragedSS3TSL,
   LeveragedSS3T, LeveragedSS3TTL, LeveragedSS3TTL2
 }
 
@@ -32,7 +32,11 @@ object StrategiesFactory {
         strategiesList += "LeveragedSimpleStrategy_with_leverage_1"
       case "SimpleStrategyWithThreeTargets" =>
         strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_1"
-
+      case "SimpleStrategyWithThreeTargetsAndTrailingLoss" =>
+        strategiesList += "LeveragedSS3TTL_with_leverage_1_and_parameter_10"
+      case "SimpleStrategyWithThreeTargetsAndStoppingLoss" =>
+        strategiesList += "LeveragedSS3TSL_with_leverage_1_and_parameter_10"
+        
       case "LeveragedSimpleStrategy" =>
         for (leverage: Int <- 1 to 50) {
           strategiesList += "LeveragedSimpleStrategy_with_leverage_" + leverage
@@ -46,8 +50,12 @@ object StrategiesFactory {
           strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
         }
       case "LeveragedSS3TTL" =>
-        for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 20) {
+        for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 50) {
           strategiesList += "LeveragedSS3TTL_with_leverage_" + leverage + "_and_percentage_" + percentage
+        }
+      case "LeveragedSS3TSL" =>
+        for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 50) {
+          strategiesList += "LeveragedSS3TSL_with_leverage_" + leverage + "_and_percentage_" + percentage
         }
       case "LeveragedSS3TTL2" =>
         for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 20; percentage2: Int <- 0 to 20) {
@@ -59,8 +67,8 @@ object StrategiesFactory {
           strategiesList += "TrailingLossSimpleStrategy_with_percentage_" + percentage + "_and_leverage_1"
         }
       case "LeveragedTrailingLossStrategy" =>
-        for (percentage: Int <- 0 to 30; leverage: Int <- 1 to 50) {
-          strategiesList += "LeveragedTrailingLossStrategy_with_percentage_" + (percentage / 10.0).toString + "_and_leverage_" + leverage
+        for (percentage: Int <- 0 to 50; leverage: Int <- 1 to 50) {
+          strategiesList += "LeveragedTrailingLossStrategy_with_percentage_" + (percentage).toString + "_and_leverage_" + leverage
         }
       case "test" =>
         strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_10"
@@ -76,6 +84,8 @@ object StrategiesFactory {
       LeveragedSS3TTL2(signal, parameters(3).toInt, parameters(6).toInt, parameters(9).toInt)
     else if strategyName.startsWith("LeveragedSS3TTL") then
       LeveragedSS3TTL(signal, parameters(3).toInt, parameters(6).toInt)
+    else if strategyName.startsWith("LeveragedSS3TSL") then
+      LeveragedSS3TSL(signal, parameters(3).toInt, parameters(6).toInt)
     else if strategyName.startsWith("LeveragedSimpleStrategy_") then
       LeveragedSS(signal, parameters(3).toInt)
     else if strategyName.startsWith("LeveragedSimpleLimitedLossStrategy_") then
