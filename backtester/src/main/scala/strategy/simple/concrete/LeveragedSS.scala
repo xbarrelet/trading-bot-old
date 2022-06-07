@@ -1,16 +1,16 @@
 package ch.xavier
-package strategy.concrete
+package strategy.simple.concrete
 
 import quote.Quote
 import signals.Signal
-import strategy.Strategy
+import strategy.simple.SimpleStrategy
 
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSS(val signal: Signal, override val leverage: Int) extends Strategy {
+class LeveragedSS(val signal: Signal, override val leverage: Int) extends SimpleStrategy {
   //TODO: I should limit the loss to 50% max, no?
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 

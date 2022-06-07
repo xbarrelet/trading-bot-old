@@ -13,8 +13,11 @@ import org.postgresql.util.PSQLException
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import ch.xavier.signals.Signal
+import org.slf4j.{Logger, LoggerFactory}
 
 object SignalsRepository {
+  private val logger: Logger = LoggerFactory.getLogger("SignalsRepository")
+
   private val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
     "jdbc:postgresql://localhost:5430/data",
@@ -28,6 +31,7 @@ object SignalsRepository {
   def getSignals(startTimestamp: Long = 1): List[Signal] =
     if cachedSignals.isEmpty then
       cachedSignals = cacheSignalsOlderThanOneMonth(startTimestamp)
+      logger.info(s"${cachedSignals.length} signals are now cached")
 
     cachedSignals
 

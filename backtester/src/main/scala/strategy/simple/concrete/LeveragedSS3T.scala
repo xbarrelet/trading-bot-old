@@ -1,16 +1,16 @@
 package ch.xavier
-package strategy.concrete
+package strategy.simple.concrete
 
 import quote.Quote
 import signals.Signal
-import strategy.Strategy
+import strategy.simple.SimpleStrategy
 
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSS3TSL(val signal: Signal, override val leverage: Int, acceptedLossPercentage: Int) extends Strategy {
+class LeveragedSS3T(val signal: Signal, override val leverage: Int) extends SimpleStrategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -19,10 +19,9 @@ class LeveragedSS3TSL(val signal: Signal, override val leverage: Int, acceptedLo
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
 
-  var acceptedLossReachedRule: Rule = OverIndicatorRule(closePriceIndicator, 999999999)
-
   var secondTargetReached = false
   var thirdTargetReached = false
+
 
   def shouldEnter: Boolean =
     if entryPriceReachedRule.isSatisfied(series.getEndIndex) then
@@ -34,12 +33,8 @@ class LeveragedSS3TSL(val signal: Signal, override val leverage: Int, acceptedLo
 
         if signal.isLong then
           liquiditationPrice = signal.stopLoss.max(entryPrice * (1 - initialMargin))
-          val acceptedLossInterval = (entryPrice - liquiditationPrice) * (acceptedLossPercentage / 1000)
-          acceptedLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, entryPrice - acceptedLossInterval)
         else
           liquiditationPrice = signal.stopLoss.min(entryPrice * (1 + initialMargin))
-          val acceptedLossInterval = (liquiditationPrice - entryPrice) * (acceptedLossPercentage / 1000)
-          acceptedLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, entryPrice + acceptedLossInterval)
 
         stopLossReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
         else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
@@ -48,8 +43,7 @@ class LeveragedSS3TSL(val signal: Signal, override val leverage: Int, acceptedLo
     else
       false
 
-  def shouldExit: Boolean =
-    stopLossReachedRule.isSatisfied(series.getEndIndex) || acceptedLossReachedRule.isSatisfied(series.getEndIndex)
+  def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex)
 
 
   override def addQuote(quote: Quote): Unit = 

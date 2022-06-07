@@ -33,20 +33,11 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
 
   context.log.info("The backtester is starting, now caching or fetching the quotes for each signal")
 
-  //TODO: Strat when trailing loss detected you sell or buy short and when trailing gain detected you long again until you reach the targets
-  // Or sell after x number of negative quotes? or amount-based? Or also check volume?
-  // When you reach a target do you go back down until a resistance or level or whatever? How can you detect that?
-  // also to consider only second or third target
-
-  val backtestedStrategies: List[String] = List("LeveragedTrailingLossStrategy")
-//  val backtestedStrategies: List[String] = List("SimpleStrategyWithThreeTargetsAndTrailingLoss")
-//  val backtestedStrategies: List[String] = List("SimpleStrategyWithThreeTargetsAndStoppingLoss")
+  val backtestedStrategies: List[String] = List("AdvancedTrailingLossReversalStrat")
+//  val backtestedStrategies: List[String] = List("SimpleStrategyWithThreeTargets")
 //  val backtestedStrategies: List[String] = List("LeveragedSS3TSL", "LeveragedSimpleStrategyWithThreeTargets")
   //LeveragedSS3TTL2 -> no benefit, check stoploss instead
 
-  //  val backtestedStrategies: List[String] = List("test")
-
-//  Source(signalsRepository.getSignals(startTimestamp = 1641011872))
   Source(signalsRepository.getSignals(startTimestamp = 1641011872))
     .mapAsync(4)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
     .runWith(Sink.last)

@@ -1,17 +1,17 @@
 package ch.xavier
-package strategy.concrete
+package strategy.advanced.concrete
 
 import quote.Quote
 import signals.Signal
-import strategy.Strategy
+import strategy.simple.SimpleStrategy
 
+import ch.xavier.strategy.advanced.AdvancedStrategy
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-// After testing this this added feature doesn't provide any benefit
-class LeveragedSS3TTL2(val signal: Signal, override val leverage: Int, val tradingLossPercentage: Int, marginBelowThresholds: Int) extends Strategy {
+class AdvancedLeveragedSS3T(val signal: Signal, override val leverage: Int) extends AdvancedStrategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -20,12 +20,8 @@ class LeveragedSS3TTL2(val signal: Signal, override val leverage: Int, val tradi
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
 
-  var trailingLossAfterThirdTargetReachedRule: Rule = OverIndicatorRule(closePriceIndicator, 999999999)
-
   var secondTargetReached = false
   var thirdTargetReached = false
-
-  var peakPrice: Double = signal.entryPrice
 
 
   def shouldEnter: Boolean =
@@ -48,36 +44,34 @@ class LeveragedSS3TTL2(val signal: Signal, override val leverage: Int, val tradi
     else
       false
 
-  def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex) || trailingLossAfterThirdTargetReachedRule.isSatisfied(series.getEndIndex)
+  def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex)
 
 
   override def addQuote(quote: Quote): Unit = 
     super.addQuote(quote)
 
     if signal.isLong then
-      if quote.close > peakPrice then
-        peakPrice = quote.close
-
       if quote.close > signal.thirdTargetPrice then
         thirdTargetReached = true
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (1 - (marginBelowThresholds / 100)) * signal.thirdTargetPrice)
-        trailingLossAfterThirdTargetReachedRule = CrossedDownIndicatorRule(closePriceIndicator, ((100.0 - tradingLossPercentage) * peakPrice) / 100.0)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
       else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (1 - (marginBelowThresholds / 100)) * signal.secondTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = CrossedDownIndicatorRule(closePriceIndicator, (1 - (marginBelowThresholds / 100)) * signal.firstTargetPrice)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
     else
-      if quote.close < peakPrice then
-        peakPrice = quote.close
-
       if quote.close < signal.thirdTargetPrice then
         thirdTargetReached = true
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (1 + (marginBelowThresholds / 100)) * signal.thirdTargetPrice)
-        trailingLossAfterThirdTargetReachedRule = CrossedUpIndicatorRule(closePriceIndicator, ((100.0 + tradingLossPercentage) * peakPrice) / 100.0)
+        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
       else if quote.close < signal.secondTargetPrice && !thirdTargetReached then
         secondTargetReached = true
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (1 + (marginBelowThresholds / 100)) * signal.secondTargetPrice)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
       else if quote.close < signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, (1 + (marginBelowThresholds / 100)) * signal.firstTargetPrice)
+        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+
+  def shouldBuyLong: Boolean =
+    false
+
+  def shouldBuyShort: Boolean =
+    false
 }

@@ -1,5 +1,5 @@
 package ch.xavier
-package strategy
+package strategy.simple
 
 import quote.Quote
 
@@ -8,7 +8,7 @@ import org.ta4j.core.{BarSeries, BaseBar, BaseBarSeriesBuilder}
 
 import java.time.{Duration, Instant, ZoneId, ZonedDateTime}
 
-trait Strategy() {
+trait SimpleStrategy() {
   def shouldEnter: Boolean
   def shouldExit: Boolean
   

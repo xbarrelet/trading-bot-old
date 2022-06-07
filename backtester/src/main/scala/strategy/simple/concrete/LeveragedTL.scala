@@ -1,16 +1,16 @@
 package ch.xavier
-package strategy.concrete
+package strategy.simple.concrete
 
 import quote.Quote
 import signals.Signal
-import strategy.Strategy
+import strategy.simple.SimpleStrategy
 
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedTL(val signal: Signal, percentage: Double, override val leverage: Int) extends Strategy {
+class LeveragedTL(val signal: Signal, percentage: Double, override val leverage: Int) extends SimpleStrategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)

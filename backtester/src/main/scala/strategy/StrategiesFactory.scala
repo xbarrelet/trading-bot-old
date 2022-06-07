@@ -2,17 +2,17 @@ package ch.xavier
 package strategy
 
 import signals.Signal
+import strategy.simple.*
+import strategy.simple.concrete.*
+import strategy.advanced.concrete.*
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
+import ch.xavier.strategy.advanced.AdvancedStrategy
 import org.ta4j.core.BarSeries
 
 import scala.::
 import scala.collection.mutable.ListBuffer
-import ch.xavier.strategy.concrete.{
-  LeveragedSS, LeveragedTL, LeveragedSSLL, LeveragedSS3TSL,
-  LeveragedSS3T, LeveragedSS3TTL, LeveragedSS3TTL2
-}
 
 object StrategiesFactory {
 
@@ -21,8 +21,8 @@ object StrategiesFactory {
 
     for (strategyName <- strategyNames) do
       names = names ++ getStrategieVariantsName(strategyName)
-
-    names
+      
+    names.distinct
 
   def getStrategieVariantsName(strategyName: String): List[String] =
     val strategiesList: ListBuffer[String] = ListBuffer()
@@ -45,10 +45,10 @@ object StrategiesFactory {
         for (leverage: Int <- 1 to 50; lossPercentage: Int <- 0 to 75) {
           strategiesList += "LeveragedSimpleLimitedLossStrategy_with_leverage_" + leverage + "_and_lossPercentage_" + lossPercentage
         }
-      case "LeveragedSimpleStrategyWithThreeTargets" =>
-        for (leverage: Int <- 1 to 50) {
-          strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
-        }
+//      case "LeveragedSimpleStrategyWithThreeTargets" =>
+//        for (leverage: Int <- 1 to 50 if leverage % 10 == 0) {
+//          strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
+//        }
       case "LeveragedSS3TTL" =>
         for (leverage: Int <- 1 to 50; percentage: Int <- 1 to 50) {
           strategiesList += "LeveragedSS3TTL_with_leverage_" + leverage + "_and_percentage_" + percentage
@@ -67,15 +67,24 @@ object StrategiesFactory {
           strategiesList += "TrailingLossSimpleStrategy_with_percentage_" + percentage + "_and_leverage_1"
         }
       case "LeveragedTrailingLossStrategy" =>
-        for (percentage: Int <- 0 to 50; leverage: Int <- 1 to 50) {
-          strategiesList += "LeveragedTrailingLossStrategy_with_percentage_" + (percentage).toString + "_and_leverage_" + leverage
+        for (percentage: Int <- 0 to 50; leverage: Int <- 1 to 50 if leverage % 10 == 0) {
+          strategiesList += "LeveragedTrailingLossStrategy_with_percentage_" + percentage.toString + "_and_leverage_" + leverage
         }
-      case "test" =>
-        strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_10"
+      case "LeveragedSS3TFlexibleStoploss" =>
+        for (percentage: Int <- 0 to 80; leverage: Int <- 1 to 50 if leverage % 10 == 0) {
+          strategiesList += "LeveragedSS3TFlexibleStoploss_with_leverage_" + leverage + "_and_percentage_" + percentage
+        }
+      case "AdvancedTrailingLossReversalStrat" =>
+        strategiesList += "AdvancedTrailingLossReversalStrat"
     }
+
+    for (leverage: Int <- 1 to 50 if leverage % 10 == 0) {
+      strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
+    }
+
     strategiesList.toList
 
-  def getStrategyFromName(strategyName: String, signal: Signal): Strategy =
+  def getStrategyFromName(strategyName: String, signal: Signal): SimpleStrategy =
     val parameters: Array[String] = strategyName.split("_")
 
     if strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets_") then
@@ -93,7 +102,21 @@ object StrategiesFactory {
 
     else if strategyName.startsWith("LeveragedTrailingLossStrategy_with_percentage_") then
       LeveragedTL(signal, parameters(3).toDouble, parameters(6).toInt)
+    else if strategyName.startsWith("LeveragedSS3TFlexibleStoploss_") then
+      LeveragedSS3TFlexibleStoploss(signal, parameters(3).toInt, parameters(6).toInt)
     else
       println("Strategy name not recognized, returning Simple Strategy")
       LeveragedSS(signal, 1)
+
+
+  def getAdvancedStrategyFromName(strategyName: String, signal: Signal): AdvancedStrategy =
+    val parameters: Array[String] = strategyName.split("_")
+
+    if strategyName.startsWith("AdvancedTrailingLossReversalStrat") then
+      AdvancedTrailingLossReversalStrat(signal, 10)
+    else if strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets_") then
+      AdvancedLeveragedSS3T(signal, parameters(3).toInt)
+    else
+      println("Strategy name not recognized, returning default Advanced Strategy")
+      AdvancedTrailingLossReversalStrat(signal, 10)
 }

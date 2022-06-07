@@ -1,9 +1,11 @@
 package ch.xavier
-package strategy
+package strategy.simple
 
 import Application.{executionContext, system}
 import quote.{Quote, QuotesRepository}
 import signals.{Signal, SignalsRepository}
+import strategy.simple.{SimpleStrategy, SimpleStrategyBacktesterActor}
+import strategy.StrategiesFactory
 
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
@@ -18,18 +20,18 @@ import scala.concurrent.Future
 import scala.util.control.Breaks.{break, breakable}
 import scala.util.{Failure, Success}
 
-object StrategyBacktesterActor {
+object SimpleStrategyBacktesterActor {
   def apply(): Behavior[Message] =
-    Behaviors.setup(context => new StrategyBacktesterActor(context))
+    Behaviors.setup(context => new SimpleStrategyBacktesterActor(context))
 }
 
-class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+class SimpleStrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val quotesRepository: QuotesRepository.type = QuotesRepository
   val signalsRepository: SignalsRepository.type = SignalsRepository
   val strategiesFactory: StrategiesFactory.type = StrategiesFactory
   val logger: Logger = LoggerFactory.getLogger("StrategyBacktesterActor")
 
-  val WITH_EXTENSIVE_LOGGING = false
+  val WITH_EXTENSIVE_LOGGING = true
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
@@ -41,7 +43,7 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
 
         Source(signals)
           .map(signal => {
-            val strategy: Strategy = strategiesFactory.getStrategyFromName(strategyName, signal)
+            val strategy: SimpleStrategy = strategiesFactory.getStrategyFromName(strategyName, signal)
             val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
 
             var hasEntered = false
@@ -53,8 +55,8 @@ class StrategyBacktesterActor(context: ActorContext[Message]) extends AbstractBe
 
             breakable {
               for quote: Quote <- quotes do
-                if WITH_EXTENSIVE_LOGGING then
-                  logger.info(s"Adding close price:${quote.close} at ${formatTimestamp(quote.start_timestamp)}")
+//                if WITH_EXTENSIVE_LOGGING then
+//                  logger.info(s"Adding close price:${quote.close} at ${formatTimestamp(quote.start_timestamp)}")
                 strategy.addQuote(quote)
 
                 if !hasEntered then

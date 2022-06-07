@@ -2,8 +2,8 @@ package strategy.concrete
 
 import ch.xavier.quote.Quote
 import ch.xavier.signals.Signal
-import ch.xavier.strategy.Strategy
-import ch.xavier.strategy.concrete.LeveragedSS3TTL
+import ch.xavier.strategy.simple.SimpleStrategy
+import ch.xavier.strategy.simple.concrete.LeveragedSS3TTL
 import org.scalatest.flatspec.AnyFlatSpec
 import strategy.StrategySpec
 
@@ -30,7 +30,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "LONG: set the stopLoss at the first target price if it goes above it" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testLongSignal, 1, 10)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testLongSignal, 1, 10)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val pastFirstTargetQuote = createQuoteWithPrice(151)
@@ -48,7 +48,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "SHORT: set the stopLoss at the first target price if it goes below it" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testShortSignal, 1, 10)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testShortSignal, 1, 10)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val pastFirstTargetQuote = createQuoteWithPrice(149)
@@ -66,7 +66,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "LONG: set the stopLoss at the second target price if it goes above it" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testLongSignal, 1, 10)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testLongSignal, 1, 10)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val pastFirstTargetQuote = createQuoteWithPrice(151)
@@ -86,7 +86,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "SHORT: set the stopLoss at the second target price if it goes below it" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testShortSignal, 1, 10)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testShortSignal, 1, 10)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val pastFirstTargetQuote = createQuoteWithPrice(149)
@@ -106,7 +106,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "LONG: set the stopLoss at the third target price if it goes above it" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testLongSignal, 1, 10)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testLongSignal, 1, 10)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val pastFirstTargetQuote = createQuoteWithPrice(151)
@@ -128,7 +128,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "SHORT: set the stopLoss at the third target price if it goes below it" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testShortSignal, 1, 10)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testShortSignal, 1, 10)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val pastFirstTargetQuote = createQuoteWithPrice(149)
@@ -150,7 +150,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "LONG: The trailing loss works after the third target is reached" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testLongSignal, 1, 100)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testLongSignal, 1, 100)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val pastFirstTargetQuote = createQuoteWithPrice(151)
@@ -179,7 +179,7 @@ class LeveragedSS3TTLAfter3TargetsSpec extends StrategySpec {
 
   it should "SHORT: The trailing loss works after the third target is reached" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSS3TTL(testShortSignal, 1, 100)
+    val testedStrategy: SimpleStrategy = LeveragedSS3TTL(testShortSignal, 1, 100)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val pastFirstTargetQuote = createQuoteWithPrice(149)

@@ -2,8 +2,8 @@ package strategy.concrete
 
 import ch.xavier.quote.Quote
 import ch.xavier.signals.Signal
-import ch.xavier.strategy.Strategy
-import ch.xavier.strategy.concrete.LeveragedSSLL
+import ch.xavier.strategy.simple.SimpleStrategy
+import ch.xavier.strategy.simple.concrete.LeveragedSSLL
 import org.scalatest.flatspec.AnyFlatSpec
 import strategy.StrategySpec
 
@@ -28,7 +28,7 @@ class LeveragedLLSpec extends StrategySpec {
 
   it should "LONG: strategy exits if price immediately goes under 3% of entry price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSSLL(testLongSignal, 3, 1)
+    val testedStrategy: SimpleStrategy = LeveragedSSLL(testLongSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val stayAboveThreshold = createQuoteWithPrice(98)
@@ -49,7 +49,7 @@ class LeveragedLLSpec extends StrategySpec {
 
   it should "SHORT: strategy exits if price immediately goes above 3% of entry price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSSLL(testShortSignal, 3, 1)
+    val testedStrategy: SimpleStrategy = LeveragedSSLL(testShortSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val stayUnderThreshold = createQuoteWithPrice(204)
@@ -70,7 +70,7 @@ class LeveragedLLSpec extends StrategySpec {
 
   it should "LONG: strategy exits if price rises up then goes under 3% of peak price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSSLL(testLongSignal, 3, 1)
+    val testedStrategy: SimpleStrategy = LeveragedSSLL(testLongSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val peakPriceQuote: Quote = createQuoteWithPrice(150)
@@ -93,7 +93,7 @@ class LeveragedLLSpec extends StrategySpec {
 
   it should "SHORT: strategy exits if price rises up then goes above 3% of peak price" in {
     // GIVEN
-    val testedStrategy: Strategy = LeveragedSSLL(testShortSignal, 3, 1)
+    val testedStrategy: SimpleStrategy = LeveragedSSLL(testShortSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val peakPriceQuote: Quote = createQuoteWithPrice(150)
@@ -122,7 +122,7 @@ class LeveragedLLSpec extends StrategySpec {
       true, //Long
       99, // SL
       "TEST_SYMBOL", 1640995200)
-    val testedStrategy: Strategy = LeveragedSSLL(testSignal, 3, 1)
+    val testedStrategy: SimpleStrategy = LeveragedSSLL(testSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(101)
     val goesUnderStoplossQuote = createQuoteWithPrice(98)
@@ -143,7 +143,7 @@ class LeveragedLLSpec extends StrategySpec {
       false, //Long
       201, // SL
       "TEST_SYMBOL", 1640995200)
-    val testedStrategy: Strategy = LeveragedSSLL(testSignal, 3, 1)
+    val testedStrategy: SimpleStrategy = LeveragedSSLL(testSignal, 3, 1)
 
     val entryQuote: Quote = createQuoteWithPrice(199)
     val goesAboveStoplossQuote = createQuoteWithPrice(202)

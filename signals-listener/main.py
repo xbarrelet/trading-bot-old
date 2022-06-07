@@ -86,6 +86,6 @@ if __name__ == '__main__':
                         signal['isLong'] = signal["entryPrice"] < signal["firstTargetPrice"]
 
                 logging.info(f"Received signal from alt_chica:{signal}")
-                requests.post('http://localhost:8080/signal', json=signal)
+                requests.post('http://localhost:8090/signal', json=signal)
 
     app.run()
