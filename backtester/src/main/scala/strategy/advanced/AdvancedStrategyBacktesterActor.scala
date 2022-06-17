@@ -33,7 +33,7 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
   val strategiesFactory: StrategiesFactory.type = StrategiesFactory
   val logger: Logger = LoggerFactory.getLogger("AdvancedStrategyBacktesterActor")
 
-  val WITH_EXTENSIVE_LOGGING = true
+  var WITH_EXTENSIVE_LOGGING = false
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
@@ -45,6 +45,8 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
         Source(signals)
           .map(signal => {
             val strategy: AdvancedStrategy = strategiesFactory.getAdvancedStrategyFromName(strategyName, signal)
+//            if strategyName != "AdvancedMultiplePositionsLeveragedSS3T_with_leverage_10" then
+//              WITH_EXTENSIVE_LOGGING = false
             val quotes: List[Quote] = quotesRepository.getQuotes(signal.symbol, signal.timestamp)
 
             var entryPrice = 0.0
@@ -78,10 +80,24 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                       hasShortPositionOpened = true
 
                     if WITH_EXTENSIVE_LOGGING then
-                      logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
+                      logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} " +
                         s"has entered with price:$currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                 else
                   if strategy.shouldBuyLong && !hasLongPositionOpened then
+                    hasLongPositionOpened = true
+                    currentEntryPrice = quote.close
+                    if WITH_EXTENSIVE_LOGGING then
+                      logger.info(s"Buying long position for strat:$strategyName with signal symbol:${signal.symbol} " +
+                        s"at price $currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
+
+                  if strategy.shouldBuyShort && !hasShortPositionOpened then
+                    hasShortPositionOpened = true
+                    currentEntryPrice = quote.close
+                    if WITH_EXTENSIVE_LOGGING then
+                      logger.info(s"Buying short position for strat:$strategyName with signal symbol:${signal.symbol} " +
+                        s"at price $currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
+
+                  if strategy.shouldExitCurrentTrade then
                     if hasShortPositionOpened then
                       currentExitPrice = quote.close
                       currentProfit += currentEntryPrice - currentExitPrice
@@ -89,13 +105,9 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
 
                       hasShortPositionOpened = false
                       if WITH_EXTENSIVE_LOGGING then
-                        logger.info(s"Closing short position for strat:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
-                          s"has exited with price:$currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}, current profit:$currentProfit")
+                        logger.info(s"Closing short position for strat:$strategyName with signal symbol:${signal.symbol} " +
+                          s"has exited with price:${quote.close} at start_timestamp:${formatTimestamp(quote.start_timestamp)}, current profit:$currentProfit")
 
-                    hasLongPositionOpened = true
-                    currentEntryPrice = quote.close
-
-                  if strategy.shouldBuyShort && !hasShortPositionOpened then
                     if hasLongPositionOpened then
                       currentExitPrice = quote.close
                       currentProfit += currentExitPrice - currentEntryPrice
@@ -103,11 +115,8 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
 
                       hasLongPositionOpened = false
                       if WITH_EXTENSIVE_LOGGING then
-                        logger.info(s"Closing long position for strat:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
-                          s"has exited with price:$currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}, current profit:$currentProfit")
-
-                    hasShortPositionOpened = true
-                    currentEntryPrice = quote.close
+                        logger.info(s"Closing long position for strat:$strategyName with signal symbol:${signal.symbol} " +
+                          s"has exited with price:${quote.close} at start_timestamp:${formatTimestamp(quote.start_timestamp)}, current profit:$currentProfit")
 
                   if strategy.shouldExit then
                     exitPrice = quote.close
@@ -123,8 +132,8 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                     hasShortPositionOpened = false
 
                     if WITH_EXTENSIVE_LOGGING then
-                      logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} and timestamp:${signal.timestamp} " +
-                        s"has exited with price:$currentExitPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
+                      logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} " +
+                        s"has exited with price:${quote.close} at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                     break
             }
 
@@ -140,22 +149,22 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
               if hasLongPositionOpened then
                 currentProfit += quotes.last.close - currentEntryPrice
 
-              if exitPrice == 0.0 then
-                exitPrice = quotes.last.close
-                if signal.isLong then
-                  currentProfit = exitPrice - entryPrice
-                else
-                  currentProfit = entryPrice - exitPrice
-
-                if WITH_EXTENSIVE_LOGGING then
-                  logger.info(s"The strategy $strategyName is still active, exiting now the trade with price:$exitPrice")
+//              if exitPrice == 0.0 then
+//                exitPrice = quotes.last.close
+//                if signal.isLong then
+//                  currentProfit = exitPrice - entryPrice
+//                else
+//                  currentProfit = entryPrice - exitPrice
+//
+//                if WITH_EXTENSIVE_LOGGING then
+//                  logger.info(s"The strategy $strategyName is still active, exiting now the trade with price:$exitPrice")
 
             percentageGain = currentProfit * 100 / entryPrice
-            if WITH_EXTENSIVE_LOGGING then
-              logger.debug(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${formatTimestamp(signal.timestamp)} : " +
-                s"${BigDecimal(strategy.applyLeverageToPercentageGain(percentageGain)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
+//            if WITH_EXTENSIVE_LOGGING then
+//              logger.info(s"Percentage gained with signal symbol:${signal.symbol} and timestamp:${formatTimestamp(signal.timestamp)} : " +
+//                s"${BigDecimal(strategy.applyLeverageToPercentageGain(percentageGain)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble}%")
+//              logger.info("------------------------------------------------------------------------------------------------------------------------------------------")
 
-            logger.debug("------------------------------------------------------------------------------------------------------------------------------------------")
             strategy.applyLeverageToPercentageGain(percentageGain)
           })
           .reduce((acc, element) => acc + element)

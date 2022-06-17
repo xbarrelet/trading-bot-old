@@ -2,11 +2,11 @@ package ch.xavier
 package strategy
 
 import signals.Signal
-import strategy.concrete.LeveragedSS3TTL
 
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.{Logger, LoggerFactory}
 import org.ta4j.core.BarSeries
+import strategy.concrete.AdvancedMultiplePositionsLeveragedSS3T
 
 import scala.::
 import scala.collection.mutable.ListBuffer
@@ -18,6 +18,6 @@ object StrategiesFactory {
   logger.info(s"Starting strategies factory with a leverage of $leverage")
 
 
-  def getCurrentStrategy(signal: Signal): Strategy =
-    LeveragedSS3TTL(signal, leverage, 1)
+  def getCurrentStrategy(signal: Signal): AdvancedStrategy =
+    AdvancedMultiplePositionsLeveragedSS3T(signal, leverage)
 }

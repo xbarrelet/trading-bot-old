@@ -5,6 +5,7 @@ import signals.Signal
 import strategy.simple.*
 import strategy.simple.concrete.*
 import strategy.advanced.concrete.*
+import strategy.advanced.trendReversal.*
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
@@ -76,11 +77,19 @@ object StrategiesFactory {
         }
       case "AdvancedTrailingLossReversalStrat" =>
         strategiesList += "AdvancedTrailingLossReversalStrat"
+
+      case "AdvancedMultiplePositionsLeveragedSS3T" =>
+        for (leverage: Int <- 1 to 50  if leverage == 10) {
+          strategiesList += "AdvancedMultiplePositionsLeveragedSS3T_with_leverage_" + leverage
+        }
+
+      case "CrossEMATRStrategy" =>
+        strategiesList += "CrossEMATRStrategy"
     }
 
-    for (leverage: Int <- 1 to 50 if leverage % 10 == 0) {
-      strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
-    }
+//    for (leverage: Int <- 1 to 50 if leverage == 10) {
+//      strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
+//    }
 
     strategiesList.toList
 
@@ -113,10 +122,14 @@ object StrategiesFactory {
     val parameters: Array[String] = strategyName.split("_")
 
     if strategyName.startsWith("AdvancedTrailingLossReversalStrat") then
-      AdvancedTrailingLossReversalStrat(signal, 10)
+      AdvancedTrailingLossReversalStrat(signal, 10, 1)
     else if strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets_") then
-      AdvancedLeveragedSS3T(signal, parameters(3).toInt)
+      AdvancedDefaultLeveragedSS3T(signal, parameters(3).toInt)
+    else if strategyName.startsWith("AdvancedMultiplePositionsLeveragedSS3T") then
+      AdvancedMultiplePositionsLeveragedSS3T(signal, parameters(3).toInt)
+    else if strategyName.startsWith("CrossEMATRStrategy") then
+      CrossEMATRStrategy(10)
     else
-      println("Strategy name not recognized, returning default Advanced Strategy")
-      AdvancedTrailingLossReversalStrat(signal, 10)
+      println("Strategy name not recognized, returning default 3 targets strat")
+      AdvancedDefaultLeveragedSS3T(signal, 1)
 }

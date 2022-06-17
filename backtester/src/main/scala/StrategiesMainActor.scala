@@ -42,13 +42,16 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
           .runWith(Sink.last)
           .onComplete {
             case Success(result) =>
+              logger.info("")
               logger.info("CONTROL:")
-              results.filter(result => result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets") || result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
+              results.filter(result => result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
                 .foreach(result => logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%"))
               logger.info("")
               
               logger.info("The 30 best results are:")
-              results = results.sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
+              results = results
+                .filter(result => !result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
+                .sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
               for result <- results do
                 logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
 

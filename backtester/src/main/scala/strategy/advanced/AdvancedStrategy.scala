@@ -13,6 +13,7 @@ trait AdvancedStrategy() {
   def shouldExit: Boolean
   def shouldBuyLong: Boolean
   def shouldBuyShort: Boolean
+  def shouldExitCurrentTrade: Boolean
   
   val series: BarSeries = BaseBarSeriesBuilder().withNumTypeOf(DoubleNum.valueOf(_)).build
   def addQuote(quote: Quote): Unit =

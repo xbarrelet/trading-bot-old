@@ -30,10 +30,12 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
   override def onMessage(message: Message): Behavior[Message] =
     message match {
       case FetchLastQuoteMessage(symbol: String, replyTo: ActorRef[Message]) =>
-        val lastMinuteTimestampInSecond: Long = Instant.now.getEpochSecond - 60
+        var lastMinuteTimestampInSecond: Long = Instant.now.getEpochSecond - 60
+        if symbol.equals("LTC") || symbol.equals("LINK") then
+          lastMinuteTimestampInSecond = Instant.now.getEpochSecond - 90
 
-        val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri =
-          urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", lastMinuteTimestampInSecond.toString)))
+        val url = urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", lastMinuteTimestampInSecond.toString)
+        val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri = url))
 
         response.map {
           case response@HttpResponse(StatusCodes.OK, _, _, _) =>
@@ -54,8 +56,9 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
                       symbol
                     ))
                 case Failure(failure) =>
-                  logger.error(s"Couldn't fetch quote for symbol:$symbol, let's wait 1 more minute for the next one")
+                  logger.error(s"Couldn't fetch quote for symbol:$symbol with url:$url, let's wait 1 more minute for the next one")
                   replyTo ! QuoteFetchedMessage(Quote(0, 0, 0, 0, 0, "EMPTY"))
+                  //TODO: Or schedule ici un nouveau message dans 5 seconds avec meme params pour self send
               }
           case _ => logger.error(s"Problem encountered when fetching the quotes for $symbol and timestamp $lastMinuteTimestampInSecond")
         }

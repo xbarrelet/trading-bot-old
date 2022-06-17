@@ -13,6 +13,7 @@ trait AdvancedStrategy() {
   def shouldExit: Boolean
   def shouldBuyLong: Boolean
   def shouldBuyShort: Boolean
+  def shouldExitCurrentTrade: Boolean
   
   val series: BarSeries = BaseBarSeriesBuilder().withNumTypeOf(DoubleNum.valueOf(_)).build
   def addQuote(quote: Quote): Unit =
@@ -28,4 +29,7 @@ trait AdvancedStrategy() {
     }
     catch
       case e: IllegalArgumentException => //In case we add the same quote twice
+
+  val leverage: Int = 1
+  def applyLeverageToPercentageGain(percentageGain: Double): Double = percentageGain * leverage
 }

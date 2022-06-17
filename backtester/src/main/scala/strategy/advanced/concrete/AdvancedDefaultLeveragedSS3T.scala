@@ -11,7 +11,7 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class AdvancedLeveragedSS3T(val signal: Signal, override val leverage: Int) extends AdvancedStrategy {
+class AdvancedDefaultLeveragedSS3T(val signal: Signal, override val leverage: Int) extends AdvancedStrategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -73,5 +73,8 @@ class AdvancedLeveragedSS3T(val signal: Signal, override val leverage: Int) exte
     false
 
   def shouldBuyShort: Boolean =
+    false
+    
+  def shouldExitCurrentTrade: Boolean =
     false
 }

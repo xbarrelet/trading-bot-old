@@ -1,16 +1,17 @@
 package ch.xavier
-package strategy.concrete
+package strategy.advanced.concrete
 
 import quote.Quote
 import signals.Signal
-import strategy.Strategy
+import strategy.advanced.AdvancedStrategy
+import strategy.simple.SimpleStrategy
 
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val leverage: Int) extends Strategy {
+class AdvancedEMAReversalStrat(val signal: Signal, override val leverage: Int, val shortEMA: Int, val longEMA: Int) extends AdvancedStrategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -19,9 +20,12 @@ class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val l
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
 
-  var secondTargetReached = false
-  var thirdTargetReached = false
-
+  var highestPrice = 0.0
+  var lowestPrice = 0.0
+  var currentTradeEntryPrice = 0.0
+  var currentTradeStopLoss = 0.0
+  var isCurrentTradeLong = false
+  var isCurrentTradeShort = false
 
   def shouldEnter: Boolean =
     if entryPriceReachedRule.isSatisfied(series.getEndIndex) then
@@ -46,25 +50,40 @@ class LeveragedSimpleStrategyWithThreeTargets(val signal: Signal, override val l
   def shouldExit: Boolean = stopLossReachedRule.isSatisfied(series.getEndIndex)
 
 
-  override def addQuote(quote: Quote): Unit = 
+  override def addQuote(quote: Quote): Unit =
     super.addQuote(quote)
 
     if signal.isLong then
       if quote.close > signal.thirdTargetPrice then
-        thirdTargetReached = true
         stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
-      else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
-        secondTargetReached = true
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
-      else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
     else
       if quote.close < signal.thirdTargetPrice then
-        thirdTargetReached = true
         stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
-      else if quote.close < signal.secondTargetPrice && !thirdTargetReached then
-        secondTargetReached = true
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
-      else if quote.close < signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+
+    if isCurrentTradeLong then
+      if quote.close > highestPrice then
+        highestPrice = quote.close
+
+    if isCurrentTradeShort then
+      if quote.close < lowestPrice then
+        lowestPrice = quote.close
+
+  def shouldBuyLong: Boolean =
+    if !isCurrentTradeLong then
+      return true
+    false
+
+  def shouldBuyShort: Boolean =
+    false
+
+  def shouldExitCurrentTrade: Boolean =
+    if isCurrentTradeLong && series.getLastBar.getClosePrice.doubleValue() < currentTradeStopLoss then
+      isCurrentTradeLong = false
+      return true
+
+    if isCurrentTradeShort && series.getLastBar.getClosePrice.doubleValue() > currentTradeStopLoss then
+      isCurrentTradeShort = false
+      return true
+
+    false
 }

@@ -84,7 +84,6 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
             val orderToClose: Order = activePositions(symbol)
 
             bybitApi.closePosition(activePositions(symbol))
-            activePositions = activePositions - symbol
 
             var profits: Double = 0.0
             if orderToClose.isLongOrder then
@@ -93,9 +92,9 @@ class TradingActor(context: ActorContext[Message]) extends AbstractBehavior[Mess
               profits = orderToClose.startClosePrice - stopPrice
             val percentageGain: Double = profits * 100 / orderToClose.startClosePrice
 
-            notificationsService.pushMessage(s"Position closed for order:${activePositions(symbol).toString}. " +
-              s"Percentage gain:${percentageGain * 10}, start price:${activePositions(symbol).startClosePrice}, close price:$stopPrice",
-              s"Position for $symbol closed")
+//            notificationsService.pushMessage(s"Position closed for symbol:${activePositions(symbol).toString}. Percentage gain:${percentageGain * 10}, start price:${activePositions(symbol).startClosePrice}, close price:$stopPrice",
+//              s"Position for $symbol closed")
+            activePositions = activePositions - symbol
 
     this
 }

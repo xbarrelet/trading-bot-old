@@ -11,8 +11,7 @@ import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, Ov
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class AdvancedTrailingLossReversalStrat(val signal: Signal, override val leverage: Int) extends AdvancedStrategy {
-  //TODO: Get the last 2 30min (15?) quotes and check if up or down, then wait if needed to enter
+class AdvancedTrailingLossReversalStrat(val signal: Signal, override val leverage: Int, val tradingLossPercentage: Int) extends AdvancedStrategy {
   val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
 
   val entryPriceReachedRule: Rule = if signal.isLong then OverIndicatorRule(closePriceIndicator, signal.entryPrice)
@@ -21,9 +20,12 @@ class AdvancedTrailingLossReversalStrat(val signal: Signal, override val leverag
   var stopLossReachedRule: Rule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, signal.stopLoss)
   else CrossedUpIndicatorRule(closePriceIndicator, signal.stopLoss)
 
-  var secondTargetReached = false
-  var thirdTargetReached = false
-
+  var highestPrice = 0.0
+  var lowestPrice = 0.0
+  var currentTradeEntryPrice = 0.0
+  var currentTradeStopLoss = 0.0
+  var isCurrentTradeLong = false
+  var isCurrentTradeShort = false
 
   def shouldEnter: Boolean =
     if entryPriceReachedRule.isSatisfied(series.getEndIndex) then
@@ -35,8 +37,12 @@ class AdvancedTrailingLossReversalStrat(val signal: Signal, override val leverag
 
         if signal.isLong then
           liquiditationPrice = signal.stopLoss.max(entryPrice * (1 - initialMargin))
+          isCurrentTradeLong = true
+          currentTradeStopLoss = entryPrice - (tradingLossPercentage * entryPrice / 100)
         else
           liquiditationPrice = signal.stopLoss.min(entryPrice * (1 + initialMargin))
+          isCurrentTradeShort = true
+          currentTradeStopLoss = entryPrice + (tradingLossPercentage * entryPrice / 100)
 
         stopLossReachedRule = if signal.isLong then CrossedDownIndicatorRule(closePriceIndicator, liquiditationPrice)
         else CrossedUpIndicatorRule(closePriceIndicator, liquiditationPrice)
@@ -53,26 +59,35 @@ class AdvancedTrailingLossReversalStrat(val signal: Signal, override val leverag
 
     if signal.isLong then
       if quote.close > signal.thirdTargetPrice then
-        thirdTargetReached = true
         stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
-      else if quote.close > signal.secondTargetPrice && !thirdTargetReached then
-        secondTargetReached = true
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
-      else if quote.close > signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
     else
       if quote.close < signal.thirdTargetPrice then
-        thirdTargetReached = true
         stopLossReachedRule = UnderIndicatorRule(closePriceIndicator, 999999999)
-      else if quote.close < signal.secondTargetPrice && !thirdTargetReached then
-        secondTargetReached = true
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.secondTargetPrice)
-      else if quote.close < signal.firstTargetPrice && !secondTargetReached && !thirdTargetReached then
-        stopLossReachedRule = CrossedUpIndicatorRule(closePriceIndicator, signal.firstTargetPrice)
+
+    if isCurrentTradeLong then
+      if quote.close > highestPrice then
+        highestPrice = quote.close
+
+    if isCurrentTradeShort then
+      if quote.close < lowestPrice then
+        lowestPrice = quote.close
 
   def shouldBuyLong: Boolean =
+    if !isCurrentTradeLong then
+      return true
     false
 
   def shouldBuyShort: Boolean =
+    false
+
+  def shouldExitCurrentTrade: Boolean =
+    if isCurrentTradeLong && series.getLastBar.getClosePrice.doubleValue() < currentTradeStopLoss then
+      isCurrentTradeLong = false
+      return true
+
+    if isCurrentTradeShort && series.getLastBar.getClosePrice.doubleValue() > currentTradeStopLoss then
+      isCurrentTradeShort = false
+      return true
+
     false
 }

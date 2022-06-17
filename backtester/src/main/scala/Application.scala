@@ -33,10 +33,11 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
 
   context.log.info("The backtester is starting, now caching or fetching the quotes for each signal")
 
-  val backtestedStrategies: List[String] = List("AdvancedTrailingLossReversalStrat")
-//  val backtestedStrategies: List[String] = List("SimpleStrategyWithThreeTargets")
+  //TODO: Les quotes restent autour et vont above et below repeatidly de l'entry price, tu perds de la tune petit a petit
+//  val backtestedStrategies: List[String] = List("AdvancedMultiplePositionsLeveragedSS3T")
+  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("LeveragedSS3TSL", "LeveragedSimpleStrategyWithThreeTargets")
-  //LeveragedSS3TTL2 -> no benefit, check stoploss instead
+
 
   Source(signalsRepository.getSignals(startTimestamp = 1641011872))
     .mapAsync(4)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))

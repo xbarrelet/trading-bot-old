@@ -36,7 +36,8 @@ object SignalsRepository {
     cachedSignals
 
   private def cacheSignalsOlderThanOneMonth(startTimestamp: Double): List[Signal] =
-    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where timestamp = '1649367931' order by timestamp desc"
+//    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 4" //TEST FOR STRAT
+    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 297" //BNB 1 Year fake signal
 //    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where timestamp < ${(System.currentTimeMillis / 1000) - 2419200} and timestamp > $startTimestamp order by timestamp desc"
       .query[Signal]
       .to[List]

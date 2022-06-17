@@ -28,7 +28,7 @@ object Main {
 }
 
 class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  context.log.info("Starting trading bot, waiting for signals to profit from")
+  context.log.info("Starting trading bot and waiting for signals to profit from")
   context.log.info("-----------------------------------------------------------------------------------------")
 
   val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
