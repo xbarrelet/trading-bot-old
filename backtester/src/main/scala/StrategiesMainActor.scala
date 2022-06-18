@@ -10,6 +10,7 @@ import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success}
 
@@ -19,13 +20,15 @@ object StrategiesMainActor {
     Behaviors.setup(context => new StrategiesMainActor(context))
 }
 
+final case class Result(strategyName: String, averageProfitsInPercent: Double)
+
 class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val logger: Logger = LoggerFactory.getLogger("StrategiesMainActor")
   implicit val timeout: Timeout = 300.seconds
 
   val strategiesFactory: StrategiesFactory.type = StrategiesFactory
   val backtestersSpawnerRef: ActorRef[Message] = context.spawn(BacktestersSpawnerActor(), "backtesters-spawner-actor")
-  var results: List[ResultOfBacktestingStrategyMessage] = List()
+  var results: ListBuffer[Result] = ListBuffer()
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
@@ -38,17 +41,17 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
           .mapAsync(16)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
           .map(_.asInstanceOf[ResultOfBacktestingStrategyMessage])
           .filter(_.averageProfitsInPercent != 0.0)
-          .map(result => results = result :: results)
+          .map(result => results = results += Result(result.strategyName, result.averageProfitsInPercent))
           .runWith(Sink.last)
           .onComplete {
             case Success(result) =>
               logger.info("")
               logger.info("CONTROL:")
-              results.filter(result => result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
+              results.toList.filter(result => result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
                 .foreach(result => logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%"))
               logger.info("")
               
-              logger.info("The 30 best results are:")
+              logger.info("The results are:")
               results = results
                 .filter(result => !result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
                 .sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)

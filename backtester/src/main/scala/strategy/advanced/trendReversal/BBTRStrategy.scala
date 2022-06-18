@@ -6,13 +6,15 @@ import signals.Signal
 import strategy.advanced.AdvancedStrategy
 import strategy.simple.SimpleStrategy
 
-import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator, SMAIndicator, TripleEMAIndicator, WMAIndicator}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
+import org.ta4j.core.indicators.*
+import org.ta4j.core.indicators.bollinger.{BollingerBandsLowerIndicator, BollingerBandsMiddleIndicator, BollingerBandsUpperIndicator}
+import org.ta4j.core.indicators.statistics.StandardDeviationIndicator
 import org.ta4j.core.rules.*
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val upperEma: Int) extends AdvancedStrategy {
+class BBTRStrategy(override val leverage: Int) extends AdvancedStrategy {
   private var shouldBuyLongBool = false
   private var shouldBuyShortBool = false
   private var shouldExitTradeBool = false
@@ -22,13 +24,15 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   private var currentEntryPrice = 0.0
   private var currentEntryIndex = 0
 
+  //TODO: Fix me, not businessly correct
   private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
-  private val lowerEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, lowerEma)
-  private val upperEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, upperEma)
-  //SMAIndicator, WMAIndicator, ZLEMAIndicator, MMAIndicator, LWMAIndicator, KAMAIndicator, HMAIndicator
-
-  private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
-  private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
+  private val sMAIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, 20)
+  private val middleBBIndicator: BollingerBandsMiddleIndicator = BollingerBandsMiddleIndicator(sMAIndicator)
+  private val upperBBIndicator: BollingerBandsUpperIndicator = BollingerBandsUpperIndicator(middleBBIndicator, StandardDeviationIndicator(middleBBIndicator, 2))
+  private val lowerBBIndicator: BollingerBandsLowerIndicator = BollingerBandsLowerIndicator(middleBBIndicator, StandardDeviationIndicator(middleBBIndicator, 2))
+  
+  private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(closePriceIndicator, lowerBBIndicator)
+  private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(closePriceIndicator, upperBBIndicator)
 
 
   def shouldEnter: Boolean =

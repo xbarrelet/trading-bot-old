@@ -83,19 +83,6 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                       logger.info(s"Strategy:$strategyName with signal symbol:${signal.symbol} " +
                         s"has entered with price:$currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
                 else
-                  if strategy.shouldBuyLong && !hasLongPositionOpened then
-                    hasLongPositionOpened = true
-                    currentEntryPrice = quote.close
-                    if WITH_EXTENSIVE_LOGGING then
-                      logger.info(s"Buying long position for strat:$strategyName with signal symbol:${signal.symbol} " +
-                        s"at price $currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
-
-                  if strategy.shouldBuyShort && !hasShortPositionOpened then
-                    hasShortPositionOpened = true
-                    currentEntryPrice = quote.close
-                    if WITH_EXTENSIVE_LOGGING then
-                      logger.info(s"Buying short position for strat:$strategyName with signal symbol:${signal.symbol} " +
-                        s"at price $currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
 
                   if strategy.shouldExitCurrentTrade then
                     if hasShortPositionOpened then
@@ -117,6 +104,20 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                       if WITH_EXTENSIVE_LOGGING then
                         logger.info(s"Closing long position for strat:$strategyName with signal symbol:${signal.symbol} " +
                           s"has exited with price:${quote.close} at start_timestamp:${formatTimestamp(quote.start_timestamp)}, current profit:$currentProfit")
+
+                  if strategy.shouldBuyLong && !hasLongPositionOpened then
+                    hasLongPositionOpened = true
+                    currentEntryPrice = quote.close
+                    if WITH_EXTENSIVE_LOGGING then
+                      logger.info(s"Buying long position for strat:$strategyName with signal symbol:${signal.symbol} " +
+                        s"at price $currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
+
+                  if strategy.shouldBuyShort && !hasShortPositionOpened then
+                    hasShortPositionOpened = true
+                    currentEntryPrice = quote.close
+                    if WITH_EXTENSIVE_LOGGING then
+                      logger.info(s"Buying short position for strat:$strategyName with signal symbol:${signal.symbol} " +
+                        s"at price $currentEntryPrice at start_timestamp:${formatTimestamp(quote.start_timestamp)}")
 
                   if strategy.shouldExit then
                     exitPrice = quote.close
@@ -145,9 +146,13 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
             else
               if hasShortPositionOpened then
                 currentProfit += currentEntryPrice - quotes.last.close
+                if WITH_EXTENSIVE_LOGGING then
+                  logger.info(s"No more quote, closing the short position with currentProfit at $currentProfit")
 
               if hasLongPositionOpened then
                 currentProfit += quotes.last.close - currentEntryPrice
+                if WITH_EXTENSIVE_LOGGING then
+                  logger.info(s"No more quote, closing the long position with currentProfit at $currentProfit")
 
 //              if exitPrice == 0.0 then
 //                exitPrice = quotes.last.close
@@ -172,11 +177,16 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
           .onComplete {
             case Success(sum) =>
               replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter))
-            case Failure(e) => logger.error("Exception received in BacktesterActor:" + e)
+              logger.info(s"Done backtesting strat:$strategyName with profits:${sum / (signals.length - tradesNotEnteredCounter)}")
+
+            case Failure(e) =>
+              logger.error("Exception received in BacktesterActor:" + e)
+              e.printStackTrace()
+              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, 0)
           }
 
 
-        this
+        Behaviors.stopped
 
   private def formatTimestamp(timestamp: Long): LocalDateTime =
     LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.ofHours(8))

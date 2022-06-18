@@ -31,6 +31,7 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   context.log.info("Starting trading bot and waiting for signals to profit from")
   context.log.info("-----------------------------------------------------------------------------------------")
 
+  //TODO: You can get quote every 10 seconds!
   val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
 
   override def onMessage(message: Message): Behavior[Message] =

@@ -84,12 +84,30 @@ object StrategiesFactory {
         }
 
       case "CrossEMATRStrategy" =>
-        strategiesList += "CrossEMATRStrategy"
+        for (lowerEma: Int <- 1 to 50; upperEma: Int <- 150 to 250) {
+          strategiesList += "CrossEMATRStrategy_with_lowerEma_" + lowerEma + "_and_upperEma_" + upperEma
+        }
+      case "CrossEMATRWithTLStrategy" =>
+        for (percentage: Int <- 9000 to 10000) {
+          strategiesList += "CrossEMATRWithTLStrategy_with_percentage_" + percentage
+        }
+      case "MFITRStrategy" =>
+        for (threshold: Int <- 10 to 99; barcount: Int <- 10 to 60) {
+          strategiesList += "MFITRStrategy_with_threshold_" + threshold + "_and_barcount_" + barcount
+        }
+      case "CCITRStrategy" =>
+        for (lowBarCount: Int <- 1 to 50; longBarcount: Int <- 100 to 200 if longBarcount % 10 == 0) {
+          strategiesList += "CCITRStrategy_with_lowBarCount_" + lowBarCount + "_and_longBarcount_" + longBarcount
+        }
+      case "BBTRStrategy" => 
+        strategiesList += "BBTRStrategy"
+      case "MacdTRStrategy" =>
+        strategiesList += "MacdTRStrategy"
     }
 
-//    for (leverage: Int <- 1 to 50 if leverage == 10) {
-//      strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
-//    }
+    for (leverage: Int <- 1 to 50 if leverage == 10) {
+      strategiesList += "LeveragedSimpleStrategyWithThreeTargets_with_leverage_" + leverage
+    }
 
     strategiesList.toList
 
@@ -128,7 +146,17 @@ object StrategiesFactory {
     else if strategyName.startsWith("AdvancedMultiplePositionsLeveragedSS3T") then
       AdvancedMultiplePositionsLeveragedSS3T(signal, parameters(3).toInt)
     else if strategyName.startsWith("CrossEMATRStrategy") then
-      CrossEMATRStrategy(10)
+      CrossEMATRStrategy(10, parameters(3).toInt, parameters(6).toInt)
+    else if strategyName.startsWith("CrossEMATRWithTLStrategy") then
+      CrossEMATRWithTLStrategy(10, parameters(3).toInt)
+    else if strategyName.startsWith("MFITRStrategy") then
+      MFITRStrategy(10, parameters(3).toInt, parameters(6).toInt)
+    else if strategyName.startsWith("CCITRStrategy") then
+      CCITRStrategy(10, parameters(3).toInt, parameters(6).toInt)
+    else if strategyName.startsWith("BBTRStrategy") then
+      BBTRStrategy(10)
+    else if strategyName.startsWith("MacdTRStrategy") then
+      MacdTRStrategy(10)
     else
       println("Strategy name not recognized, returning default 3 targets strat")
       AdvancedDefaultLeveragedSS3T(signal, 1)

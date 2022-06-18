@@ -1,0 +1,1 @@
+sbt assembly && java -Xmx16g -jar target/scala-3.1.2/backtester-assembly-0.1.0-SNAPSHOT.jar

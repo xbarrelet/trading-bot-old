@@ -6,13 +6,14 @@ import signals.Signal
 import strategy.advanced.AdvancedStrategy
 import strategy.simple.SimpleStrategy
 
-import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator, SMAIndicator, TripleEMAIndicator, WMAIndicator}
+import org.ta4j.core.indicators.{CCIIndicator, EMAIndicator}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
-import org.ta4j.core.rules.*
+import org.ta4j.core.num.Num
+import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val upperEma: Int) extends AdvancedStrategy {
+class CCITRStrategy(override val leverage: Int, val shortBarCount: Int, val longBarCount: Int) extends AdvancedStrategy {
   private var shouldBuyLongBool = false
   private var shouldBuyShortBool = false
   private var shouldExitTradeBool = false
@@ -20,15 +21,14 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   private var hasOpenLongPosition = false
   private var hasOpenShortPosition = false
   private var currentEntryPrice = 0.0
-  private var currentEntryIndex = 0
-
-  private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
-  private val lowerEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, lowerEma)
-  private val upperEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, upperEma)
-  //SMAIndicator, WMAIndicator, ZLEMAIndicator, MMAIndicator, LWMAIndicator, KAMAIndicator, HMAIndicator
-
-  private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
-  private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
+  
+  private val longCci = new CCIIndicator(series, longBarCount)
+  private val shortCci = new CCIIndicator(series, shortBarCount)
+  private val plus100: Num = series.numOf(100)
+  private val minus100: Num = series.numOf(-100)
+  
+  private val crossedUpIndicatorRule: Rule = CrossedUpIndicatorRule(longCci, plus100).and(UnderIndicatorRule(shortCci, minus100))
+  private val crossedDownIndicatorRule: Rule = CrossedDownIndicatorRule(longCci, minus100).and(OverIndicatorRule(shortCci, plus100))
 
 
   def shouldEnter: Boolean =
@@ -67,7 +67,6 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
       hasOpenLongPosition = false
       hasOpenShortPosition = false
       currentEntryPrice = 0.0
-      currentEntryIndex = 0
       true
     else
       false
@@ -76,7 +75,6 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
     if shouldBuyLongBool then
       shouldBuyLongBool = false
       hasOpenLongPosition = true
-      currentEntryIndex = series.getEndIndex
       true
     else
       false
@@ -85,7 +83,6 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   if shouldBuyShortBool then
     shouldBuyShortBool = false
     hasOpenShortPosition = true
-    currentEntryIndex = series.getEndIndex
     true
   else
     false

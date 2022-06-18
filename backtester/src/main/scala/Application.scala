@@ -33,10 +33,13 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
 
   context.log.info("The backtester is starting, now caching or fetching the quotes for each signal")
 
-  //TODO: Les quotes restent autour et vont above et below repeatidly de l'entry price, tu perds de la tune petit a petit
-//  val backtestedStrategies: List[String] = List("AdvancedMultiplePositionsLeveragedSS3T")
-  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
-//  val backtestedStrategies: List[String] = List("LeveragedSS3TSL", "LeveragedSimpleStrategyWithThreeTargets")
+  //TODO: To get the support and resistance : https://stackoverflow.com/questions/8587047/support-resistance-algorithm-technical-analysis
+  //You could make a few tests, get some graphs and have a talk with Kyle
+
+
+  //TODO: Lot of indicators in ta4j to calculate momemtum and trend reversal, test some
+  val backtestedStrategies: List[String] = List("BBTRStrategy")
+//  val backtestedStrategies: List[String] = List("CCITRStrategy")
 
 
   Source(signalsRepository.getSignals(startTimestamp = 1641011872))

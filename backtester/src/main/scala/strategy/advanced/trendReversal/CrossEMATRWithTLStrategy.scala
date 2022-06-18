@@ -6,13 +6,13 @@ import signals.Signal
 import strategy.advanced.AdvancedStrategy
 import strategy.simple.SimpleStrategy
 
-import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator, SMAIndicator, TripleEMAIndicator, WMAIndicator}
+import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.*
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val upperEma: Int) extends AdvancedStrategy {
+class CrossEMATRWithTLStrategy(override val leverage: Int, percentage: Int) extends AdvancedStrategy {
   private var shouldBuyLongBool = false
   private var shouldBuyShortBool = false
   private var shouldExitTradeBool = false
@@ -20,15 +20,16 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   private var hasOpenLongPosition = false
   private var hasOpenShortPosition = false
   private var currentEntryPrice = 0.0
-  private var currentEntryIndex = 0
 
   private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
-  private val lowerEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, lowerEma)
-  private val upperEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, upperEma)
-  //SMAIndicator, WMAIndicator, ZLEMAIndicator, MMAIndicator, LWMAIndicator, KAMAIndicator, HMAIndicator
+  private val lowerEmaIndicator: DoubleEMAIndicator = DoubleEMAIndicator(closePriceIndicator, 22)
+  private val upperEmaIndicator: DoubleEMAIndicator = DoubleEMAIndicator(closePriceIndicator, 166)
 
   private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
   private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
+
+  private var highestPrice: Double = 0.0
+  private var lowestPrice: Double = 0.0
 
 
   def shouldEnter: Boolean =
@@ -54,11 +55,19 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
       if hasOpenLongPosition then
         shouldExitTradeBool = true
 
-    if hasOpenLongPosition && closePrice < currentEntryPrice then
-      shouldExitTradeBool = true
+    if hasOpenLongPosition then
+      if closePrice > highestPrice then
+        highestPrice = closePrice
 
-    if hasOpenShortPosition && closePrice > currentEntryPrice then
-      shouldExitTradeBool = true
+      if closePrice < currentEntryPrice || closePrice < (highestPrice * percentage.toDouble / 10000.0) then
+        shouldExitTradeBool = true
+
+    if hasOpenShortPosition then
+      if closePrice < lowestPrice then
+        lowestPrice = closePrice
+
+      if closePrice > currentEntryPrice then
+        shouldExitTradeBool = true
 
 
   def shouldExitCurrentTrade: Boolean =
@@ -67,7 +76,8 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
       hasOpenLongPosition = false
       hasOpenShortPosition = false
       currentEntryPrice = 0.0
-      currentEntryIndex = 0
+      highestPrice = 0.0
+      lowestPrice = 0.0
       true
     else
       false
@@ -76,7 +86,6 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
     if shouldBuyLongBool then
       shouldBuyLongBool = false
       hasOpenLongPosition = true
-      currentEntryIndex = series.getEndIndex
       true
     else
       false
@@ -85,7 +94,6 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   if shouldBuyShortBool then
     shouldBuyShortBool = false
     hasOpenShortPosition = true
-    currentEntryIndex = series.getEndIndex
     true
   else
     false

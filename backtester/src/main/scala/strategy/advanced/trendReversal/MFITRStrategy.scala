@@ -6,13 +6,15 @@ import signals.Signal
 import strategy.advanced.AdvancedStrategy
 import strategy.simple.SimpleStrategy
 
-import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator, SMAIndicator, TripleEMAIndicator, WMAIndicator}
+import org.ta4j.core.indicators.EMAIndicator
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
-import org.ta4j.core.rules.*
+import org.ta4j.core.indicators.volume.ChaikinMoneyFlowIndicator
+import org.ta4j.core.rules.{CrossedDownIndicatorRule, CrossedUpIndicatorRule, OverIndicatorRule, UnderIndicatorRule}
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val upperEma: Int) extends AdvancedStrategy {
+class MFITRStrategy(override val leverage: Int, val threshold: Int, val barCount: Int) extends AdvancedStrategy {
+  //TODO: Why Exception received in BacktesterActor:java.lang.NullPointerException: Cannot invoke "org.ta4j.core.num.Num.isNaN()" because "multiplicand" is null ? With every values
   private var shouldBuyLongBool = false
   private var shouldBuyShortBool = false
   private var shouldExitTradeBool = false
@@ -20,15 +22,13 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   private var hasOpenLongPosition = false
   private var hasOpenShortPosition = false
   private var currentEntryPrice = 0.0
-  private var currentEntryIndex = 0
 
-  private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
-  private val lowerEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, lowerEma)
-  private val upperEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, upperEma)
-  //SMAIndicator, WMAIndicator, ZLEMAIndicator, MMAIndicator, LWMAIndicator, KAMAIndicator, HMAIndicator
+  private val mFindicator: ChaikinMoneyFlowIndicator = ChaikinMoneyFlowIndicator(series, barCount)
 
-  private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
-  private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
+  private val positiveThreshold = series.numOf(threshold.toDouble / 100.0)
+  private val negativeThreshold = series.numOf(-1 * threshold.toDouble / 100.0)
+  private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(mFindicator, positiveThreshold)
+  private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(mFindicator, negativeThreshold)
 
 
   def shouldEnter: Boolean =
@@ -41,7 +41,7 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   override def addQuote(quote: Quote): Unit =
     super.addQuote(quote)
     val closePrice = quote.close
-
+    
     if crossedUpIndicatorRule.isSatisfied(series.getEndIndex) then
       shouldBuyLongBool = true
       currentEntryPrice = closePrice
@@ -53,30 +53,18 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
       currentEntryPrice = closePrice
       if hasOpenLongPosition then
         shouldExitTradeBool = true
-
+      
     if hasOpenLongPosition && closePrice < currentEntryPrice then
       shouldExitTradeBool = true
-
+    
     if hasOpenShortPosition && closePrice > currentEntryPrice then
       shouldExitTradeBool = true
 
-
-  def shouldExitCurrentTrade: Boolean =
-    if shouldExitTradeBool then
-      shouldExitTradeBool = false
-      hasOpenLongPosition = false
-      hasOpenShortPosition = false
-      currentEntryPrice = 0.0
-      currentEntryIndex = 0
-      true
-    else
-      false
 
   def shouldBuyLong: Boolean =
     if shouldBuyLongBool then
       shouldBuyLongBool = false
       hasOpenLongPosition = true
-      currentEntryIndex = series.getEndIndex
       true
     else
       false
@@ -85,8 +73,17 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   if shouldBuyShortBool then
     shouldBuyShortBool = false
     hasOpenShortPosition = true
-    currentEntryIndex = series.getEndIndex
     true
   else
     false
+    
+  def shouldExitCurrentTrade: Boolean =
+    if shouldExitTradeBool then
+      shouldExitTradeBool = false
+      hasOpenLongPosition = false
+      hasOpenShortPosition = false
+      currentEntryPrice = 0.0
+      true
+    else
+      false
 }
