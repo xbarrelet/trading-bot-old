@@ -104,7 +104,7 @@ class SimpleStrategyBacktesterActor(context: ActorContext[Message]) extends Abst
           .runWith(Sink.last)
           .onComplete {
             case Success(sum) =>
-              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter))
+              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter), 0)
             case Failure(e) => logger.error("Exception received in BacktesterActor:" + e)
           }
 

@@ -16,7 +16,7 @@ object QuotesRepository {
   val logger: Logger = LoggerFactory.getLogger("QuotesRepository")
   private val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
-    "jdbc:postgresql://localhost:5430/data",
+    "jdbc:postgresql://localhost:5429/data",
     "root",
     "toor"
   )

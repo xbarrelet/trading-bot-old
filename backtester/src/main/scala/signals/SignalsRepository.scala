@@ -20,7 +20,7 @@ object SignalsRepository {
 
   private val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
-    "jdbc:postgresql://localhost:5430/data",
+    "jdbc:postgresql://localhost:5429/data",
     "root",
     "toor"
   )
@@ -37,7 +37,7 @@ object SignalsRepository {
 
   private def cacheSignalsOlderThanOneMonth(startTimestamp: Double): List[Signal] =
 //    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 4" //TEST FOR STRAT
-    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 297" //BNB 1 Year fake signal
+    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 298" //BNB 1 Year fake signal
 //    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where timestamp < ${(System.currentTimeMillis / 1000) - 2419200} and timestamp > $startTimestamp order by timestamp desc"
       .query[Signal]
       .to[List]

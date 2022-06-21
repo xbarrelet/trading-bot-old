@@ -20,7 +20,7 @@ object StrategiesMainActor {
     Behaviors.setup(context => new StrategiesMainActor(context))
 }
 
-final case class Result(strategyName: String, averageProfitsInPercent: Double)
+final case class Result(strategyName: String, averageProfitsInPercent: Double, numberOfTrade: Int, profitsPerTrade: Double)
 
 class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
   val logger: Logger = LoggerFactory.getLogger("StrategiesMainActor")
@@ -38,25 +38,25 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
         context.log.info("-----------------------------------------------------------------------------------------")
 
         Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
-          .mapAsync(16)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
+          .mapAsync(4)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
           .map(_.asInstanceOf[ResultOfBacktestingStrategyMessage])
           .filter(_.averageProfitsInPercent != 0.0)
-          .map(result => results = results += Result(result.strategyName, result.averageProfitsInPercent))
+          .map(result => results = results += Result(result.strategyName, result.averageProfitsInPercent, result.numberOfTrade, result.averageProfitsInPercent / result.numberOfTrade.toDouble))
           .runWith(Sink.last)
           .onComplete {
             case Success(result) =>
               logger.info("")
               logger.info("CONTROL:")
               results.toList.filter(result => result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
-                .foreach(result => logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%"))
+                .foreach(result => logger.info(s"Strategy:${result.strategyName} with ${result.numberOfTrade} trades and a gain of ${result.averageProfitsInPercent}% with an profit per trade of ${result.profitsPerTrade}%"))
               logger.info("")
               
               logger.info("The results are:")
               results = results
                 .filter(result => !result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
-                .sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
+                .sortWith(_.profitsPerTrade > _.profitsPerTrade)
               for result <- results do
-                logger.info(s"Strategy:${result.strategyName} with a gain of ${result.averageProfitsInPercent}%")
+                logger.info(s"Strategy:${result.strategyName} with ${result.numberOfTrade} trades and a gain of ${result.averageProfitsInPercent}% with an profit per trade of ${result.averageProfitsInPercent / result.numberOfTrade.toDouble}%")
 
               logger.info("")
               logger.info("Backtesting done, have a great day!")

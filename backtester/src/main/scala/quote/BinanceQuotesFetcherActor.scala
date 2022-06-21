@@ -38,7 +38,7 @@ class BinanceQuotesFetcherActor(context: ActorContext[Message]) extends Abstract
 
           response.map {
             case response@HttpResponse(StatusCodes.OK, _, _, _) =>
-              response.entity.toStrict(10.seconds)
+              response.entity.toStrict(60.seconds)
                 .map(entity => entity.getData().utf8String)
                 .map(body => body.parseJson.convertTo[Seq[Seq[JsValue]]])
                 .onComplete {

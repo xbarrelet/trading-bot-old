@@ -24,7 +24,7 @@ class BBTRStrategy(override val leverage: Int) extends AdvancedStrategy {
   private var currentEntryPrice = 0.0
   private var currentEntryIndex = 0
 
-  //TODO: Fix me, not businessly correct
+  //TODO: Fix me, not businessly correct: https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/bollinger-bands
   private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
   private val sMAIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, 20)
   private val middleBBIndicator: BollingerBandsMiddleIndicator = BollingerBandsMiddleIndicator(sMAIndicator)

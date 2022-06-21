@@ -39,6 +39,7 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
     message match
       case BacktestStrategyMessage(strategyName: String, replyTo: ActorRef[Message]) =>
         var tradesNotEnteredCounter = 0
+        var numberOfTrade = 0
 
         val signals: List[Signal] = signalsRepository.getSignals()
 
@@ -85,6 +86,7 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                 else
 
                   if strategy.shouldExitCurrentTrade then
+                    numberOfTrade += 1
                     if hasShortPositionOpened then
                       currentExitPrice = quote.close
                       currentProfit += currentEntryPrice - currentExitPrice
@@ -122,6 +124,7 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                   if strategy.shouldExit then
                     exitPrice = quote.close
                     currentExitPrice = exitPrice
+                    numberOfTrade += 1
 
                     if hasShortPositionOpened then
                       currentProfit += currentEntryPrice - currentExitPrice
@@ -145,6 +148,7 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
                logger.info("The trade was never entered")
             else
               if hasShortPositionOpened then
+                numberOfTrade += 1
                 currentProfit += currentEntryPrice - quotes.last.close
                 if WITH_EXTENSIVE_LOGGING then
                   logger.info(s"No more quote, closing the short position with currentProfit at $currentProfit")
@@ -176,13 +180,13 @@ class AdvancedStrategyBacktesterActor(context: ActorContext[Message]) extends Ab
           .runWith(Sink.last)
           .onComplete {
             case Success(sum) =>
-              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter))
-              logger.info(s"Done backtesting strat:$strategyName with profits:${sum / (signals.length - tradesNotEnteredCounter)}")
+              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, sum / (signals.length - tradesNotEnteredCounter), numberOfTrade)
+              logger.info(s"Done backtesting strat:$strategyName with $numberOfTrade trades and profits:${sum / (signals.length - tradesNotEnteredCounter)}")
 
             case Failure(e) =>
               logger.error("Exception received in BacktesterActor:" + e)
               e.printStackTrace()
-              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, 0)
+              replyTo ! ResultOfBacktestingStrategyMessage(strategyName, 0, 0)
           }
 
 

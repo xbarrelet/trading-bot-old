@@ -6,7 +6,7 @@ import signals.Signal
 import strategy.advanced.AdvancedStrategy
 import strategy.simple.SimpleStrategy
 
-import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator, SMAIndicator, TripleEMAIndicator, WMAIndicator}
+import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator, HMAIndicator, KAMAIndicator, LWMAIndicator, MMAIndicator, SMAIndicator, TripleEMAIndicator, WMAIndicator, ZLEMAIndicator}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.*
 import org.ta4j.core.{BarSeries, Rule}
@@ -23,9 +23,9 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   private var currentEntryIndex = 0
 
   private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
-  private val lowerEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, lowerEma)
-  private val upperEmaIndicator: SMAIndicator = SMAIndicator(closePriceIndicator, upperEma)
-  //SMAIndicator, WMAIndicator, ZLEMAIndicator, MMAIndicator, LWMAIndicator, KAMAIndicator, HMAIndicator
+  private val lowerEmaIndicator: TripleEMAIndicator = TripleEMAIndicator(closePriceIndicator, lowerEma)
+  private val upperEmaIndicator: TripleEMAIndicator = TripleEMAIndicator(closePriceIndicator, upperEma)
+  //WMAIndicator (5h30 total), LWMAIndicator (maybe 6-7 hours), HMAIndicator (very long as well)
 
   private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
   private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(lowerEmaIndicator, upperEmaIndicator)

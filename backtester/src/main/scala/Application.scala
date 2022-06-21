@@ -38,7 +38,7 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
 
 
   //TODO: Lot of indicators in ta4j to calculate momemtum and trend reversal, test some
-  val backtestedStrategies: List[String] = List("BBTRStrategy")
+  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("CCITRStrategy")
 
 
