@@ -1,393 +1,207 @@
-[2022-06-20 11:26:39,493] [INFO] - CONTROL:
-[2022-06-20 11:26:39,495] [INFO] - Strategy:LeveragedSimpleStrategyWithThreeTargets_with_leverage_10 with a gain of 1.6671420516108908%
-[2022-06-20 11:26:39,495] [INFO] -
-[2022-06-20 11:26:39,495] [INFO] - The results are:
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_197 with a gain of 1626.9327222048623%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_196 with a gain of 1569.549523344278%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_195 with a gain of 1520.390719356315%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_198 with a gain of 1486.0062675504614%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_199 with a gain of 1465.5637735963157%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_194 with a gain of 1441.1160438183038%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_193 with a gain of 1391.5493972025247%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_190 with a gain of 1386.2994529778848%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_200 with a gain of 1372.3525530054671%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_221 with a gain of 1334.1381929912789%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_191 with a gain of 1329.2678507046962%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_192 with a gain of 1285.1107082106498%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_229 with a gain of 1266.3939557393524%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_228 with a gain of 1246.102078797222%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_227 with a gain of 1238.5455762372012%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_203 with a gain of 1210.5456383667338%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_201 with a gain of 1194.8984135322353%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_226 with a gain of 1191.9399659417818%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_230 with a gain of 1186.1277966520156%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_202 with a gain of 1185.2217411891972%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_231 with a gain of 1177.5783985081787%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_218 with a gain of 1161.0013489636615%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_223 with a gain of 1159.7041599477875%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_222 with a gain of 1151.9504432376762%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_189 with a gain of 1146.038490177459%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_220 with a gain of 1140.1112400769748%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_224 with a gain of 1123.4169916699864%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_225 with a gain of 1122.8065220932147%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_232 with a gain of 1107.4760636620906%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_219 with a gain of 1091.8631983334703%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_217 with a gain of 1065.4607421465482%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_190 with a gain of 1064.847683839863%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_241 with a gain of 1059.9295677198095%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_216 with a gain of 1051.935569807743%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_233 with a gain of 1031.2518532953147%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_244 with a gain of 1021.5662380671738%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_214 with a gain of 1019.950399935285%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_215 with a gain of 1016.2254529571804%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_242 with a gain of 1012.9885992335949%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_234 with a gain of 1007.4614255712406%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_245 with a gain of 1005.3885589435404%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_204 with a gain of 995.5989238415144%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_243 with a gain of 993.9776729107325%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_239 with a gain of 980.6363003943843%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_191 with a gain of 978.7324072270142%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_240 with a gain of 973.9361967510491%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_246 with a gain of 970.1719481463733%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_188 with a gain of 961.4681675652348%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_192 with a gain of 961.3173152141458%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_194 with a gain of 956.2977679500686%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_205 with a gain of 955.546565602716%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_193 with a gain of 949.8579493305965%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_213 with a gain of 939.0125831100482%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_195 with a gain of 925.4525805872133%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_238 with a gain of 910.3873493006671%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_189 with a gain of 906.6560481673548%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_206 with a gain of 901.0505065909704%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_212 with a gain of 883.4094890600761%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_235 with a gain of 875.1596775666808%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_196 with a gain of 873.8121259874116%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_199 with a gain of 854.754837865534%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_187 with a gain of 854.4180676402619%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_201 with a gain of 853.184655515404%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_197 with a gain of 838.4074792643225%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_247 with a gain of 837.0531028516955%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_237 with a gain of 829.3415118371352%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_207 with a gain of 825.63445062922%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_210 with a gain of 823.2156355520656%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_198 with a gain of 821.8318417542816%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_211 with a gain of 821.1022906023929%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_170 with a gain of 814.8029694144313%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_200 with a gain of 811.7084958350097%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_171 with a gain of 810.2199761460665%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_248 with a gain of 807.4375621883926%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_209 with a gain of 794.2503367702814%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_208 with a gain of 787.6017723857511%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_204 with a gain of 781.0995889097458%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_202 with a gain of 779.1839287883203%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_156 with a gain of 775.2718872406075%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_187 with a gain of 773.1877243370072%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_236 with a gain of 770.7409039092192%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_185 with a gain of 768.1719424982226%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_203 with a gain of 767.9436635894189%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_186 with a gain of 766.0070582897711%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_182 with a gain of 759.7216221075955%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_205 with a gain of 758.9755972200425%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_188 with a gain of 750.6528306114321%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_186 with a gain of 746.877521069937%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_157 with a gain of 744.5326024643152%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_155 with a gain of 733.9169271870596%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_249 with a gain of 723.3511437950448%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_244 with a gain of 716.7898902096483%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_250 with a gain of 709.6708830016888%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_158 with a gain of 705.0292903020846%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_183 with a gain of 701.5185018879224%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_172 with a gain of 700.6072689653031%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_233 with a gain of 693.2978724406203%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_245 with a gain of 682.0604313106803%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_184 with a gain of 671.4249875505947%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_159 with a gain of 653.1772658682519%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_232 with a gain of 652.5100795729082%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_185 with a gain of 645.7920901593893%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_181 with a gain of 642.8880058966866%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_246 with a gain of 634.7930475187611%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_206 with a gain of 619.744525307007%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_154 with a gain of 616.8159657798415%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_238 with a gain of 604.0389363803619%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_243 with a gain of 603.1006394633896%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_228 with a gain of 601.5361052512204%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_234 with a gain of 594.3213150371806%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_162 with a gain of 592.844326963215%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_242 with a gain of 583.0151548955162%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_177 with a gain of 581.6972560404836%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_180 with a gain of 580.60693007703%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_231 with a gain of 572.4070104688808%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_176 with a gain of 569.7201441781699%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_169 with a gain of 569.634716091678%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_199 with a gain of 563.5323737147236%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_235 with a gain of 562.8654227584643%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_160 with a gain of 559.8881480415037%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_175 with a gain of 558.8383004000179%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_247 with a gain of 556.9558230890572%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_173 with a gain of 555.8094864242652%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_168 with a gain of 548.8740436996809%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_153 with a gain of 547.1158254236088%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_170 with a gain of 532.2471022699197%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_176 with a gain of 526.6603878200079%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_241 with a gain of 526.1475839619621%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_175 with a gain of 521.2591205661258%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_240 with a gain of 514.3730990486167%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_161 with a gain of 513.8805343515476%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_179 with a gain of 510.5575465242145%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_174 with a gain of 507.10912296658654%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_237 with a gain of 505.0040148847744%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_184 with a gain of 499.87338757430564%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_223 with a gain of 499.86821011454356%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_239 with a gain of 497.2180567205294%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_165 with a gain of 496.5809938275213%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_167 with a gain of 492.69201550982564%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_184 with a gain of 492.40443115253066%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_229 with a gain of 492.1935673357404%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_183 with a gain of 491.69747255241083%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_169 with a gain of 489.36761564800355%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_152 with a gain of 488.6952518928521%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_171 with a gain of 487.83391085546873%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_186 with a gain of 474.506188005803%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_178 with a gain of 474.16871176332023%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_241 with a gain of 466.71058093926285%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_151 with a gain of 461.8322371239144%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_177 with a gain of 461.50276241016707%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_181 with a gain of 459.9617621061067%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_190 with a gain of 458.36757516966577%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_163 with a gain of 452.81522022564224%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_200 with a gain of 452.02518692986234%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_150 with a gain of 446.8204278088165%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_227 with a gain of 446.0616946108835%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_230 with a gain of 444.66919326709524%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_186 with a gain of 443.44001724567244%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_185 with a gain of 443.4087171478611%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_222 with a gain of 441.88066049330075%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_183 with a gain of 440.4806282988642%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_184 with a gain of 437.64738109964105%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_172 with a gain of 436.08378824381106%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_174 with a gain of 429.72210219932197%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_226 with a gain of 429.56842577928523%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_225 with a gain of 429.452403612226%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_190 with a gain of 427.0488855753166%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_249 with a gain of 421.1825882968961%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_184 with a gain of 420.1409775232362%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_9_and_upperEma_186 with a gain of 417.5251836351007%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_182 with a gain of 414.40576411304664%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_164 with a gain of 413.9336739160859%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_187 with a gain of 404.7076759136317%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_165 with a gain of 402.6807004068015%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_201 with a gain of 401.29855398258144%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_242 with a gain of 401.2121845397645%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_243 with a gain of 400.8902406766044%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_207 with a gain of 400.06537719682876%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_178 with a gain of 398.1758397134048%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_183 with a gain of 394.9989974555348%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_240 with a gain of 393.72275361791014%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_191 with a gain of 391.3208829545881%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_166 with a gain of 389.6527995466823%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_248 with a gain of 383.62388296308274%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_182 with a gain of 381.39945796703626%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_173 with a gain of 380.30724929095896%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_224 with a gain of 379.7669107604162%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_161 with a gain of 375.5362200966574%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_182 with a gain of 368.25765299161185%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_164 with a gain of 367.36665922995377%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_219 with a gain of 362.90463024940294%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_182 with a gain of 362.40241664998644%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_160 with a gain of 359.6866036522891%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_161 with a gain of 357.7989488815505%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_250 with a gain of 356.1965250772961%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_166 with a gain of 354.7127121699493%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_247 with a gain of 353.00932789985336%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_185 with a gain of 351.89852743629905%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_180 with a gain of 351.72202312537183%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_163 with a gain of 349.83836911901915%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_167 with a gain of 348.313371872492%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_236 with a gain of 344.1389272492054%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_249 with a gain of 342.8857466415069%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_183 with a gain of 340.37326661003067%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_158 with a gain of 339.59241153841674%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_160 with a gain of 338.18037705088307%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_157 with a gain of 337.606620370786%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_187 with a gain of 330.30193062768603%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_246 with a gain of 329.21513475048414%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_248 with a gain of 328.06926876384796%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_168 with a gain of 327.39149220983046%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_175 with a gain of 326.2597465680469%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_179 with a gain of 324.6667363270649%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_189 with a gain of 321.0246287055413%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_185 with a gain of 313.90538615848425%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_162 with a gain of 313.6643989393096%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_210 with a gain of 313.4744803007572%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_220 with a gain of 312.4519319927021%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_221 with a gain of 309.1218839929405%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_244 with a gain of 308.12475230564763%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_245 with a gain of 303.3600772665604%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_189 with a gain of 303.0089513572955%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_178 with a gain of 302.6389983215673%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_166 with a gain of 302.3994231368517%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_187 with a gain of 301.17189448902144%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_181 with a gain of 300.5435391420646%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_192 with a gain of 298.63588054943773%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_211 with a gain of 296.55524773208424%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_167 with a gain of 292.76864191464256%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_218 with a gain of 291.18904600130634%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_236 with a gain of 290.1596728598942%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_239 with a gain of 289.53555361640144%
-[2022-06-20 11:26:39,503] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_191 with a gain of 288.3579168537829%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_164 with a gain of 287.2725330110429%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_185 with a gain of 286.485088445146%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_175 with a gain of 286.32788193886944%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_165 with a gain of 286.213036467236%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_217 with a gain of 285.6992912528705%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_159 with a gain of 284.78052747962676%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_203 with a gain of 281.0576985532635%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_11_and_upperEma_185 with a gain of 279.73956435914533%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_250 with a gain of 279.07567281092787%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_180 with a gain of 271.96913857427325%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_208 with a gain of 270.3217650055129%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_238 with a gain of 270.1530268842371%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_189 with a gain of 269.5077271233975%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_240 with a gain of 267.2997758630788%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_198 with a gain of 266.26804933086544%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_245 with a gain of 266.0338869450089%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_187 with a gain of 265.8350254213403%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_243 with a gain of 265.82725923167146%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_183 with a gain of 265.1228893614597%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_237 with a gain of 260.5368366850799%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_163 with a gain of 253.80613896116557%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_190 with a gain of 253.34652173546306%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_244 with a gain of 251.3284891137059%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_180 with a gain of 249.4791946131794%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_165 with a gain of 246.09737201558016%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_212 with a gain of 244.03815505459758%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_186 with a gain of 243.8407055653923%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_241 with a gain of 242.96077274060247%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_186 with a gain of 241.02157871103202%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_196 with a gain of 240.2534319498497%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_209 with a gain of 240.18306556457685%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_166 with a gain of 237.99888355141746%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_188 with a gain of 237.152839554295%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_191 with a gain of 235.02584493790943%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_184 with a gain of 234.14755948667303%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_202 with a gain of 231.82193868573404%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_154 with a gain of 231.26771514934234%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_151 with a gain of 228.75099901439611%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_195 with a gain of 224.7422331043205%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_165 with a gain of 222.91741386825026%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_197 with a gain of 222.56675863720295%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_163 with a gain of 222.5131013266535%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_232 with a gain of 222.1071414115416%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_159 with a gain of 221.41383247812516%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_150 with a gain of 219.45322259216988%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_239 with a gain of 219.25389039037643%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_164 with a gain of 219.2087052867859%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_216 with a gain of 216.67645677249538%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_181 with a gain of 216.18459809262558%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_186 with a gain of 215.27760127347858%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_157 with a gain of 215.18958445708785%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_169 with a gain of 214.6861941622928%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_162 with a gain of 213.78555149833477%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_166 with a gain of 213.1258960535534%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_176 with a gain of 212.85172602390838%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_185 with a gain of 212.30079723466042%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_158 with a gain of 211.78705202030045%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_163 with a gain of 211.29684071406555%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_12_and_upperEma_179 with a gain of 211.20788254135178%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_212 with a gain of 210.5341067517348%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_198 with a gain of 209.43389654685285%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_166 with a gain of 209.04676375819378%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_192 with a gain of 205.67247201114054%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_247 with a gain of 204.8558453991856%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_159 with a gain of 202.17792199358786%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_187 with a gain of 201.73454316447118%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_177 with a gain of 201.00593336893493%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_165 with a gain of 200.21025193519552%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_166 with a gain of 199.6633239103643%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_183 with a gain of 198.72220292440844%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_188 with a gain of 197.30828572424755%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_188 with a gain of 196.92468302180828%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_213 with a gain of 196.79501118804694%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_165 with a gain of 195.52771023546455%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_174 with a gain of 192.682460743089%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_164 with a gain of 191.11580847920035%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_179 with a gain of 190.67737177079962%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_162 with a gain of 190.55876087386645%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_188 with a gain of 189.64258583051404%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_167 with a gain of 189.32887883520766%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_152 with a gain of 188.95939647763106%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_181 with a gain of 184.7677721014262%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_216 with a gain of 184.51737131898344%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_164 with a gain of 184.5013682614191%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_205 with a gain of 182.69584683007167%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_174 with a gain of 182.1446827017469%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_184 with a gain of 181.24874681938462%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_175 with a gain of 179.5832521413522%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_225 with a gain of 179.28319481280545%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_37_and_upperEma_165 with a gain of 179.08009718562988%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_213 with a gain of 178.96030959331358%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_217 with a gain of 177.90528449204444%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_156 with a gain of 174.89506230367314%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_179 with a gain of 172.1286514035171%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_161 with a gain of 170.9510146409334%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_242 with a gain of 169.4246053599173%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_186 with a gain of 168.2610889421652%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_246 with a gain of 168.2149624822611%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_180 with a gain of 167.1128695647264%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_204 with a gain of 166.69914345991472%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_45_and_upperEma_153 with a gain of 166.28871210217847%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_39_and_upperEma_156 with a gain of 165.5982272377631%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_43_and_upperEma_150 with a gain of 165.39607096696716%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_206 with a gain of 165.12260695459412%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_176 with a gain of 163.99203800819993%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_37_and_upperEma_164 with a gain of 159.09345503188555%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_188 with a gain of 158.85058510002222%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_196 with a gain of 157.2811087671554%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_156 with a gain of 156.2830357235614%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_152 with a gain of 156.1086494643221%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_31_and_upperEma_154 with a gain of 154.90959684532314%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_47_and_upperEma_174 with a gain of 154.18828256128353%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_13_and_upperEma_178 with a gain of 153.7787925599356%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_214 with a gain of 153.76773162309757%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_12_and_upperEma_175 with a gain of 152.83155275787803%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_231 with a gain of 151.92455593872575%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_30_and_upperEma_160 with a gain of 151.77182087495322%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_181 with a gain of 149.37606902777165%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_177 with a gain of 148.35399139788154%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_187 with a gain of 148.17254496623733%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_212 with a gain of 147.86142670085982%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_173 with a gain of 147.25213381946628%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_170 with a gain of 146.51622851238247%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_197 with a gain of 146.34325428766888%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_246 with a gain of 146.00130660259657%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_37_and_upperEma_158 with a gain of 145.57557820458547%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_155 with a gain of 145.33670903711428%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_164 with a gain of 145.23057111146701%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_226 with a gain of 144.54149828159035%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_157 with a gain of 144.10235555592888%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_167 with a gain of 143.79100195144727%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_176 with a gain of 141.7204887145486%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_232 with a gain of 141.38442450652622%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_179 with a gain of 139.47982532192458%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_163 with a gain of 139.47911930467322%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_200 with a gain of 139.134347550671%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_177 with a gain of 138.0913247425227%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_5_and_upperEma_181 with a gain of 136.16672173602365%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_31_and_upperEma_157 with a gain of 131.59455406538956%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_160 with a gain of 131.4399362890233%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_9_and_upperEma_185 with a gain of 131.21118670203953%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_173 with a gain of 130.52658531465306%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_167 with a gain of 130.14886608926815%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_190 with a gain of 129.16962017213933%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_235 with a gain of 128.72718269942163%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_39_and_upperEma_155 with a gain of 128.0576430132027%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_8_and_upperEma_180 with a gain of 128.00327968544173%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_155 with a gain of 127.57660993115351%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_31_and_upperEma_160 with a gain of 127.49424125268308%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_158 with a gain of 127.43093503981996%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_166 with a gain of 127.11181524566982%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_153 with a gain of 126.98873290614655%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_199 with a gain of 126.76280738817229%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_177 with a gain of 124.63557743267826%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_165 with a gain of 123.68645491800605%
-[2022-06-20 11:26:39,504] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_34_and_upperEma_244 with a gain of 123.1491757954842%
+[2022-06-25 11:23:38,094] [INFO] - CONTROL:
+[2022-06-25 11:23:38,102] [INFO] - Strategy:LeveragedSimpleStrategyWithThreeTargets_with_leverage_10 with 1 trades and a gain of 1.6671420516108908% with an profit per trade of 1.6671420516108908%
+[2022-06-25 11:23:38,102] [INFO] -
+[2022-06-25 11:23:38,102] [INFO] - The results sorted by profits per trade are:
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_235 with 5452 trades and a gain of 359.6449486348931% with an profit per trade of 0.06596569123897526%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_234 with 5486 trades and a gain of 340.4763451275881% with an profit per trade of 0.062062767978051055%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_233 with 5490 trades and a gain of 328.73998514539863% with an profit per trade of 0.05987977871500886%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_175 with 8052 trades and a gain of 476.1714473447602% with an profit per trade of 0.05913704015707405%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_202 with 5984 trades and a gain of 322.5936343602637% with an profit per trade of 0.05390936403079273%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_242 with 6020 trades and a gain of 314.3492356657369% with an profit per trade of 0.05221748100759749%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_154 with 7469 trades and a gain of 381.8687240950493% with an profit per trade of 0.051127155455221486%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_239 with 5526 trades and a gain of 280.21659667682775% with an profit per trade of 0.050708757994358984%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_236 with 5462 trades and a gain of 267.6854966172387% with an profit per trade of 0.049008695828860985%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_238 with 5542 trades and a gain of 264.8320102570224% with an profit per trade of 0.047786360566045176%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_247 with 6983 trades and a gain of 329.72887996484053% with an profit per trade of 0.04721879993768302%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_237 with 5452 trades and a gain of 241.78972547226056% with an profit per trade of 0.04434881244905733%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_165 with 7868 trades and a gain of 335.89170448565574% with an profit per trade of 0.04269086228846667%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_236 with 5534 trades and a gain of 232.9727467930361% with an profit per trade of 0.042098436355807026%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_241 with 6030 trades and a gain of 249.25844655497417% with an profit per trade of 0.04133639246351147%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_163 with 7310 trades and a gain of 301.7376496403647% with an profit per trade of 0.04127738025175987%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_238 with 5474 trades and a gain of 223.90960343482647% with an profit per trade of 0.04090420230815244%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_34_and_upperEma_244 with 6769 trades and a gain of 275.5914777129326% with an profit per trade of 0.04071376535868409%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_246 with 6871 trades and a gain of 276.8178296653559% with an profit per trade of 0.040287851792367324%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_50_and_upperEma_194 with 6000 trades and a gain of 229.80061131679602% with an profit per trade of 0.03830010188613267%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_240 with 6719 trades and a gain of 255.6879102548642% with an profit per trade of 0.0380544590348064%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_222 with 28751 trades and a gain of 1069.5817647984038% with an profit per trade of 0.03720155002603053%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_246 with 7001 trades and a gain of 258.0638936192159% with an profit per trade of 0.03686100465922238%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_237 with 5516 trades and a gain of 202.4645649945403% with an profit per trade of 0.03670496102149026%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_48_and_upperEma_237 with 5598 trades and a gain of 204.03804209181072% with an profit per trade of 0.03644838193851567%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_229 with 28389 trades and a gain of 1024.4453763872584% with an profit per trade of 0.03608599726609808%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_241 with 5962 trades and a gain of 214.36330894279627% with an profit per trade of 0.035954932731096324%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_174 with 7940 trades and a gain of 282.51115271906315% with an profit per trade of 0.03558074971272836%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_174 with 8098 trades and a gain of 285.12106313018114% with an profit per trade of 0.03520882478762424%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_248 with 6935 trades and a gain of 242.35289189370707% with an profit per trade of 0.03494634345979915%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_221 with 28875 trades and a gain of 1007.4538947206436% with an profit per trade of 0.0348901781721435%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_37_and_upperEma_236 with 6489 trades and a gain of 226.0071806660539% with an profit per trade of 0.03482927734104699%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_47_and_upperEma_174 with 6416 trades and a gain of 223.09956631714343% with an profit per trade of 0.03477237629631288%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_245 with 6116 trades and a gain of 210.9405373450246% with an profit per trade of 0.034489950514229005%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_235 with 5538 trades and a gain of 190.86776108753352% with an profit per trade of 0.034465106733032415%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_234 with 6212 trades and a gain of 212.5537867470344% with an profit per trade of 0.034216643069387376%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_173 with 7946 trades and a gain of 271.434918859793% with an profit per trade of 0.034159944482732574%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_35_and_upperEma_246 with 6570 trades and a gain of 221.90004301999633% with an profit per trade of 0.03377474018569198%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_164 with 7066 trades and a gain of 238.4206111850126% with an profit per trade of 0.03374194893645805%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_152 with 7429 trades and a gain of 250.2042743225255% with an profit per trade of 0.03367940157794124%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_150 with 7377 trades and a gain of 245.68835269232093% with an profit per trade of 0.03330464317369133%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_47_and_upperEma_173 with 6450 trades and a gain of 213.87192094113408% with an profit per trade of 0.033158437355214586%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_228 with 28475 trades and a gain of 940.9513064614307% with an profit per trade of 0.03304482200040143%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_166 with 7414 trades and a gain of 244.48647600436504% with an profit per trade of 0.03297632533104465%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_39_and_upperEma_243 with 6222 trades and a gain of 203.95873282142514% with an profit per trade of 0.03278025278389989%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_238 with 27973 trades and a gain of 912.2328783758692% with an profit per trade of 0.03261119216300966%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_235 with 6411 trades and a gain of 208.32474345687655% with an profit per trade of 0.032494890571966396%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_249 with 6812 trades and a gain of 221.1382504139753% with an profit per trade of 0.03246304321990242%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_244 with 6132 trades and a gain of 198.36095743469318% with an profit per trade of 0.03234849273233744%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_39_and_upperEma_247 with 6164 trades and a gain of 197.28710520693244% with an profit per trade of 0.0320063441283148%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_175 with 7906 trades and a gain of 252.7673522564821% with an profit per trade of 0.0319715851576628%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_223 with 28725 trades and a gain of 916.3338972058207% with an profit per trade of 0.03190022270516347%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_40_and_upperEma_246 with 6092 trades and a gain of 193.12207414687745% with an profit per trade of 0.031700931409533395%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_34_and_upperEma_249 with 6668 trades and a gain of 211.3142558060599% with an profit per trade of 0.03169080021086681%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_31_and_upperEma_154 with 8697 trades and a gain of 274.79179551481207% with an profit per trade of 0.031596159079546056%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_227 with 28481 trades and a gain of 895.1378475135062% with an profit per trade of 0.03142929839238462%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_183 with 17847 trades and a gain of 558.7208661984404% with an profit per trade of 0.03130615040054017%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_37_and_upperEma_171 with 7468 trades and a gain of 232.61762011942477% with an profit per trade of 0.03114858330468998%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_226 with 28553 trades and a gain of 885.1804156465291% with an profit per trade of 0.031001310392831896%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_36_and_upperEma_164 with 7714 trades and a gain of 239.0226085548607% with an profit per trade of 0.0309855598334017%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_47_and_upperEma_221 with 5858 trades and a gain of 181.5078551478569% with an profit per trade of 0.03098461166743887%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_239 with 27903 trades and a gain of 864.2750097195523% with an profit per trade of 0.03097426834819024%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_237 with 28033 trades and a gain of 857.922266560155% with an profit per trade of 0.030604011934511288%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_240 with 5972 trades and a gain of 182.48592436955335% with an profit per trade of 0.030556919686797277%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_42_and_upperEma_151 with 7337 trades and a gain of 223.90113122789245% with an profit per trade of 0.03051671408312559%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_230 with 28345 trades and a gain of 861.8700796482094% with an profit per trade of 0.03040642369547396%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_48_and_upperEma_236 with 5604 trades and a gain of 170.02519069526087% with an profit per trade of 0.030339969788590448%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_234 with 5550 trades and a gain of 168.38064119545356% with an profit per trade of 0.030338854269451092%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_238 with 6350 trades and a gain of 191.9816209591164% with an profit per trade of 0.030233326135293923%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_247 with 6847 trades and a gain of 206.86375844045247% with an profit per trade of 0.030212320496633922%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_231 with 28289 trades and a gain of 850.0231102978266% with an profit per trade of 0.030047831676546594%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_240 with 27849 trades and a gain of 832.7393374922917% with an profit per trade of 0.029901947556188434%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_30_and_upperEma_249 with 7203 trades and a gain of 213.5652741182558% with an profit per trade of 0.0296494896735049%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_43_and_upperEma_234 with 5966 trades and a gain of 176.5892683496308% with an profit per trade of 0.02959927394395421%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_232 with 28217 trades and a gain of 834.6528795619822% with an profit per trade of 0.029579788055497828%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_31_and_upperEma_250 with 7031 trades and a gain of 206.91859244637368% with an profit per trade of 0.029429468417916892%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_184 with 17793 trades and a gain of 523.0742908998211% with an profit per trade of 0.02939775703365487%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_245 with 6282 trades and a gain of 183.91866869623638% with an profit per trade of 0.02927708829930538%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_190 with 18691 trades and a gain of 546.790116135138% with an profit per trade of 0.02925419272030057%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_165 with 7162 trades and a gain of 209.31104954640978% with an profit per trade of 0.029225223337951658%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_172 with 7974 trades and a gain of 232.90543981579617% with an profit per trade of 0.02920810632252272%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_176 with 8046 trades and a gain of 234.75661702894723% with an profit per trade of 0.02917681046842496%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_43_and_upperEma_235 with 5972 trades and a gain of 173.4745556092213% with an profit per trade of 0.029047983189755745%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_168 with 7430 trades and a gain of 214.6417150759237% with an profit per trade of 0.02888852154453886%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_169 with 8072 trades and a gain of 232.89532023530336% with an profit per trade of 0.028852244825979107%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_212 with 29587 trades and a gain of 850.4406018279718% with an profit per trade of 0.028743725346536377%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_210 with 6476 trades and a gain of 186.01577524929684% with an profit per trade of 0.028723868939051395%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_173 with 8118 trades and a gain of 232.0798703187487% with an profit per trade of 0.02858830627232677%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_170 with 7376 trades and a gain of 210.66377858546434% with an profit per trade of 0.028560707508875318%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_243 with 6042 trades and a gain of 172.1001753746879% with an profit per trade of 0.028483974739273072%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_246 with 6272 trades and a gain of 178.59882876446565% with an profit per trade of 0.028475578565763018%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_33_and_upperEma_225 with 7152 trades and a gain of 202.76956444385348% with an profit per trade of 0.028351449167205466%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_201 with 6012 trades and a gain of 170.2261702706544% with an profit per trade of 0.02831439957928383%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_241 with 27827 trades and a gain of 784.6433247952771% with an profit per trade of 0.02819719426439347%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_222 with 26015 trades and a gain of 733.1280705867066% with an profit per trade of 0.0281809752291642%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_38_and_upperEma_169 with 7398 trades and a gain of 208.45488596881057% with an profit per trade of 0.02817719464298602%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_49_and_upperEma_203 with 6002 trades and a gain of 166.8812959087751% with an profit per trade of 0.027804281224387717%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_233 with 28175 trades and a gain of 782.3951305520545% with an profit per trade of 0.02776912619528144%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_47_and_upperEma_175 with 6414 trades and a gain of 177.08771652371823% with an profit per trade of 0.027609559794779893%
+[2022-06-25 11:23:38,112] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_41_and_upperEma_239 with 6044 trades and a gain of 166.6106559653323% with an profit per trade of 0.027566289868519576%
+[2022-06-25 11:23:38,112] [INFO] -
+[2022-06-25 11:23:38,112] [INFO] -
+[2022-06-25 11:23:38,112] [INFO] - The results sorted by average gain are:
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_222 with 28751 trades and a gain of 1069.5817647984038% with an profit per trade of 0.03720155002603053%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_229 with 28389 trades and a gain of 1024.4453763872584% with an profit per trade of 0.03608599726609808%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_221 with 28875 trades and a gain of 1007.4538947206436% with an profit per trade of 0.0348901781721435%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_228 with 28475 trades and a gain of 940.9513064614307% with an profit per trade of 0.03304482200040143%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_223 with 28725 trades and a gain of 916.3338972058207% with an profit per trade of 0.03190022270516347%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_238 with 27973 trades and a gain of 912.2328783758692% with an profit per trade of 0.03261119216300966%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_227 with 28481 trades and a gain of 895.1378475135062% with an profit per trade of 0.03142929839238462%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_226 with 28553 trades and a gain of 885.1804156465291% with an profit per trade of 0.031001310392831896%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_239 with 27903 trades and a gain of 864.2750097195523% with an profit per trade of 0.03097426834819024%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_230 with 28345 trades and a gain of 861.8700796482094% with an profit per trade of 0.03040642369547396%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_237 with 28033 trades and a gain of 857.922266560155% with an profit per trade of 0.030604011934511288%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_212 with 29587 trades and a gain of 850.4406018279718% with an profit per trade of 0.028743725346536377%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_231 with 28289 trades and a gain of 850.0231102978266% with an profit per trade of 0.030047831676546594%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_232 with 28217 trades and a gain of 834.6528795619822% with an profit per trade of 0.029579788055497828%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_240 with 27849 trades and a gain of 832.7393374922917% with an profit per trade of 0.029901947556188434%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_213 with 29477 trades and a gain of 806.0307051606584% with an profit per trade of 0.027344394109327895%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_214 with 29389 trades and a gain of 790.1239013195476% with an profit per trade of 0.026885021651622973%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_210 with 29743 trades and a gain of 789.7633618470634% with an profit per trade of 0.02655291536990429%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_211 with 29687 trades and a gain of 788.7803505046571% with an profit per trade of 0.026569890878319034%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_220 with 28957 trades and a gain of 786.9920088262012% with an profit per trade of 0.027177953822087965%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_241 with 27827 trades and a gain of 784.6433247952771% with an profit per trade of 0.02819719426439347%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_217 with 29113 trades and a gain of 782.8895779617621% with an profit per trade of 0.026891408579045862%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_233 with 28175 trades and a gain of 782.3951305520545% with an profit per trade of 0.02776912619528144%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_236 with 28045 trades and a gain of 769.9038027971965% with an profit per trade of 0.02745244438570856%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_218 with 29019 trades and a gain of 760.5377780414018% with an profit per trade of 0.026208269686805258%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_235 with 28109 trades and a gain of 755.6384890478433% with an profit per trade of 0.026882439398336594%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_242 with 27781 trades and a gain of 747.8737114009072% with an profit per trade of 0.02692033085205382%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_225 with 28687 trades and a gain of 739.8321749944273% with an profit per trade of 0.025789806358086496%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_216 with 29227 trades and a gain of 739.0630868768819% with an profit per trade of 0.025286997874461353%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_222 with 26015 trades and a gain of 733.1280705867066% with an profit per trade of 0.0281809752291642%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_234 with 28119 trades and a gain of 725.9530526774124% with an profit per trade of 0.025817171758505366%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_209 with 29829 trades and a gain of 724.7488225986292% with an profit per trade of 0.024296785765484233%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_224 with 28685 trades and a gain of 721.5933961971552% with an profit per trade of 0.025155774662616533%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_215 with 29289 trades and a gain of 720.7494702517785% with an profit per trade of 0.024608196601173766%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_219 with 28975 trades and a gain of 718.3318318700383% with an profit per trade of 0.024791435094738162%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_223 with 25977 trades and a gain of 702.2671155054047% with an profit per trade of 0.027034188532371124%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_197 with 30681 trades and a gain of 695.2975486140449% with an profit per trade of 0.022662154056714085%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_244 with 27685 trades and a gain of 681.0635349624864% with an profit per trade of 0.024600452770904332%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_234 with 25429 trades and a gain of 680.789129593756% with an profit per trade of 0.026772155003883597%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_243 with 27757 trades and a gain of 679.7599917914201% with an profit per trade of 0.024489677983622875%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_208 with 29897 trades and a gain of 677.9443507795453% with an profit per trade of 0.02267599929021458%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_235 with 25359 trades and a gain of 657.220155945141% with an profit per trade of 0.02591664324086679%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_196 with 30767 trades and a gain of 650.6836129632802% with an profit per trade of 0.02114875070573277%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_232 with 25499 trades and a gain of 647.76587903389% with an profit per trade of 0.025403579710337267%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_245 with 27585 trades and a gain of 639.3600377296068% with an profit per trade of 0.02317781539712187%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_198 with 30579 trades and a gain of 622.1193319759502% with an profit per trade of 0.020344659144378503%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_220 with 26077 trades and a gain of 616.212085697359% with an profit per trade of 0.02363048225245845%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_207 with 30019 trades and a gain of 615.6792780174114% with an profit per trade of 0.02050965315358311%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_219 with 26099 trades and a gain of 608.4960232402454% with an profit per trade of 0.02331491717078223%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_199 with 30483 trades and a gain of 606.2297078877641% with an profit per trade of 0.019887468683783226%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_200 with 30385 trades and a gain of 595.3259775750572% with an profit per trade of 0.019592758847294955%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_203 with 30203 trades and a gain of 594.8148210905808% with an profit per trade of 0.01969389865545081%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_244 with 24937 trades and a gain of 590.5813063578647% with an profit per trade of 0.02368293324609475%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_221 with 26021 trades and a gain of 585.4951581337881% with an profit per trade of 0.02250087076337528%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_208 with 23619 trades and a gain of 584.4704917739971% with an profit per trade of 0.024745776356915918%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_233 with 25481 trades and a gain of 572.5529206992574% with an profit per trade of 0.0224697979160652%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_216 with 26241 trades and a gain of 569.1087332450772% with an profit per trade of 0.021687768501393898%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_206 with 23741 trades and a gain of 567.9212122410585% with an profit per trade of 0.02392153709789219%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_241 with 25155 trades and a gain of 566.2799574883876% with an profit per trade of 0.022511626216990165%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_183 with 17847 trades and a gain of 558.7208661984404% with an profit per trade of 0.03130615040054017%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_209 with 23563 trades and a gain of 552.865865195928% with an profit per trade of 0.023463305402365065%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_6_and_upperEma_190 with 18691 trades and a gain of 546.790116135138% with an profit per trade of 0.02925419272030057%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_210 with 23447 trades and a gain of 542.0369727110584% with an profit per trade of 0.02311754052591199%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_238 with 25281 trades and a gain of 541.5312290254516% with an profit per trade of 0.021420482932852796%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_206 with 27065 trades and a gain of 540.3792442227091% with an profit per trade of 0.019965979834572663%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_190 with 31227 trades and a gain of 538.6123184006409% with an profit per trade of 0.0172482889294726%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_237 with 25299 trades and a gain of 535.792485529049% with an profit per trade of 0.021178405689120085%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_201 with 30291 trades and a gain of 533.3593147679533% with an profit per trade of 0.0176078477028805%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_242 with 25049 trades and a gain of 532.1666163041436% with an profit per trade of 0.021245024404333252%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_202 with 30247 trades and a gain of 531.1242995132786% with an profit per trade of 0.017559569527995457%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_195 with 30793 trades and a gain of 530.4648794075977% with an profit per trade of 0.017226800877069386%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_3_and_upperEma_207 with 23683 trades and a gain of 529.8372300778776% with an profit per trade of 0.022372048730223266%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_218 with 26121 trades and a gain of 528.6329999990977% with an profit per trade of 0.020237854599712786%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_243 with 25045 trades and a gain of 527.9241586863576% with an profit per trade of 0.021079024104066982%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_205 with 21343 trades and a gain of 525.7708060928683% with an profit per trade of 0.024634344098433597%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_184 with 17793 trades and a gain of 523.0742908998211% with an profit per trade of 0.02939775703365487%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_231 with 25485 trades and a gain of 519.3829974103851% with an profit per trade of 0.020379948887988428%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_193 with 31003 trades and a gain of 517.785751065895% with an profit per trade of 0.01670114992310083%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_206 with 30047 trades and a gain of 514.9550925965751% with an profit per trade of 0.01713831971899275%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_224 with 25979 trades and a gain of 513.1123875903372% with an profit per trade of 0.01975104459718762%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_239 with 25237 trades and a gain of 504.4323762564034% with an profit per trade of 0.019987810605713967%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_246 with 27541 trades and a gain of 500.6104695768218% with an profit per trade of 0.018176916944803088%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_212 with 26671 trades and a gain of 500.41019601866753% with an profit per trade of 0.018762333471510913%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_207 with 21220 trades and a gain of 496.6014683276299% with an profit per trade of 0.023402519713837413%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_236 with 25327 trades and a gain of 492.035419473136% with an profit per trade of 0.019427307595575316%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_213 with 26547 trades and a gain of 489.4732828955023% with an profit per trade of 0.018437988582344605%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_215 with 26347 trades and a gain of 485.91377929151975% with an profit per trade of 0.01844285039251223%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_204 with 30177 trades and a gain of 483.0224033392386% with an profit per trade of 0.016006309551620062%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_210 with 26781 trades and a gain of 479.55185790796145% with an profit per trade of 0.017906420891974216%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_217 with 26165 trades and a gain of 477.36179241779126% with an profit per trade of 0.0182442878814367%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_32_and_upperEma_175 with 8052 trades and a gain of 476.1714473447602% with an profit per trade of 0.05913704015707405%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_205 with 27131 trades and a gain of 475.35764480183286% with an profit per trade of 0.01752083022379687%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_211 with 26695 trades and a gain of 472.3478932916569% with an profit per trade of 0.017694245862208535%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_240 with 25223 trades and a gain of 469.63231563305544% with an profit per trade of 0.018619209278557484%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_7_and_upperEma_182 with 17897 trades and a gain of 466.773651813008% with an profit per trade of 0.02608111146074806%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_191 with 31147 trades and a gain of 465.17970021570557% with an profit per trade of 0.014934976088088919%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_206 with 21315 trades and a gain of 462.9091487597507% with an profit per trade of 0.02171752985032844%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_4_and_upperEma_204 with 21431 trades and a gain of 457.85853673693856% with an profit per trade of 0.021364310425875534%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_2_and_upperEma_229 with 25575 trades and a gain of 454.61885894439547% with an profit per trade of 0.017775908463123966%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_247 with 27463 trades and a gain of 449.1731126041486% with an profit per trade of 0.01635557341165017%

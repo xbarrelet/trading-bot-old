@@ -31,14 +31,11 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
   implicit val timeout: Timeout = 300.seconds
 
-  context.log.info("The backtester is starting, now caching or fetching the quotes for each signal")
-
-  //TODO: To get the support and resistance : https://stackoverflow.com/questions/8587047/support-resistance-algorithm-technical-analysis
-  //You could make a few tests, get some graphs and have a talk with Kyle
+  context.log.info("The backtester is starting, now caching or fetching the 1min quotes for each signal")
 
 
-  //TODO: Lot of indicators in ta4j to calculate momemtum and trend reversal, test some
   val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
+//  val backtestedStrategies: List[String] = List("CrossEMATRWithFixedTLStrategy", "CrossEMATRWithTLStrategy")
 //  val backtestedStrategies: List[String] = List("CCITRStrategy")
 
 

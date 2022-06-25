@@ -6,13 +6,13 @@ import signals.Signal
 import strategy.advanced.AdvancedStrategy
 import strategy.simple.SimpleStrategy
 
-import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator}
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator
+import org.ta4j.core.indicators.{DoubleEMAIndicator, EMAIndicator}
 import org.ta4j.core.rules.*
 import org.ta4j.core.{BarSeries, Rule}
 
 
-class CrossEMATRWithTLStrategy(override val leverage: Int, percentage: Int) extends AdvancedStrategy {
+class CrossEMATRWithFixedTLStrategy(override val leverage: Int, value: Int) extends AdvancedStrategy {
   private var shouldBuyLongBool = false
   private var shouldBuyShortBool = false
   private var shouldExitTradeBool = false
@@ -22,14 +22,14 @@ class CrossEMATRWithTLStrategy(override val leverage: Int, percentage: Int) exte
   private var currentEntryPrice = 0.0
 
   private val closePriceIndicator: ClosePriceIndicator = ClosePriceIndicator(series)
-  private val lowerEmaIndicator: DoubleEMAIndicator = DoubleEMAIndicator(closePriceIndicator, 1)
-  private val upperEmaIndicator: DoubleEMAIndicator = DoubleEMAIndicator(closePriceIndicator, 197)
+  private val lowerEmaIndicator: DoubleEMAIndicator = DoubleEMAIndicator(closePriceIndicator, 50)
+  private val upperEmaIndicator: DoubleEMAIndicator = DoubleEMAIndicator(closePriceIndicator, 154)
 
   private val crossedUpIndicatorRule: CrossedUpIndicatorRule = CrossedUpIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
   private val crossedDownIndicatorRule: CrossedDownIndicatorRule = CrossedDownIndicatorRule(lowerEmaIndicator, upperEmaIndicator)
-
-  private var highestPrice: Double = 0.0
-  private var lowestPrice: Double = 0.0
+  
+  private var highestPrice = 0.0
+  private var lowestPrice = 0.0
   private var latestClosePrice = 0.0
 
 
@@ -57,15 +57,15 @@ class CrossEMATRWithTLStrategy(override val leverage: Int, percentage: Int) exte
     if hasOpenLongPosition then
       if latestClosePrice > highestPrice then
         highestPrice = latestClosePrice
-
-      if latestClosePrice < currentEntryPrice || latestClosePrice < (highestPrice * percentage.toDouble / 10000.0) then
+        
+      if latestClosePrice < currentEntryPrice || latestClosePrice < highestPrice - value then
         shouldExitTradeBool = true
 
     if hasOpenShortPosition then
       if latestClosePrice < lowestPrice then
         lowestPrice = latestClosePrice
-
-      if latestClosePrice > currentEntryPrice || latestClosePrice > (highestPrice * (1 + (1 - percentage.toDouble)) / 10000.0) then
+        
+      if latestClosePrice > currentEntryPrice || latestClosePrice > highestPrice + value then
         shouldExitTradeBool = true
 
 

@@ -84,12 +84,16 @@ object StrategiesFactory {
         }
 
       case "CrossEMATRStrategy" =>
-        for (lowerEma: Int <- 1 to 50; upperEma: Int <- 150 to 250) {
-          strategiesList += "CrossEMATRStrategy_with_lowerEma_" + lowerEma + "_and_upperEma_" + upperEma
+        for (lowerEma: Int <- 1 to 50; upperEma: Int <- 150 to 250; leverage: Int <- 1 to 50 if leverage % 10 == 0) {
+          strategiesList += "CrossEMATRStrategy_with_lowerEma_" + lowerEma + "_and_upperEma_" + upperEma + "_and_leverage_" + leverage
         }
       case "CrossEMATRWithTLStrategy" =>
         for (percentage: Int <- 9000 to 10000) {
           strategiesList += "CrossEMATRWithTLStrategy_with_percentage_" + percentage
+        }
+      case "CrossEMATRWithFixedTLStrategy" =>
+        for (value: Int <- 1 to 300) {
+          strategiesList += "CrossEMATRWithFixedTLStrategy_with_value_" + value
         }
       case "MFITRStrategy" =>
         for (threshold: Int <- 10 to 99; barcount: Int <- 10 to 60) {
@@ -146,9 +150,11 @@ object StrategiesFactory {
     else if strategyName.startsWith("AdvancedMultiplePositionsLeveragedSS3T") then
       AdvancedMultiplePositionsLeveragedSS3T(signal, parameters(3).toInt)
     else if strategyName.startsWith("CrossEMATRStrategy") then
-      CrossEMATRStrategy(10, parameters(3).toInt, parameters(6).toInt)
+      CrossEMATRStrategy(parameters(9).toInt, parameters(3).toInt, parameters(6).toInt)
     else if strategyName.startsWith("CrossEMATRWithTLStrategy") then
       CrossEMATRWithTLStrategy(10, parameters(3).toInt)
+    else if strategyName.startsWith("CrossEMATRWithFixedTLStrategy") then
+      CrossEMATRWithFixedTLStrategy(10, parameters(3).toInt)
     else if strategyName.startsWith("MFITRStrategy") then
       MFITRStrategy(10, parameters(3).toInt, parameters(6).toInt)
     else if strategyName.startsWith("CCITRStrategy") then
