@@ -1,39 +1,38 @@
 package ch.xavier
 
-import Application.{executionContext, system}
-import signals.{Signal, SignalFollowerActor, SignalListener}
-import trading.interfaces.BinanceAPI
-import trading.{Order, TradingActor}
-
 import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.http.scaladsl.model.ws.TextMessage
 import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
-import ch.xavier.notifications.NotificationsService
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success}
+import strategy.TRStratsSpawnerActor
+
+import ch.xavier.trading.interfaces.BybitTradingAPI
 
 object Application extends App {
-  implicit val system: ActorSystem[Message] = ActorSystem(Main(), "System")
+  implicit val system: ActorSystem[BotMessage] = ActorSystem(Main(), "System")
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
 }
 
 
 object Main {
-  def apply(): Behavior[Message] =
+  def apply(): Behavior[BotMessage] =
     Behaviors.setup(context => new Main(context))
 }
 
-class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+class Main(context: ActorContext[BotMessage]) extends AbstractBehavior[BotMessage](context) {
   context.log.info("Starting trading bot and waiting for signals to profit from")
   context.log.info("-----------------------------------------------------------------------------------------")
 
-  //TODO: You can get quote every 10 seconds!
-  val restServerActorRef: ActorRef[Message] = context.spawn(RestActor(), "rest-actor")
+//  val mainActor: ActorRef[BotMessage] = context.spawn(RestActor(), "rest-actor")
 
-  override def onMessage(message: Message): Behavior[Message] =
+  val mainActor: ActorRef[BotMessage] = context.spawn(TRStratsSpawnerActor(), "strats-spawner-actor")
+
+  override def onMessage(message: BotMessage): Behavior[BotMessage] =
     this
 }

@@ -7,5 +7,6 @@ final case class Quote(
                         low: Double,
                         open: Double,
                         start_timestamp: Long,
-                        symbol: String
+                        symbol: String,
+                        isFinalQuote: Boolean
                       )

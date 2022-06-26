@@ -34,9 +34,9 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   context.log.info("The backtester is starting, now caching or fetching the 1min quotes for each signal")
 
 
-  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
+//  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("CrossEMATRWithFixedTLStrategy", "CrossEMATRWithTLStrategy")
-//  val backtestedStrategies: List[String] = List("CCITRStrategy")
+  val backtestedStrategies: List[String] = List("CCITRStrategy")
 
 
   Source(signalsRepository.getSignals(startTimestamp = 1641011872))

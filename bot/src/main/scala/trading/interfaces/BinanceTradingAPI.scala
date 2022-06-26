@@ -2,11 +2,12 @@ package ch.xavier
 package trading.interfaces
 
 import Application.{executionContext, system}
-import trading.interfaces.BybitAPI.*
+import trading.interfaces.BybitTradingAPI.*
 import trading.{Order, TradingApi}
 
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest, HttpResponse, StatusCodes}
+import com.typesafe.config.ConfigFactory
 import org.slf4j.{Logger, LoggerFactory}
 import spray.json.DefaultJsonProtocol.*
 import spray.json.*
@@ -19,17 +20,18 @@ import scala.util.Success
 
 //https://binance-docs.github.io/apidocs/futures/en/#new-order-trade
 //https://binance-docs.github.io/apidocs/futures/en/#change-margin-type-trade
-object BinanceAPI extends TradingApi {
+object BinanceTradingAPI extends TradingApi {
   val logger: Logger = LoggerFactory.getLogger("BinanceAPI")
   val apiKey = "d17734d41bdbc7679c0f4787e2e9c190dc202c713c9d30a680310b634e6009c0"
   val apiSecret = "82f57ae5b9841510aec872f93c89a89b16591d680550969c977756d7c51b153f"
   val apiUrl = "https://testnet.binancefuture.com/"
   val defaultHeaders: RawHeader = RawHeader("X-MBX-APIKEY", apiKey)
+  val leverage: Int = ConfigFactory.load().getInt("trade.leverage")
 
 
   def openPosition(order: Order): Unit =
     val leverageResponse: Future[HttpResponse] = http.singleRequest(
-      HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(order.symbol, order.leverage))
+      HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(order.symbol, leverage))
         .withHeaders(defaultHeaders))
     val isolatedMarginResponse: Future[HttpResponse] = http.singleRequest(
       HttpRequest(method = HttpMethods.POST, uri = createIsolatedMarginUrl(order.symbol))
@@ -44,7 +46,7 @@ object BinanceAPI extends TradingApi {
           .map(entity => entity.getData().utf8String)
           .onComplete {
             case Success(response) =>
-              logger.info(s"Leverage set to ${order.leverage} for symbol:${order.symbol}")
+              logger.info(s"Leverage set to ${leverage} for symbol:${order.symbol}")
 //              isolatedMarginResponse.map {
 //                case response@HttpResponse(StatusCodes.OK, _, _, _) =>
 //                  response.entity.toStrict(30.seconds)
@@ -119,7 +121,7 @@ object BinanceAPI extends TradingApi {
     val url = apiUrl + "fapi/v1/order?"
     val formattedQuantity = String.format("%.2f", quantity)
 
-    val queryParams = s"symbol=${symbol}USDT&side=$side&type=MARKET&quantity=1&timestamp=${System.currentTimeMillis()}"
+    val queryParams = s"symbol=${symbol}USDT&side=$side&type=MARKET&quantity=$formattedQuantity&timestamp=${System.currentTimeMillis()}"
 
     url + addSignToQueryParams(queryParams)
   }

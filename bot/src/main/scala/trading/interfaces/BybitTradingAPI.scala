@@ -4,6 +4,7 @@ package trading.interfaces
 import Application.{executionContext, system}
 import trading.{Order, TradingApi}
 
+import akka.actor.typed.ActorRef
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest, HttpResponse, StatusCodes}
 import akka.http.scaladsl.{Http, HttpExt}
 import com.typesafe.config.{Config, ConfigFactory}
@@ -12,25 +13,52 @@ import spray.json.JsValue
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration.{DurationInt, pairIntToDuration}
 import scala.util.Success
 import spray.json.*
 import spray.json.DefaultJsonProtocol.*
 
-object BybitAPI extends TradingApi {
+object BybitTradingAPI {
   val logger: Logger = LoggerFactory.getLogger("BybitAPI")
 
-  val apiKey: String = config.getString("bybit.api-key")
-  val apiSecret: String = config.getString("bybit.api-secret")
+  val config: Config = ConfigFactory.load()
+  val http: HttpExt = Http()
   val apiUrl: String = config.getString("bybit.api-url")
+  val leverage: Int = ConfigFactory.load().getInt("trade.leverage")
 
 
-  def openPosition(order: Order): Unit =
+  def getAvailableAmount(apiKey: String, apiSecret: String, replyTo: ActorRef[BotMessage]): Unit =
+    val availableAmountResponse: Future[HttpResponse] = http.singleRequest(
+      HttpRequest(method = HttpMethods.GET, uri = createAvailableAmountUrl(apiKey, apiSecret)))
+    availableAmountResponse.map {
+      case response@HttpResponse(StatusCodes.OK, _, _, _) =>
+        response.entity.toStrict(30.seconds)
+          .map(entity => entity.getData().utf8String)
+          .map(body => body.parseJson.convertTo[JsValue].asJsObject)
+          .map(jsonBody => jsonBody.getFields("result").head)
+          .map(_.convertTo[JsValue].asJsObject)
+          .map(jsonBody => jsonBody.getFields("spot").head)
+          .map(_.convertTo[JsValue].asJsObject)
+          .map(jsonBody => jsonBody.getFields("assets").head)
+          .map(_.convertTo[Seq[JsValue]].head)
+          .map(_.convertTo[JsValue].asJsObject)
+          .map(jsonBody => jsonBody.getFields("free").head)
+          .onComplete {
+            case Success(payload) =>
+              val availableAmount: Double = payload.toString.replace("\"", "").toDouble
+              replyTo.tell(UpdateAvailableAmount(availableAmount))
+            case error@_ =>
+              logger.error(s"Problem encountered when getting the available amount: $error, returning 1000")
+              replyTo.tell(UpdateAvailableAmount(1000.0))
+          }
+    }
+
+  def openPosition(order: Order, apiKey: String, apiSecret: String): Unit =
     val leverageResponse: Future[HttpResponse] = http.singleRequest(
-      HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(order.symbol, order.leverage)))
+      HttpRequest(method = HttpMethods.POST, uri = createSetLeverageUrl(order.symbol, leverage, apiKey, apiSecret)))
     val openPositionReponse: Future[HttpResponse] = http.singleRequest(
-      HttpRequest(method = HttpMethods.POST, uri = createOpenPositionUrl(order.symbol, order.isLongOrder, order.quantity)))
+      HttpRequest(method = HttpMethods.POST, uri = createOpenPositionUrl(order.symbol, order.isLongOrder, order.quantity, apiKey, apiSecret)))
 
     leverageResponse.map {
       case response@HttpResponse(StatusCodes.OK, _, _, _) =>
@@ -38,7 +66,7 @@ object BybitAPI extends TradingApi {
           .map(entity => entity.getData().utf8String)
           .onComplete {
             case Success(response) =>
-              logger.info(s"Leverage set to ${order.leverage} for symbol:${order.symbol}")
+              logger.info(s"Leverage set to $leverage for symbol:${order.symbol}")
               runOpenPositionCommand(openPositionReponse, order.symbol)
           }
 
@@ -46,9 +74,9 @@ object BybitAPI extends TradingApi {
     }
 
 
-  def closePosition(order: Order): Unit =
+  def closePosition(order: Order, apiKey: String, apiSecret: String): Unit =
     val closePositionReponse: Future[HttpResponse] = http.singleRequest(
-      HttpRequest(method = HttpMethods.POST, uri = createClosePositionUrl(order.symbol, order.isLongOrder, order.quantity)))
+      HttpRequest(method = HttpMethods.POST, uri = createClosePositionUrl(order.symbol, order.isLongOrder, order.quantity, apiKey, apiSecret)))
     runClosePositionCommand(closePositionReponse, order.symbol)
 
 
@@ -85,15 +113,22 @@ object BybitAPI extends TradingApi {
     }
   }
 
-  private def createSetLeverageUrl(symbol: String, leverage: Int): String = {
+  private def createAvailableAmountUrl(apiKey: String, apiSecret: String): String = {
+    val url = apiUrl + "asset/v1/private/asset-info/query?"
+    val queryParams = s"api_key=$apiKey&coin=USDT&timestamp=${System.currentTimeMillis()}"
+
+    url + addSignToQueryParams(queryParams, apiSecret)
+  }
+
+  private def createSetLeverageUrl(symbol: String, leverage: Int, apiKey: String, apiSecret: String): String = {
     val url = apiUrl + "private/linear/position/switch-isolated?"
     val queryParams = s"api_key=$apiKey&buy_leverage=$leverage&is_isolated=True&sell_leverage=$leverage&" +
       s"symbol=${symbol}USDT&timestamp=${System.currentTimeMillis()}"
 
-    url + addSignToQueryParams(queryParams)
+    url + addSignToQueryParams(queryParams, apiSecret)
   }
 
-  private def createOpenPositionUrl(symbol: String, isLongOrder: Boolean, quantity: Double): String = {
+  private def createOpenPositionUrl(symbol: String, isLongOrder: Boolean, quantity: Double, apiKey: String, apiSecret: String): String = {
     val side: String = if isLongOrder then "Buy" else "Sell"
     val url = apiUrl + "private/linear/order/create?"
     val formattedQuantity = String.format("%.2f", quantity)
@@ -101,10 +136,10 @@ object BybitAPI extends TradingApi {
     val queryParams = s"api_key=$apiKey&close_on_trigger=False&order_type=Market&qty=$formattedQuantity&" +
       s"reduce_only=False&side=$side&symbol=${symbol}USDT&time_in_force=GoodTillCancel&timestamp=${System.currentTimeMillis()}"
 
-    url + addSignToQueryParams(queryParams)
+    url + addSignToQueryParams(queryParams, apiSecret)
   }
 
-  private def createClosePositionUrl(symbol: String, isLongOrder: Boolean, quantity: Double): String = {
+  private def createClosePositionUrl(symbol: String, isLongOrder: Boolean, quantity: Double, apiKey: String, apiSecret: String): String = {
     val side: String = if isLongOrder then "Sell" else "Buy"
     val formattedQuantity = String.format("%.2f", quantity)
     val url = apiUrl + "private/linear/order/create?"
@@ -112,10 +147,10 @@ object BybitAPI extends TradingApi {
     val queryParams = s"api_key=$apiKey&close_on_trigger=False&order_type=Market&qty=$formattedQuantity&" +
       s"reduce_only=True&side=$side&symbol=${symbol}USDT&time_in_force=GoodTillCancel&timestamp=${System.currentTimeMillis()}"
 
-    url + addSignToQueryParams(queryParams)
+    url + addSignToQueryParams(queryParams, apiSecret)
   }
 
-  private def addSignToQueryParams(queryParams: String): String =
+  private def addSignToQueryParams(queryParams: String, apiSecret: String): String =
     val sha256Mac: Mac = Mac.getInstance("HmacSHA256")
     val secretKey: SecretKeySpec = new SecretKeySpec(apiSecret.getBytes, "HmacSHA256")
     sha256Mac.init(secretKey)

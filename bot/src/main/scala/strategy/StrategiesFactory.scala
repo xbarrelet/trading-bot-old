@@ -6,7 +6,7 @@ import signals.Signal
 import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.{Logger, LoggerFactory}
 import org.ta4j.core.BarSeries
-import strategy.concrete.AdvancedMultiplePositionsLeveragedSS3T
+import strategy.concrete.CrossEMATRStrategy
 
 import scala.::
 import scala.collection.mutable.ListBuffer
@@ -19,5 +19,8 @@ object StrategiesFactory {
 
 
   def getCurrentStrategy(signal: Signal): AdvancedStrategy =
-    AdvancedMultiplePositionsLeveragedSS3T(signal, leverage)
+    CrossEMATRStrategy(leverage, 2, 181)
+
+  def getCurrentTRStrategy(lowerDEMA: Int, upperDEMA: Int): AdvancedStrategy =
+    CrossEMATRStrategy(leverage, lowerDEMA, upperDEMA)
 }

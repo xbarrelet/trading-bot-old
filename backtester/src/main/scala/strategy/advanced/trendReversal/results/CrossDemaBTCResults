@@ -105,7 +105,7 @@
 [2022-06-25 11:23:38,112] [INFO] -
 [2022-06-25 11:23:38,112] [INFO] -
 [2022-06-25 11:23:38,112] [INFO] - The results sorted by average gain are:
-[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_222 with 28751 trades and a gain of 1069.5817647984038% with an profit per trade of 0.03720155002603053%
+[2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_222 with 28751 trades and a gain of 1069.505817647984038% with an profit per trade of 0.03720155002603053%
 [2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_229 with 28389 trades and a gain of 1024.4453763872584% with an profit per trade of 0.03608599726609808%
 [2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_221 with 28875 trades and a gain of 1007.4538947206436% with an profit per trade of 0.0348901781721435%
 [2022-06-25 11:23:38,117] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_1_and_upperEma_228 with 28475 trades and a gain of 940.9513064614307% with an profit per trade of 0.03304482200040143%

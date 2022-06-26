@@ -18,23 +18,21 @@ import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success, Try}
 
 object QuotesFetcherActor {
-  def apply(): Behavior[Message] =
+  def apply(): Behavior[BotMessage] =
     Behaviors.setup(context => new QuotesFetcherActor(context))
 }
 
-class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
+class QuotesFetcherActor(context: ActorContext[BotMessage]) extends AbstractBehavior[BotMessage](context) {
   val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
   val http: HttpExt = Http()
   val urlTemplate: String = "https://api.bybit.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
 
-  override def onMessage(message: Message): Behavior[Message] =
+  override def onMessage(message: BotMessage): Behavior[BotMessage] =
     message match {
-      case FetchLastQuoteMessage(symbol: String, replyTo: ActorRef[Message]) =>
-        var lastMinuteTimestampInSecond: Long = Instant.now.getEpochSecond - 60
-        if symbol.equals("LTC") || symbol.equals("LINK") then
-          lastMinuteTimestampInSecond = Instant.now.getEpochSecond - 90
+      case FetchQuotesMessage(symbol: String, numberOfQuotes: Int, replyTo: ActorRef[BotMessage]) =>
+        val timestampInSeconds: Long = Instant.now.getEpochSecond - (numberOfQuotes + 1) * 60
 
-        val url = urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", lastMinuteTimestampInSecond.toString)
+        val url = urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", timestampInSeconds.toString)
         val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri = url))
 
         response.map {
@@ -46,21 +44,20 @@ class QuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavio
               .map(_.convertTo[Seq[JsValue]])
               .onComplete {
                 case Success(list) =>
-                  if list != null then
-                    replyTo ! QuoteFetchedMessage(Quote(
-                      list.last.asJsObject.getFields("close").head.toString.toDouble,
-                      list.last.asJsObject.getFields("high").head.toString.toDouble,
-                      list.last.asJsObject.getFields("low").head.toString.toDouble,
-                      list.last.asJsObject.getFields("open").head.toString.toDouble,
-                      list.last.asJsObject.getFields("open_time").head.toString.toLong,
-                      symbol
-                    ))
+                  replyTo ! QuotesFetchedMessage(
+                    list.map(quote => Quote(
+                      quote.asJsObject.getFields("close").head.toString.toDouble,
+                      quote.asJsObject.getFields("high").head.toString.toDouble,
+                      quote.asJsObject.getFields("low").head.toString.toDouble,
+                      quote.asJsObject.getFields("open").head.toString.toDouble,
+                      quote.asJsObject.getFields("open_time").head.toString.toLong,
+                      symbol, true)).toList
+                  )
                 case Failure(failure) =>
                   logger.error(s"Couldn't fetch quote for symbol:$symbol with url:$url, let's wait 1 more minute for the next one")
-                  replyTo ! QuoteFetchedMessage(Quote(0, 0, 0, 0, 0, "EMPTY"))
-                  //TODO: Or schedule ici un nouveau message dans 5 seconds avec meme params pour self send
+                  replyTo ! QuotesFetchedMessage(List(Quote(0, 0, 0, 0, 0, "EMPTY", false)))
               }
-          case _ => logger.error(s"Problem encountered when fetching the quotes for $symbol and timestamp $lastMinuteTimestampInSecond")
+          case _ => logger.error(s"Problem encountered when fetching the quotes for $symbol and timestamp $timestampInSeconds")
         }
 
         this
