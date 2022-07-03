@@ -36,9 +36,9 @@ object SignalsRepository {
     cachedSignals
 
   private def cacheSignalsOlderThanOneMonth(startTimestamp: Double): List[Signal] =
-//    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 4" //TEST FOR STRAT
-//    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 298" //BTC 1 Year fake signal
-    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 299" //BTC last month fake signal
+    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 298 order by signal_id" //3 months with different tokens
+//    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 299" //BTC 1 Year fake signal
+//    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where signal_id = 299" //BTC last month fake signal
 //    sql"select entry_price, first_target_price, second_target_price, third_target_price, is_long, stop_loss, symbol, timestamp from signals where timestamp < ${(System.currentTimeMillis / 1000) - 2419200} and timestamp > $startTimestamp order by timestamp desc"
       .query[Signal]
       .to[List]

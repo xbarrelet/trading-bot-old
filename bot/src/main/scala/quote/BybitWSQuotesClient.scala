@@ -25,7 +25,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.{FiniteDuration, SECONDS}
 
 
-object BybitWSQuotesClient {
+class BybitWSQuotesClient {
   private val logger: Logger = LoggerFactory.getLogger("WSBybitQuotesClient")
 
   private var followerRefs: Map[String, List[ActorRef[BotMessage]]] = Map()
@@ -37,6 +37,7 @@ object BybitWSQuotesClient {
     Sink.foreach {
       case message: TextMessage.Strict =>
         if message.text.contains("data") then
+          val symbol = message.text.split("candle.1.")(1).split("USDT")(0)
           val data = message.text.parseJson.convertTo[JsValue].asJsObject.getFields("data").head
           val jsonQuote = data.convertTo[Seq[JsValue]].head
           val quote: Quote = Quote(
@@ -45,10 +46,10 @@ object BybitWSQuotesClient {
             jsonQuote.asJsObject.getFields("low").head.toString.toDouble,
             jsonQuote.asJsObject.getFields("open").head.toString.toDouble,
             jsonQuote.asJsObject.getFields("start").head.toString.toLong,
-            "BTC",
+            symbol,
             jsonQuote.asJsObject.getFields("confirm").head.toString.toBoolean
           )
-          followerRefs("BTC").foreach(actorRef => actorRef ! QuoteFetchedMessage(quote))
+          followerRefs(symbol).foreach(actorRef => actorRef ! QuoteFetchedMessage(quote))
 
 
       case _ =>
@@ -59,8 +60,8 @@ object BybitWSQuotesClient {
     if followerRefs.contains(symbol) then
       followerRefs = followerRefs.updated(symbol, followerRef :: followerRefs(symbol))
     else
-      startFollowingSymbol(symbol)
       followerRefs = followerRefs + (symbol -> List(followerRef))
+      startFollowingSymbol(symbol)
   }
 
 
@@ -73,7 +74,7 @@ object BybitWSQuotesClient {
         .viaMat(webSocketFlow)(Keep.right)
         .toMat(incoming)(Keep.both)
         .run()
-
+    
     upgradeResponse.flatMap { upgrade =>
       if (upgrade.response.status == StatusCodes.SwitchingProtocols) {
         Future.successful(Done)

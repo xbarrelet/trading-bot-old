@@ -20,10 +20,11 @@ object TRStratFollowerActor {
 }
 
 class TRStratFollowerActor(context: ActorContext[BotMessage]) extends AbstractBehavior[BotMessage](context) {
-  private val quotesClient: BybitWSQuotesClient.type = BybitWSQuotesClient
+  private val quotesClient: BybitWSQuotesClient = BybitWSQuotesClient()
 
   private var tradingActorRef: ActorRef[BotMessage] = null
   private var strategy: AdvancedStrategy = null
+  private var symbol: String = ""
 
   private val config: Config = ConfigFactory.load()
 
@@ -32,14 +33,16 @@ class TRStratFollowerActor(context: ActorContext[BotMessage]) extends AbstractBe
 
   override def onMessage(message: BotMessage): Behavior[BotMessage] =
     message match
-      case FollowStrategyMessage(strategyFromMessage: AdvancedStrategy, symbol: String, subAccountId: Int) =>
+      case FollowStrategyMessage(strategyFromMessage: AdvancedStrategy, symbolFromMessage: String, subAccountId: Int) =>
         context.log.info(s"Starting to follow strategy:${strategyFromMessage.getName} using subAccountId:$subAccountId")
 
         strategy = strategyFromMessage
+        symbol = symbolFromMessage
         apiKey = config.getString(f"bybit.api-key$subAccountId")
         apiSecret = config.getString(f"bybit.api-secret$subAccountId")
+
         tradingActorRef = context.spawn(TradingActor(), f"trading-actor-$subAccountId")
-        tradingActorRef ! SetAPIKeysMessage(apiKey, apiSecret)
+        tradingActorRef ! SetAPIKeysAndLeverageMessage(apiKey, apiSecret, symbol)
 
         quotesClient.followSymbol(symbol, context.self)
 
@@ -50,17 +53,17 @@ class TRStratFollowerActor(context: ActorContext[BotMessage]) extends AbstractBe
           context.log.info("")
           context.log.info(s"Strategy ${strategy.getName} is closing its current position at price:${quote.close} at time:${quote.start_timestamp}")
 
-//          tradingActorRef ! ClosePositionMessage(strategy.getName)
+          tradingActorRef ! ClosePositionMessage(strategy.getName, quote.close)
 
         if strategy.shouldBuyLong then
           context.log.info("")
-//          context.log.info(s"Strategy ${strategy.getName} is opening a long position at price:${quote.close} at time:${quote.start_timestamp}")
+          context.log.info(s"Strategy ${strategy.getName} is opening a long position at price:${quote.close} at time:${quote.start_timestamp}")
 
           tradingActorRef ! OpenPositionMessage(strategy.getName, true, quote.close)
 
         if strategy.shouldBuyShort then
           context.log.info("")
-//          context.log.info(s"Strategy ${strategy.getName} is opening a short position at price:${quote.close} at time:${quote.start_timestamp}")
+          context.log.info(s"Strategy ${strategy.getName} is opening a short position at price:${quote.close} at time:${quote.start_timestamp}")
 
           tradingActorRef ! OpenPositionMessage(strategy.getName, false, quote.close)
 

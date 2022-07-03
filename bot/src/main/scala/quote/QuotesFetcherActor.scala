@@ -23,9 +23,9 @@ object QuotesFetcherActor {
 }
 
 class QuotesFetcherActor(context: ActorContext[BotMessage]) extends AbstractBehavior[BotMessage](context) {
-  val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
-  val http: HttpExt = Http()
-  val urlTemplate: String = "https://api.bybit.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
+  private val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
+  private val http: HttpExt = Http()
+  private val urlTemplate: String = "https://api.bybit.com/public/linear/kline?symbol=$SYMBOLUSDT&interval=1&from=$START_TIMESTAMP"
 
   override def onMessage(message: BotMessage): Behavior[BotMessage] =
     message match {

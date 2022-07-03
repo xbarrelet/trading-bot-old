@@ -21,8 +21,8 @@
 //}
 //
 //class RestActor(context: ActorContext[BotMessage]) extends AbstractBehavior[BotMessage](context) {
-//  val logger: Logger = LoggerFactory.getLogger("RestActor")
-//  val followersSpawnerRef: ActorRef[BotMessage] = context.spawn(FollowersSpawnerActor(), s"followers-spawner-actor")
+//  private val logger: Logger = LoggerFactory.getLogger("RestActor")
+//  private val followersSpawnerRef: ActorRef[BotMessage] = context.spawn(FollowersSpawnerActor(), s"followers-spawner-actor")
 //
 //  val route: Route =
 //    concat(

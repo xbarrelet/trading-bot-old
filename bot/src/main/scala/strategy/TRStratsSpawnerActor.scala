@@ -22,35 +22,33 @@ object TRStratsSpawnerActor {
 
 
 class TRStratsSpawnerActor(context: ActorContext[BotMessage]) extends AbstractBehavior[BotMessage](context) {
-  val logger: Logger = LoggerFactory.getLogger("TRStratsSpawnerActor")
+  private val logger: Logger = LoggerFactory.getLogger("TRStratsSpawnerActor")
+  private val quotesFetcherActor: ActorRef[BotMessage] = context.spawn(QuotesFetcherActor(), "quotes-fetcher-actor")
 
-  val quotesFetcherActor: ActorRef[BotMessage] = context.spawn(QuotesFetcherActor(), "quotes-fetcher-actor")
-
-  val strategies: List[AdvancedStrategy] = List(
-    // 1 YEAR BACKTESTED
-    CrossEMATRStrategy(50, 50, 235),
-    CrossEMATRStrategy(50, 1, 222),
-
-    // 1 MONTH BACKTESTED
-    CrossEMATRStrategy(50, 49, 201),
-    CrossEMATRStrategy(50, 2, 181),
+  private val strategies: Map[String, List[AdvancedStrategy]] = Map(
+    "APE" -> List(
+      CrossEMATRStrategy(50, 27, 246),
+      CrossEMATRStrategy(50, 1, 240),
+    )
   )
 
-  quotesFetcherActor ! FetchQuotesMessage("BTC", 240, context.self)
+  for (symbol, strats) <- strategies do quotesFetcherActor ! FetchQuotesMessage(symbol, 250, context.self)
 
 
   override def onMessage(message: BotMessage): Behavior[BotMessage] =
     message match
       case QuotesFetchedMessage(quotes: List[Quote]) =>
+        val symbol = quotes.head.symbol
+
         for (quote: Quote <- quotes)
-          for (strategy: AdvancedStrategy <- strategies)
+          for (strategy: AdvancedStrategy <- strategies(symbol))
             strategy.addQuote(quote)
 
         var counter = 1
-        for (strategy: AdvancedStrategy <- strategies)
+        for (strategy: AdvancedStrategy <- strategies(symbol))
           val followerActor: ActorRef[BotMessage] = context.spawn(TRStratFollowerActor(), f"follower-actor-${strategy.getName}")
           strategy.reset
-          followerActor ! FollowStrategyMessage(strategy, "BTC", counter)
+          followerActor ! FollowStrategyMessage(strategy, symbol, counter)
           context.log.info(f"Assigning subAccountId:$counter to strategy:${strategy.getName}")
           counter = counter + 1
 

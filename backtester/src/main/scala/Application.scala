@@ -29,18 +29,18 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   val signalsRepository: SignalsRepository.type = SignalsRepository
   val backtesterRef: ActorRef[Message] = context.spawn(StrategiesMainActor(), "backtester-actor")
   val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
-  implicit val timeout: Timeout = 300.seconds
+  implicit val timeout: Timeout = 3600.seconds
 
   context.log.info("The backtester is starting, now caching or fetching the 1min quotes for each signal")
 
 
-//  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
+  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("CrossEMATRWithFixedTLStrategy", "CrossEMATRWithTLStrategy")
-  val backtestedStrategies: List[String] = List("CCITRStrategy")
+//  val backtestedStrategies: List[String] = List("CCITRStrategy")
 
 
-  Source(signalsRepository.getSignals(startTimestamp = 1641011872))
-    .mapAsync(4)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
+  Source(signalsRepository.getSignals())
+    .mapAsync(1)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
     .runWith(Sink.last)
     .onComplete {
       case Success(done) =>

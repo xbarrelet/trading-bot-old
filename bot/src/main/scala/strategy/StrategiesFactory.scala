@@ -12,9 +12,9 @@ import scala.::
 import scala.collection.mutable.ListBuffer
 
 object StrategiesFactory {
-  val logger: Logger = LoggerFactory.getLogger("StrategiesFactory")
+  private val logger: Logger = LoggerFactory.getLogger("StrategiesFactory")
 
-  val leverage: Int = DynamicConfig.leverage
+  private val leverage: Int = DynamicConfig.leverage
   logger.info(s"Starting strategies factory with a leverage of $leverage")
 
 
