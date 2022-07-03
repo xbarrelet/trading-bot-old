@@ -42,7 +42,7 @@ class TRStratFollowerActor(context: ActorContext[BotMessage]) extends AbstractBe
         apiSecret = config.getString(f"bybit.api-secret$subAccountId")
 
         tradingActorRef = context.spawn(TradingActor(), f"trading-actor-$subAccountId")
-        tradingActorRef ! SetAPIKeysAndLeverageMessage(apiKey, apiSecret, symbol)
+        tradingActorRef ! SetAPIKeysAndLeverageMessage(apiKey, apiSecret, symbol, strategyFromMessage.getName)
 
         quotesClient.followSymbol(symbol, context.self)
 

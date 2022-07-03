@@ -35,16 +35,19 @@ class TradingActor(context: ActorContext[BotMessage]) extends AbstractBehavior[B
   private var apiKey: String = null
   private var apiSecret: String = null
   private var amountInUsdtForEachTrade: Double = 0.0
+  private var strategyName: String = ""
 
   private val bybitApi: BybitTradingAPI.type = BybitTradingAPI
 
   override def onMessage(message: BotMessage): Behavior[BotMessage] =
     message match
-      case SetAPIKeysAndLeverageMessage(apiKeyFromMessage: String, apiSecretFromMessage: String, symbol: String) =>
+      case SetAPIKeysAndLeverageMessage(apiKeyFromMessage: String, apiSecretFromMessage: String, symbolFromMessage: String, strategyNameFromMessage: String) =>
         apiKey = apiKeyFromMessage
         apiSecret = apiSecretFromMessage
+        strategyName = strategyNameFromMessage
+
         bybitApi.getAvailableAmount(apiKeyFromMessage, apiSecretFromMessage, context.self)
-        bybitApi.setLeverage(leverage, symbol, apiKey, apiSecret)
+        bybitApi.setLeverage(leverage, symbolFromMessage, apiKey, apiSecret)
 
       case OpenPositionMessage(strategyName: String, openLongPosition: Boolean, startClosePrice: Double) =>
         val quantity: Double = amountInUsdtForEachTrade / startClosePrice
@@ -59,10 +62,11 @@ class TradingActor(context: ActorContext[BotMessage]) extends AbstractBehavior[B
         else
           val orderToClose: Order = activePositions(strategyName)
 
-          bybitApi.closePosition(orderToClose, apiKey, apiSecret, exitPrice)
+          bybitApi.closePosition(orderToClose, apiKey, apiSecret, exitPrice, context.self)
           activePositions = activePositions - strategyName
 
       case UpdateAvailableAmount(newAvailableAmount: Double) =>
+        context.log.info(s"Available amount for strat:$strategyName, old:$amountInUsdtForEachTrade, new:$newAvailableAmount")
         amountInUsdtForEachTrade = newAvailableAmount
 
     this

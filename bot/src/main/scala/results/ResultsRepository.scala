@@ -22,8 +22,8 @@ object ResultsRepository {
   )
 
 
-  def insertResultWithStartResult(symbol: String, entryPrice: Double, startTimestamp: Long, strategyName: String): Unit =
-    sql"INSERT INTO results (symbol, entry_price, start_timestamp, strategy_name)  VALUES ($symbol, $entryPrice, $startTimestamp, $strategyName)"
+  def insertResultWithStartResult(symbol: String, entryPrice: Double, startTimestamp: Long, strategyName: String, isLong: Boolean): Unit =
+    sql"INSERT INTO results (symbol, entry_price, start_timestamp, strategy_name, is_long)  VALUES ($symbol, $entryPrice, $startTimestamp, $strategyName, $isLong)"
       .update
       .run
       .transact(transactor)

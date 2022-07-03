@@ -29,7 +29,7 @@ class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Messa
   implicit val timeout: Timeout = 30.seconds
 
 //  val numberOfDaysOfQuotesToFetch = 365
-  val numberOfDaysOfQuotesToFetch = 30
+  val numberOfDaysOfQuotesToFetch = 90
 
   override def onMessage(message: Message): Behavior[Message] =
     message match

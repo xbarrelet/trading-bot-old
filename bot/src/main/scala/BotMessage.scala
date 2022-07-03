@@ -24,7 +24,7 @@ final case class QuotesFetchedMessage(quotes: List[Quote]) extends BotMessage
 
 
 //TRADING
-final case class SetAPIKeysAndLeverageMessage(apiKey: String, apiSecret: String, symbol: String) extends BotMessage
+final case class SetAPIKeysAndLeverageMessage(apiKey: String, apiSecret: String, symbol: String, strategyName: String) extends BotMessage
 final case class OpenPositionMessage(strategyName: String, openLongPosition: Boolean, startClosePrice: Double) extends BotMessage
 final case class ClosePositionMessage(strategyName: String, exitPrice: Double) extends BotMessage
 final case class UpdateAvailableAmount(newAvailableAmount: Double) extends BotMessage

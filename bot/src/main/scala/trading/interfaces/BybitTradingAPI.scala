@@ -86,16 +86,16 @@ object BybitTradingAPI {
           //          .map(orderId => orderId.toString.replace("\"", ""))
           .onComplete {
             case Success(payload) =>
-              logger.info(s"Position created for symbol:${order.symbol} with payload:$payload")
+              logger.info(s"Position created for symbol:${order.symbol} and strat:${order.strategyName} with payload:$payload")
               resultsRepository.insertResultWithStartResult(order.symbol, order.startClosePrice,
-                System.currentTimeMillis() / 1000, order.strategyName)
+                System.currentTimeMillis() / 1000, order.strategyName, order.isLongOrder)
 
             case error@_ => logger.error(s"Problem encountered when placing order for symbol:${order.symbol}: $error with response:$response")
           }
     }
 
 
-  def closePosition(order: Order, apiKey: String, apiSecret: String, exitPrice: Double): Unit =
+  def closePosition(order: Order, apiKey: String, apiSecret: String, exitPrice: Double, tradingActorRef: ActorRef[BotMessage]): Unit =
     val closePositionReponse: Future[HttpResponse] = http.singleRequest(
       HttpRequest(method = HttpMethods.POST, uri = createClosePositionUrl(order.symbol, order.isLongOrder, order.quantity, apiKey, apiSecret)))
 
@@ -105,9 +105,10 @@ object BybitTradingAPI {
           .map(entity => entity.getData().utf8String)
           .onComplete {
             case Success(response) =>
-              logger.info(s"Position closed for symbol:${order.symbol}")
+              logger.info(s"Position closed for symbol:${order.symbol} and strat:${order.strategyName}")
               resultsRepository.updateResultWithEndValues(order.symbol, order.strategyName, exitPrice, 
                 System.currentTimeMillis() / 1000)
+              getAvailableAmount(apiKey, apiSecret, tradingActorRef)
             case error@_ => logger.error(s"Problem encountered when closing order for symbol:${order.symbol}: $error")
           }
     }
