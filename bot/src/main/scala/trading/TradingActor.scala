@@ -49,9 +49,9 @@ class TradingActor(context: ActorContext[BotMessage]) extends AbstractBehavior[B
         bybitApi.getAvailableAmount(apiKeyFromMessage, apiSecretFromMessage, context.self)
         bybitApi.setLeverage(leverage, symbolFromMessage, apiKey, apiSecret)
 
-      case OpenPositionMessage(strategyName: String, openLongPosition: Boolean, startClosePrice: Double) =>
-        val quantity: Double = amountInUsdtForEachTrade / startClosePrice
-        val order: Order = Order("APE", openLongPosition, quantity, startClosePrice, strategyName)
+      case OpenPositionMessage(strategyName: String, openLongPosition: Boolean, startClosePrice: Double, symbol: String) =>
+        val quantity: Double = leverage * amountInUsdtForEachTrade / startClosePrice
+        val order: Order = Order(symbol, openLongPosition, quantity, startClosePrice, strategyName)
 
         bybitApi.openPosition(order, apiKey, apiSecret)
         activePositions = activePositions + (strategyName -> order)

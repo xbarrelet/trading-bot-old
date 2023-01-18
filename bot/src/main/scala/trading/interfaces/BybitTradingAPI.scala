@@ -86,7 +86,8 @@ object BybitTradingAPI {
           //          .map(orderId => orderId.toString.replace("\"", ""))
           .onComplete {
             case Success(payload) =>
-              logger.info(s"Position created for symbol:${order.symbol} and strat:${order.strategyName} with payload:$payload")
+              val orderType: String = if (order.isLongOrder) "Long " else "Short "
+              logger.info(s"$orderType position created for symbol:${order.symbol} and strat:${order.strategyName}")
               resultsRepository.insertResultWithStartResult(order.symbol, order.startClosePrice,
                 System.currentTimeMillis() / 1000, order.strategyName, order.isLongOrder)
 

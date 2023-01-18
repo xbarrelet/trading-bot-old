@@ -5,7 +5,7 @@ from psycopg.rows import dict_row
 class SignalsRepository:
     def __init__(self):
         self.db_connection = psycopg.connect(
-            'postgresql://root:toor@localhost:5430/data', row_factory=dict_row, autocommit=True)
+            'postgresql://root:toor@localhost:5429/data', row_factory=dict_row, autocommit=True)
 
     def insert_signal(self, signal: dict) -> None:
         with self.db_connection.cursor() as cursor:

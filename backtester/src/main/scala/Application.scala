@@ -33,6 +33,10 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
 
   context.log.info("The backtester is starting, now caching or fetching the 1min quotes for each signal")
 
+  //TODO: Kyle: Larger the timeframe the more accurate the strategy will likely become.
+  // He recommended orally to use 30min or higher, backtest different of your strats with different periods and
+  // see which ones makes the most money
+  // You could also try different symbols, like Solana or more volatile to test some strats
 
   val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("CrossEMATRWithFixedTLStrategy", "CrossEMATRWithTLStrategy")

@@ -27,8 +27,8 @@ class TRStratsSpawnerActor(context: ActorContext[BotMessage]) extends AbstractBe
 
   private val strategies: Map[String, List[AdvancedStrategy]] = Map(
     "APE" -> List(
-      CrossEMATRStrategy(50, 27, 246),
-      CrossEMATRStrategy(50, 1, 240),
+//      CrossEMATRStrategy(10, 1, 186),
+      CrossEMATRStrategy(10, 50, 299),
     )
   )
 

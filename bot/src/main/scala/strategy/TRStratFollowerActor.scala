@@ -59,13 +59,13 @@ class TRStratFollowerActor(context: ActorContext[BotMessage]) extends AbstractBe
           context.log.info("")
           context.log.info(s"Strategy ${strategy.getName} is opening a long position at price:${quote.close} at time:${quote.start_timestamp}")
 
-          tradingActorRef ! OpenPositionMessage(strategy.getName, true, quote.close)
+          tradingActorRef ! OpenPositionMessage(strategy.getName, true, quote.close, symbol)
 
         if strategy.shouldBuyShort then
           context.log.info("")
           context.log.info(s"Strategy ${strategy.getName} is opening a short position at price:${quote.close} at time:${quote.start_timestamp}")
 
-          tradingActorRef ! OpenPositionMessage(strategy.getName, false, quote.close)
+          tradingActorRef ! OpenPositionMessage(strategy.getName, false, quote.close, symbol)
 
       this
 }

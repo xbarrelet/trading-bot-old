@@ -2,14 +2,15 @@ package ch.xavier
 package strategy
 
 import signals.Signal
-import strategy.simple.*
-import strategy.simple.concrete.*
+import strategy.advanced.AdvancedStrategy
 import strategy.advanced.concrete.*
 import strategy.advanced.trendReversal.*
+import strategy.advanced.misc.*
+import strategy.simple.*
+import strategy.simple.concrete.*
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
-import ch.xavier.strategy.advanced.AdvancedStrategy
 import org.ta4j.core.BarSeries
 
 import scala.::
@@ -107,6 +108,10 @@ object StrategiesFactory {
         strategiesList += "BBTRStrategy"
       case "MacdTRStrategy" =>
         strategiesList += "MacdTRStrategy"
+      case "SupportAndResistanceStrategy" =>
+        for (numberOfBars: Int <- 1 to 3600) {
+          strategiesList += "SupportAndResistanceStrategy_with_numberOfBar_" + numberOfBars
+        }
     }
 
     for (leverage: Int <- 1 to 50 if leverage == 10) {
@@ -163,6 +168,8 @@ object StrategiesFactory {
       BBTRStrategy(10)
     else if strategyName.startsWith("MacdTRStrategy") then
       MacdTRStrategy(10)
+    else if strategyName.startsWith("SupportAndResistanceStrategy") then
+      SupportAndResistanceStrategy(10, parameters(3).toInt)
     else
       println("Strategy name not recognized, returning default 3 targets strat")
       AdvancedDefaultLeveragedSS3T(signal, 1)

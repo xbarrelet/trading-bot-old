@@ -11,7 +11,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator
 import org.ta4j.core.rules.*
 import org.ta4j.core.{BarSeries, Rule}
 
-import java.time.ZoneOffset
+import java.time.{LocalDateTime, ZoneOffset}
 
 
 class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val upperEma: Int) extends AdvancedStrategy {
@@ -37,17 +37,24 @@ class CrossEMATRStrategy(override val leverage: Int, val lowerEma: Int, val uppe
   override def addQuote(quote: Quote): Unit =
     latestClosePrice = quote.close
 
-    if hasOpenLongPosition && latestClosePrice < currentEntryPrice then
-      shouldExitTradeBool = true
-
-    if hasOpenShortPosition && latestClosePrice > currentEntryPrice then
-      shouldExitTradeBool = true
-
     if series.getBarCount == 0 then
       super.addQuote(quote)
     else
+//      if series.getLastBar.getEndTime.plusSeconds(10).toLocalDateTime.isAfter(LocalDateTime.now()) then
+//        if hasOpenLongPosition && latestClosePrice < currentEntryPrice then
+//          shouldExitTradeBool = true
+//
+//        if hasOpenShortPosition && latestClosePrice > currentEntryPrice then
+//          shouldExitTradeBool = true
+
       if quote.isFinalQuote then
         super.addQuote(quote)
+
+        if hasOpenLongPosition && latestClosePrice < currentEntryPrice then
+          shouldExitTradeBool = true
+
+        if hasOpenShortPosition && latestClosePrice > currentEntryPrice then
+          shouldExitTradeBool = true
 
         if crossedUpIndicatorRule.isSatisfied(series.getEndIndex) then
           shouldBuyLongBool = true
