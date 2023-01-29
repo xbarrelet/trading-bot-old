@@ -37,7 +37,9 @@ class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](con
   // He recommended orally to use 30min or higher, backtest different of your strats with different periods and
   // see which ones makes the most money
   // You could also try different symbols, like Solana or more volatile to test some strats
+  // The impulse strat of the bot is looking for a cross of ema 21 and 50 before going in fyi
 
+  val numberOfMinutesPerQuote: Int = 30
   val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("CrossEMATRWithFixedTLStrategy", "CrossEMATRWithTLStrategy")
 //  val backtestedStrategies: List[String] = List("CCITRStrategy")
