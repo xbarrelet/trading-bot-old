@@ -2,7 +2,7 @@ package ch.xavier
 package quote
 
 import cats.effect.IO
-import doobie.Transactor
+import doobie.{Fragment, Transactor}
 import cats.effect.unsafe.implicits.global
 import doobie.syntax.string.toSqlInterpolator
 import doobie.syntax.connectionio.toConnectionIOOps
@@ -13,7 +13,7 @@ import org.slf4j.{Logger, LoggerFactory}
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 object QuotesRepository {
-  val logger: Logger = LoggerFactory.getLogger("QuotesRepository")
+  private val logger: Logger = LoggerFactory.getLogger("QuotesRepository")
   private val transactor: Transactor[IO] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
     "jdbc:postgresql://localhost:5429/data",
@@ -23,22 +23,22 @@ object QuotesRepository {
   private var cachedQuotes: Map[String, Map[Long, List[Quote]]] = Map()
 
 
-  def getQuotes(symbol: String, startTimestampInSeconds: Long): List[Quote] =
+  def getQuotes(symbol: String, minutesPerQuote: Long): List[Quote] =
     if !cachedQuotes.contains(symbol) then
       return List()
-    if !cachedQuotes(symbol).contains(startTimestampInSeconds) then
+    if !cachedQuotes(symbol).contains(minutesPerQuote) then
       return List()
 
-    cachedQuotes(symbol)(startTimestampInSeconds)
+    cachedQuotes(symbol)(minutesPerQuote)
 
-  def areQuotesAvailable(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long): Boolean =
+  def areQuotesAvailable(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long, quoteMinutes: Long): Boolean =
     if cachedQuotes.contains(symbol) then
-      if cachedQuotes(symbol).contains(startTimestampInSeconds) then
+      if cachedQuotes(symbol).contains(quoteMinutes) then
         return true
 
-    val areQuotesAvailable: Boolean = areQuotesPresent(symbol, startTimestampInSeconds, endTimestampInSeconds)
+    val areQuotesAvailable: Boolean = areQuotesPresent(symbol, startTimestampInSeconds, endTimestampInSeconds, quoteMinutes)
     if areQuotesAvailable then
-      var quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds, endTimestampInSeconds))
+      var quotesPerTimestamp: Map[Long, List[Quote]] = Map(quoteMinutes -> getQuotesFromRepository(symbol, startTimestampInSeconds, endTimestampInSeconds, quoteMinutes))
 
       if cachedQuotes.contains(symbol) then
         val currentQuotes = cachedQuotes(symbol)
@@ -51,14 +51,14 @@ object QuotesRepository {
     else
       false
 
-  private def areQuotesPresent(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long): Boolean =
-    val first_timestamp_present: Boolean =  sql"select count(*) from quotes where start_timestamp > ${startTimestampInSeconds - 1000} and start_timestamp < ${startTimestampInSeconds + 1000}  and symbol = $symbol"
+  private def areQuotesPresent(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long, quoteMinutes: Long): Boolean =
+    val first_timestamp_present: Boolean =  Fragment.const(s"select count(*) from quotes_${quoteMinutes}m where start_timestamp > ${startTimestampInSeconds - 1000} and start_timestamp < ${startTimestampInSeconds + 1000}  and symbol = '$symbol'")
       .query[Int]
       .unique
       .transact(transactor)
       .unsafeRunSync() > 0
-    
-    val second_timestamp_present: Boolean =  sql"select count(*) from quotes where start_timestamp > ${endTimestampInSeconds - 1000} and start_timestamp < ${endTimestampInSeconds + 1000}  and symbol = $symbol"
+
+    val second_timestamp_present: Boolean =  Fragment.const(s"select count(*) from quotes_${quoteMinutes}m where start_timestamp > ${endTimestampInSeconds - 1000} and start_timestamp < ${endTimestampInSeconds + 1000}  and symbol = '$symbol'")
       .query[Int]
       .unique
       .transact(transactor)
@@ -66,20 +66,20 @@ object QuotesRepository {
 
     first_timestamp_present && second_timestamp_present
 
-  def cacheQuotes(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long): Unit =
-    val quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds, endTimestampInSeconds))
+  def cacheQuotes(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long, quoteMinutes: Long): Unit =
+    val quotesPerTimestamp: Map[Long, List[Quote]] = Map(startTimestampInSeconds -> getQuotesFromRepository(symbol, startTimestampInSeconds, endTimestampInSeconds, quoteMinutes))
     cachedQuotes = cachedQuotes + (symbol -> quotesPerTimestamp)
 
-  private def getQuotesFromRepository(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long): List[Quote] =
-    sql"select close, high, low, open, start_timestamp, symbol from quotes where symbol = $symbol and start_timestamp > $startTimestampInSeconds and start_timestamp <= $endTimestampInSeconds order by start_timestamp asc"
+  private def getQuotesFromRepository(symbol: String, startTimestampInSeconds: Long, endTimestampInSeconds: Long, quoteMinutes: Long): List[Quote] =
+    Fragment.const(s"select close, high, low, open, start_timestamp, symbol from quotes_${quoteMinutes}m where symbol = '$symbol' and start_timestamp > $startTimestampInSeconds and start_timestamp <= $endTimestampInSeconds order by start_timestamp asc")
       .query[Quote]
       .to[List]
       .transact(transactor)
       .unsafeRunSync()
   
 
-  def insertQuotes(quotes: Set[Quote]): Unit =
-    val query = "INSERT INTO quotes (close, high, low, open, start_timestamp, symbol)  VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING"
+  def insertQuotes(quotes: Set[Quote], quoteMinutes: Long): Unit =
+    val query = s"INSERT INTO quotes_${quoteMinutes}m (close, high, low, open, start_timestamp, symbol)  VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING"
     Update[Quote](query)
       .updateMany(quotes.toList)
       .transact(transactor)

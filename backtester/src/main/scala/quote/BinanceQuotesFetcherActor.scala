@@ -23,18 +23,21 @@ object BinanceQuotesFetcherActor {
 }
 
 class BinanceQuotesFetcherActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
-  val http: HttpExt = Http()
-  val urlTemplate: String = "https://api1.binance.com/api/v3/klines?symbol=$SYMBOLUSDT&interval=1m&limit=1000&startTime=$START_TIMESTAMP000"
+  private val logger: Logger = LoggerFactory.getLogger("QuotesFetcherActor")
+  private val http: HttpExt = Http()
+  private val urlTemplate: String = "https://api1.binance.com/api/v3/klines?symbol=$SYMBOLUSDT&interval=$MINUTESm&limit=1000&startTime=$START_TIMESTAMP000"
 
   override def onMessage(message: Message): Behavior[Message] =
     message match {
-      case FetchQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
+      case FetchQuotesMessage(symbol: String, fromTimestamp: Long, minutesPerQuote: Long, actorRef: ActorRef[Message]) =>
 
         var quotes: Set[Quote] = Set()
 
-        val response: Future[HttpResponse] = http.singleRequest(HttpRequest(uri =
-          urlTemplate.replace("$SYMBOL", symbol).replace("$START_TIMESTAMP", fromTimestamp.toString)))
+        val response: Future[HttpResponse] = http.singleRequest(HttpRequest(
+          uri = urlTemplate
+            .replace("$SYMBOL", symbol)
+            .replace("$START_TIMESTAMP", fromTimestamp.toString)
+            .replace("$MINUTES", minutesPerQuote.toString)))
 
           response.map {
             case response@HttpResponse(StatusCodes.OK, _, _, _) =>

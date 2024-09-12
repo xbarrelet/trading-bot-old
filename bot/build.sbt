@@ -1,8 +1,8 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "3.1.2"
-val AkkaVersion = "2.6.19"
-val AkkaHttpVersion = "10.2.9"
+val AkkaVersion = "2.8.0"
+val AkkaHttpVersion = "10.5.0"
 val doobieVersion = "1.0.0-RC1"
 
 lazy val root = (project in file("."))
@@ -16,7 +16,7 @@ lazy val root = (project in file("."))
       "io.spray" %%  "spray-json" % "1.3.6",
       "org.tpolecat" %% "doobie-core"      % doobieVersion,
       "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
-      "ch.qos.logback" % "logback-classic" % "1.2.11",
+      "ch.qos.logback" % "logback-classic" % "1.4.7",
       "org.ta4j" % "ta4j-core" % "0.14"
     )
   )

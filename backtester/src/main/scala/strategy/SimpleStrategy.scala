@@ -1,5 +1,5 @@
 package ch.xavier
-package strategy.simple
+package strategy
 
 import quote.Quote
 
@@ -25,4 +25,6 @@ trait SimpleStrategy() {
 
   val leverage: Int = 1
   def applyLeverageToPercentageGain(percentageGain: Double): Double = percentageGain * leverage
+  
+  def getName: String
 }

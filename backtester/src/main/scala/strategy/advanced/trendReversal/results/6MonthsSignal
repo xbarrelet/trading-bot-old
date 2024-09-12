@@ -1,9 +1,0 @@
-[2022-07-09 13:28:07,935] [INFO] - CONTROL:
-[2022-07-09 13:28:07,937] [INFO] - Strategy:LeveragedSimpleStrategyWithThreeTargets_with_leverage_10 with 79 trades and a gain of 4.978004276417416% with an profit per trade of 0.06301271235971413%
-[2022-07-09 13:28:07,937] [INFO] -
-[2022-07-09 13:28:07,937] [INFO] - The results sorted by profits per trade are:
-[2022-07-09 13:28:07,941] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_30_and_upperEma_233 with 24493 trades and a gain of 1.3960503496751808% with an profit per trade of 5.6997932048960144E-5%
-[2022-07-09 13:28:07,941] [INFO] -
-[2022-07-09 13:28:07,941] [INFO] -
-[2022-07-09 13:28:07,941] [INFO] - The results sorted by average gain are:
-[2022-07-09 13:28:07,943] [INFO] - Strategy:CrossEMATRStrategy_with_lowerEma_30_and_upperEma_233 with 24493 trades and a gain of 1.3960503496751808% with an profit per trade of 5.6997932048960144E-5%

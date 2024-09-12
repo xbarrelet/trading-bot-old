@@ -28,7 +28,7 @@ class BybitQuotesFetcherActor(context: ActorContext[Message]) extends AbstractBe
 
   override def onMessage(message: Message): Behavior[Message] =
     message match {
-      case FetchQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
+      case FetchQuotesMessage(symbol: String, fromTimestamp: Long, minutesPerQuote: Long, actorRef: ActorRef[Message]) =>
 
 //        if fromTimestamp > (System.currentTimeMillis / 1000) then
 //          actorRef ! QuotesReadyMessage(List())

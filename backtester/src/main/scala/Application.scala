@@ -2,7 +2,6 @@ package ch.xavier
 
 import Application.{executionContext, system}
 import quote.QuotesActor
-import signals.{Signal, SignalsRepository}
 
 import akka.actor.typed.scaladsl.AskPattern.{Askable, schedulerFromActorSystem}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
@@ -26,32 +25,31 @@ object Main {
 }
 
 class Main(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  val signalsRepository: SignalsRepository.type = SignalsRepository
-  val backtesterRef: ActorRef[Message] = context.spawn(StrategiesMainActor(), "backtester-actor")
-  val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
+  private val backtesterRef: ActorRef[Message] = context.spawn(StrategiesMainActor(), "backtester-actor")
+  private val quotesActorRef: ActorRef[Message] = context.spawn(QuotesActor(), "quotes-actor")
   implicit val timeout: Timeout = 3600.seconds
 
-  context.log.info("The backtester is starting, now caching or fetching the 1min quotes for each signal")
+  context.log.info("The backtester is starting")
 
-  //TODO: Kyle: Larger the timeframe the more accurate the strategy will likely become.
-  // He recommended orally to use 30min or higher, backtest different of your strats with different periods and
-  // see which ones makes the most money
-  // You could also try different symbols, like Solana or more volatile to test some strats
+  //TODO: You could also try different symbols, like Solana or more volatile to test some strats
   // The impulse strat of the bot is looking for a cross of ema 21 and 50 before going in fyi
 
-  val numberOfMinutesPerQuote: Int = 30
-  val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
+  private val MINUTES_PER_QUOTE: Int = 30 //TODO: SHOULD BE A LIST. Works with the cached quotes as you have minutes per quote as a secondary index
+  private val DAYS_TO_BACKTEST_ON: Int = 365
+  private val SYMBOLS: List[String] = List("BTC")
+
+  private val backtestedStrategies: List[String] = List("CrossEMATRStrategy")
 //  val backtestedStrategies: List[String] = List("CrossEMATRWithFixedTLStrategy", "CrossEMATRWithTLStrategy")
 //  val backtestedStrategies: List[String] = List("CCITRStrategy")
 
 
-  Source(signalsRepository.getSignals())
-    .mapAsync(1)(signal => quotesActorRef ? (replyTo => CacheQuotesMessage(signal.symbol, signal.timestamp, replyTo)))
+  Source(SYMBOLS)
+    .mapAsync(1)(symbol => quotesActorRef ? (replyTo => CacheQuotesMessage(symbol, DAYS_TO_BACKTEST_ON, MINUTES_PER_QUOTE, replyTo)))
     .runWith(Sink.last)
     .onComplete {
-      case Success(done) =>
+      case Success(_) =>
         quotesActorRef ! ShutdownMessage()
-        backtesterRef ! StartBacktestingMessage(backtestedStrategies)
+        backtesterRef ! StartBacktestingMessage(backtestedStrategies, SYMBOLS, MINUTES_PER_QUOTE)
 
       case Failure(e) => println("Exception received in Application:" + e)
     }

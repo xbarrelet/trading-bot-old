@@ -26,19 +26,20 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
   val logger: Logger = LoggerFactory.getLogger("StrategiesMainActor")
   implicit val timeout: Timeout = 300.seconds
 
-  val strategiesFactory: StrategiesFactory.type = StrategiesFactory
-  val backtestersSpawnerRef: ActorRef[Message] = context.spawn(BacktestersSpawnerActor(), "backtesters-spawner-actor")
-  var results: ListBuffer[Result] = ListBuffer()
+  private val strategiesFactory: StrategiesFactory.type = StrategiesFactory
+  private val backtestersSpawnerRef: ActorRef[Message] = context.spawn(BacktestersSpawnerActor(), "backtesters-spawner-actor")
+  private var results: ListBuffer[Result] = ListBuffer()
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case StartBacktestingMessage(strategyNames: List[String]) =>
+      case StartBacktestingMessage(strategyNames: List[String], symbols: List[String], minutesPerQuote: Int) =>
         context.log.info("-----------------------------------------------------------------------------------------")
         context.log.info(s"Quotes cached for all signals, now starting to backtest the strategies:$strategyNames")
         context.log.info("-----------------------------------------------------------------------------------------")
 
+        //TODO: Implement that for each symbol so you get results displayed per symbol. What about the minutes per quotes? You should have the results for each as well.
         Source(strategiesFactory.getAllStrategiesVariantsNames(strategyNames))
-          .mapAsync(8)(strategy => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategy, replyTo)))
+          .mapAsync(8)(strategyName => backtestersSpawnerRef ? (replyTo => BacktestStrategyMessage(strategyName, symbols, minutesPerQuote, replyTo)))
           .map(_.asInstanceOf[ResultOfBacktestingStrategyMessage])
           .filter(_.averageProfitsInPercent != 0.0)
           .map(result => results = results += Result(result.strategyName, result.averageProfitsInPercent, result.numberOfTrade, result.averageProfitsInPercent / result.numberOfTrade.toDouble))
@@ -50,7 +51,7 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
               results.toList.filter(result => result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
                 .foreach(result => logger.info(s"Strategy:${result.strategyName} with ${result.numberOfTrade} trades and a gain of ${result.averageProfitsInPercent}% with an profit per trade of ${result.profitsPerTrade}%"))
               logger.info("")
-              
+
               logger.info("The results sorted by profits per trade are:")
               val resultsSortedByProfitsPerTrade = results
                 .filter(result => !result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
@@ -63,10 +64,10 @@ class StrategiesMainActor(context: ActorContext[Message]) extends AbstractBehavi
               logger.info("")
               logger.info("The results sorted by average gain are:")
               val resultsSortedByGain = results
-                  .filter(result => !result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
-                  .filter(_.averageProfitsInPercent > 0)
-                  .sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
-                  .take(100)
+                .filter(result => !result.strategyName.startsWith("LeveragedSimpleStrategyWithThreeTargets"))
+                .filter(_.averageProfitsInPercent > 0)
+                .sortWith(_.averageProfitsInPercent > _.averageProfitsInPercent)
+                .take(100)
               for result <- resultsSortedByGain do
                 logger.info(s"Strategy:${result.strategyName} with ${result.numberOfTrade} trades and a gain of ${result.averageProfitsInPercent}% with an profit per trade of ${result.averageProfitsInPercent / result.numberOfTrade.toDouble}%")
 

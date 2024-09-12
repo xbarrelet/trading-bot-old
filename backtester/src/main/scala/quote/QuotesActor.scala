@@ -25,46 +25,47 @@ object QuotesActor {
 
 
 class QuotesActor(context: ActorContext[Message]) extends AbstractBehavior[Message](context) {
-  val quotesRepository: QuotesRepository.type = QuotesRepository
+  private val quotesRepository: QuotesRepository.type = QuotesRepository
   implicit val timeout: Timeout = 30.seconds
 
-//  val numberOfDaysOfQuotesToFetch = 365
-  val numberOfDaysOfQuotesToFetch = 90
+  private val SECONDS_PER_DAY = 86400
 
   override def onMessage(message: Message): Behavior[Message] =
     message match
-      case CacheQuotesMessage(symbol: String, fromTimestamp: Long, actorRef: ActorRef[Message]) =>
+      case CacheQuotesMessage(symbol: String, daysToBacktestOn: Long, minutesPerQuote: Int, actorRef: ActorRef[Message]) =>
 
-        var startTimestamp: Long = fromTimestamp
-        val endTimestamp: Long = fromTimestamp + numberOfDaysOfQuotesToFetch * 86400
+        val startTimestamp: Long = System.currentTimeMillis() / 1000 - daysToBacktestOn * SECONDS_PER_DAY
+        val endTimestamp: Long = System.currentTimeMillis() / 1000
         val startTimestamps: ListBuffer[Long] = ListBuffer()
 
-        while (startTimestamp < endTimestamp) {
-          startTimestamps += startTimestamp
-          startTimestamp += 11940L
+        var startLoopTimestamp = startTimestamp
+        while (startLoopTimestamp < endTimestamp) {
+          startTimestamps += startLoopTimestamp
+          startLoopTimestamp += minutesPerQuote * 60 * 1000
         }
 
-        if !quotesRepository.areQuotesAvailable(symbol, startTimestamps.head, startTimestamps.last) then
-          context.log.info(s"Fetching 1m quotes for symbol:$symbol from ${formatTimestamp(fromTimestamp)} to ${formatTimestamp(startTimestamps.last)}")
-          val fetcherRef: ActorRef[Message] = context.spawn(BinanceQuotesFetcherActor(), s"fetcher-actor-$symbol-$fromTimestamp")
+        if !quotesRepository.areQuotesAvailable(symbol, startTimestamps.head, startTimestamps.last, minutesPerQuote) then
+          context.log.info(s"Fetching ${minutesPerQuote}m quotes for symbol:$symbol for the last $daysToBacktestOn days")
+          val fetcherRef: ActorRef[Message] = context.spawn(BinanceQuotesFetcherActor(), s"fetcher-actor-$symbol-$minutesPerQuote")
           
           Source(startTimestamps.toList)
             .mapAsync(1)(startTimestamp => {
-              val response: Future[Message] = fetcherRef ? (replyTo => FetchQuotesMessage(symbol, startTimestamp, replyTo))
+              val response: Future[Message] = fetcherRef ? (replyTo => FetchQuotesMessage(symbol, startTimestamp, minutesPerQuote, replyTo))
               response.asInstanceOf[Future[QuotesReadyMessage]]
             })
-            .map(message => quotesRepository.insertQuotes(message.quotes))
+            .map(message => quotesRepository.insertQuotes(message.quotes, minutesPerQuote))
             .runWith(Sink.last)
             .onComplete {
-              case Success(done) =>
-                quotesRepository.cacheQuotes(symbol, fromTimestamp, startTimestamps.last)
+              case Success(_) =>
+                quotesRepository.cacheQuotes(symbol, startTimestamps.head, startTimestamps.last, minutesPerQuote)
+                println("All quotes have been downloaded and cached")
                 actorRef ! QuotesCachedMessage()
               case Failure(e) =>
                 println("Exception received in QuotesActor:" + e)
                 actorRef ! QuotesCachedMessage()
             }
         else
-          context.log.debug(s"Quotes already present for symbol:$symbol and time:${formatTimestamp(fromTimestamp)}")
+          context.log.info(s"${minutesPerQuote}m quotes already present for symbol:$symbol from $startTimestamp to $endTimestamp")
           actorRef ! QuotesCachedMessage()
 
         this
